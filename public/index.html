@@ -21,10 +21,7 @@
       --muted2:   #888888;
       --accent:   oklch(0.72 0.19 45);
       --accent-dim: color-mix(in srgb, oklch(0.72 0.19 45) 12%, transparent);
-      --run:      oklch(0.72 0.19 45);
-      --ride:     #3b82f6;
-      --swim:     #06b6d4;
-      --other:    #8b5cf6;
+      --z1: #3b82f6; --z2: #22c55e; --z3: #eab308; --z4: #f97316; --z5: #ef4444;
     }
 
     body {
@@ -42,268 +39,297 @@
       padding: 1.25rem 1.5rem;
       transition: padding 0.3s;
     }
-
     header.scrolled { padding: 0.75rem 1.5rem; }
-
     .header-inner {
-      max-width: 960px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-radius: 999px;
-      padding: 0.6rem 1.25rem;
-      transition: background 0.3s, backdrop-filter 0.3s, border-color 0.3s;
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      border-radius: 999px; padding: 0.6rem 1.25rem;
+      transition: background 0.3s, border-color 0.3s;
       border: 1px solid transparent;
     }
-
     header.scrolled .header-inner {
       background: color-mix(in srgb, var(--surface) 80%, transparent);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border-color: var(--border);
     }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      text-decoration: none;
-      color: var(--text);
-    }
-
-    .logo-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 8px var(--accent);
-    }
-
-    .logo-name {
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
-    .header-tag {
-      font-family: "DM Mono", monospace;
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-    }
+    .logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--text); }
+    .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+    .logo-name { font-size: 1rem; font-weight: 600; letter-spacing: -0.02em; }
+    .header-tag { font-family: "DM Mono", monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); }
 
     /* ── Main ── */
-    main {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 7rem 1.5rem 5rem;
-    }
-
-    .page-header {
-      margin-bottom: 3rem;
-    }
-
-    .page-eyebrow {
-      font-family: "DM Mono", monospace;
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: var(--muted);
-      margin-bottom: 0.75rem;
-    }
-
-    .page-title {
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 1.1;
-    }
-
-    .page-sub {
-      margin-top: 0.6rem;
-      color: var(--muted2);
-      font-size: 0.9rem;
-      max-width: 440px;
-    }
+    main { max-width: 960px; margin: 0 auto; padding: 7rem 1.5rem 5rem; }
+    .page-eyebrow { font-family: "DM Mono", monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 0.75rem; }
+    .page-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; }
+    .page-sub { margin-top: 0.6rem; color: var(--muted2); font-size: 0.9rem; max-width: 440px; margin-bottom: 3rem; }
 
     /* ── Grid ── */
-    #grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-      gap: 0.75rem;
-    }
+    #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 0.75rem; }
 
     /* ── Card ── */
     .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 1.25rem;
-      padding: 1.25rem 1.5rem 1.5rem;
-      transition: border-color 0.2s, background 0.2s;
-      cursor: default;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 1.25rem; padding: 1.25rem 1.5rem 1.5rem;
+      cursor: pointer; transition: border-color 0.2s, background 0.2s;
     }
-
-    .card:hover {
-      border-color: var(--border2);
-      background: var(--surface2);
-    }
-
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .card-eyebrow {
-      font-family: "DM Mono", monospace;
-      font-size: 0.62rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--muted);
-      margin-bottom: 0.35rem;
-    }
-
-    .card-name {
-      font-size: 1.05rem;
-      font-weight: 600;
-      letter-spacing: -0.025em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 260px;
-    }
-
-    .badge {
-      flex-shrink: 0;
-      font-family: "DM Mono", monospace;
-      font-size: 0.65rem;
-      font-weight: 500;
-      padding: 0.3rem 0.75rem;
-      border-radius: 999px;
-    }
-
+    .card:hover { border-color: var(--border2); background: var(--surface2); }
+    .card.active { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+    .card-eyebrow { font-family: "DM Mono", monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 0.35rem; }
+    .card-name { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.025em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+    .badge { flex-shrink: 0; font-family: "DM Mono", monospace; font-size: 0.65rem; font-weight: 500; padding: 0.3rem 0.75rem; border-radius: 999px; }
     .badge-Run   { background: var(--accent-dim); color: var(--accent); }
     .badge-Ride  { background: color-mix(in srgb, #3b82f6 12%, transparent); color: #3b82f6; }
     .badge-Swim  { background: color-mix(in srgb, #06b6d4 12%, transparent); color: #06b6d4; }
     .badge-Other { background: color-mix(in srgb, #8b5cf6 12%, transparent); color: #8b5cf6; }
+    .divider { height: 1px; background: var(--border); margin: 1.1rem 0; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+    .stat-label { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.3rem; }
+    .stat-value { font-size: 1.15rem; font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1; }
+    .stat-unit { font-size: 0.6rem; font-family: "DM Mono", monospace; color: var(--muted); margin-left: 0.15rem; }
 
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 1.1rem 0;
+    /* ── Detail Panel ── */
+    .detail {
+      display: none; margin-top: 0.75rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 1.25rem; overflow: hidden;
     }
+    .detail.open { display: block; }
+    .detail-loading { padding: 2rem; text-align: center; color: var(--muted); font-family: "DM Mono", monospace; font-size: 0.75rem; letter-spacing: 0.1em; }
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.5rem;
-    }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 640px) { .detail-grid { grid-template-columns: 1fr; } }
 
-    .stat-label {
-      font-family: "DM Mono", monospace;
-      font-size: 0.6rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-      margin-bottom: 0.3rem;
+    .detail-map {
+      background: #0d0d0d; border-right: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      min-height: 220px;
     }
+    .detail-map svg { width: 100%; height: 100%; max-height: 260px; }
+    .no-map { color: var(--muted); font-family: "DM Mono", monospace; font-size: 0.65rem; letter-spacing: 0.1em; }
 
-    .stat-value {
-      font-size: 1.15rem;
-      font-weight: 600;
-      letter-spacing: -0.03em;
-      font-variant-numeric: tabular-nums;
-      line-height: 1;
-    }
+    .detail-right { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
 
-    .stat-unit {
-      font-size: 0.6rem;
-      font-family: "DM Mono", monospace;
-      color: var(--muted);
-      margin-left: 0.15rem;
-    }
+    /* HR Zones */
+    .section-label { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 0.75rem; }
+    .zone-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.45rem; }
+    .zone-name { font-family: "DM Mono", monospace; font-size: 0.65rem; color: var(--muted2); width: 2.5rem; flex-shrink: 0; }
+    .zone-bar-bg { flex: 1; background: var(--border); border-radius: 999px; height: 6px; overflow: hidden; }
+    .zone-bar { height: 100%; border-radius: 999px; transition: width 0.6s cubic-bezier(0.16,1,0.3,1); }
+    .zone-time { font-family: "DM Mono", monospace; font-size: 0.65rem; color: var(--muted2); width: 3rem; text-align: right; flex-shrink: 0; }
+
+    /* Splits */
+    .splits-table { width: 100%; border-collapse: collapse; }
+    .splits-table th { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); text-align: right; padding: 0 0.5rem 0.5rem; font-weight: 400; }
+    .splits-table th:first-child { text-align: left; }
+    .splits-table td { font-size: 0.85rem; font-variant-numeric: tabular-nums; text-align: right; padding: 0.35rem 0.5rem; border-top: 1px solid var(--border); color: var(--muted2); }
+    .splits-table td:first-child { text-align: left; color: var(--text); font-family: "DM Mono", monospace; font-size: 0.75rem; }
+    .splits-table tr:hover td { background: var(--surface2); }
+
+    /* Best Efforts */
+    .efforts-list { list-style: none; }
+    .effort-row { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; border-top: 1px solid var(--border); }
+    .effort-name { font-size: 0.85rem; color: var(--muted2); }
+    .effort-time { font-family: "DM Mono", monospace; font-size: 0.8rem; color: var(--text); }
 
     /* ── Skeleton ── */
     .skeleton {
       background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 1.25rem;
-      height: 148px;
-      border: 1px solid var(--border);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite;
+      border-radius: 1.25rem; height: 148px; border: 1px solid var(--border);
     }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-    @keyframes shimmer {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    /* ── Error ── */
-    .error {
-      padding: 1rem 1.25rem;
-      background: color-mix(in srgb, #ef4444 8%, transparent);
-      border: 1px solid color-mix(in srgb, #ef4444 25%, transparent);
-      border-radius: 0.75rem;
-      color: #f87171;
-      font-size: 0.875rem;
-    }
+    .error { padding: 1rem 1.25rem; background: color-mix(in srgb, #ef4444 8%, transparent); border: 1px solid color-mix(in srgb, #ef4444 25%, transparent); border-radius: 0.75rem; color: #f87171; font-size: 0.875rem; }
   </style>
 </head>
 <body>
   <header id="header">
     <div class="header-inner">
-      <a class="logo" href="/">
-        <span class="logo-dot"></span>
-        <span class="logo-name">Pacecraft</span>
-      </a>
+      <a class="logo" href="/"><span class="logo-dot"></span><span class="logo-name">Pacecraft</span></a>
       <span class="header-tag">Träningsdashboard</span>
     </div>
   </header>
 
   <main>
-    <div class="page-header">
-      <p class="page-eyebrow">Live · Strava</p>
-      <h1 class="page-title">Senaste passen</h1>
-      <p class="page-sub">Träningsdata hämtad direkt från Strava.</p>
-    </div>
-
+    <p class="page-eyebrow">Live · Strava</p>
+    <h1 class="page-title">Senaste passen</h1>
+    <p class="page-sub">Klicka på ett pass för detaljer, karta och pulszoner.</p>
     <div id="grid"></div>
   </main>
 
   <script>
-    // Sticky header glass effect
-    const header = document.getElementById("header");
     window.addEventListener("scroll", () => {
-      header.classList.toggle("scrolled", window.scrollY > 20);
+      document.getElementById("header").classList.toggle("scrolled", window.scrollY > 20);
     }, { passive: true });
 
-    const API = "/api/activities?user=a&per_page=30";
-    const grid = document.getElementById("grid");
+    // ── Polyline decoder (Google encoding algorithm) ──
+    function decodePolyline(encoded) {
+      const coords = [];
+      let idx = 0, lat = 0, lng = 0;
+      while (idx < encoded.length) {
+        let b, shift = 0, result = 0;
+        do { b = encoded.charCodeAt(idx++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+        lat += (result & 1) ? ~(result >> 1) : result >> 1;
+        shift = 0; result = 0;
+        do { b = encoded.charCodeAt(idx++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+        lng += (result & 1) ? ~(result >> 1) : result >> 1;
+        coords.push([lat / 1e5, lng / 1e5]);
+      }
+      return coords;
+    }
+
+    function polylineToSVG(encoded) {
+      const coords = decodePolyline(encoded);
+      if (coords.length < 2) return null;
+      const lats = coords.map(c => c[0]), lngs = coords.map(c => c[1]);
+      const minLat = Math.min(...lats), maxLat = Math.max(...lats);
+      const minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
+      const W = 400, H = 260, pad = 20;
+      const scaleX = (maxLng - minLng) || 1, scaleY = (maxLat - minLat) || 1;
+      const scale = Math.min((W - pad*2) / scaleX, (H - pad*2) / scaleY);
+      const offX = (W - scale * scaleX) / 2, offY = (H - scale * scaleY) / 2;
+      const points = coords.map(([la, ln]) =>
+        `${offX + (ln - minLng) * scale},${H - offY - (la - minLat) * scale}`
+      ).join(" ");
+      return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="${points}" fill="none" stroke="oklch(0.72 0.19 45)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="${points.split(" ")[0].split(",")[0]}" cy="${points.split(" ")[0].split(",")[1]}" r="4" fill="oklch(0.72 0.19 45)"/>
+      </svg>`;
+    }
 
     function formatDuration(s) {
-      const h = Math.floor(s / 3600);
-      const m = Math.floor((s % 3600) / 60);
-      const sec = s % 60;
+      const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
       if (h > 0) return `${h}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
       return `${m}:${String(sec).padStart(2,"0")}`;
     }
-
     function formatPace(mps) {
       if (!mps) return "—";
-      const spk = 1000 / mps;
-      const m = Math.floor(spk / 60);
-      const s = Math.round(spk % 60);
+      const spk = 1000 / mps, m = Math.floor(spk / 60), s = Math.round(spk % 60);
       return `${m}:${String(s).padStart(2,"0")}`;
     }
-
     function badgeClass(type) {
       if (!type) return "badge-Other";
-      if (type.includes("Run"))  return "badge-Run";
+      if (type.includes("Run")) return "badge-Run";
       if (type.includes("Ride")) return "badge-Ride";
-      if (type === "Swim")       return "badge-Swim";
+      if (type === "Swim") return "badge-Swim";
       return "badge-Other";
+    }
+
+    const ZONE_COLORS = ["var(--z1)","var(--z2)","var(--z3)","var(--z4)","var(--z5)"];
+    const ZONE_NAMES  = ["Z1","Z2","Z3","Z4","Z5"];
+
+    // Cache zones so we only fetch once
+    let zonesCache = null;
+    async function getZones() {
+      if (zonesCache) return zonesCache;
+      const r = await fetch("/api/zones?user=a");
+      zonesCache = r.ok ? await r.json() : null;
+      return zonesCache;
+    }
+
+    function calcZoneTimes(hrStream, timeStream, zones) {
+      const thresholds = zones?.heart_rate?.zones?.map(z => z.min) ?? [];
+      if (!thresholds.length || !hrStream?.length) return null;
+      const totals = new Array(thresholds.length).fill(0);
+      for (let i = 1; i < hrStream.length; i++) {
+        const hr = hrStream[i], dt = timeStream[i] - timeStream[i-1];
+        let zone = 0;
+        for (let z = thresholds.length - 1; z >= 0; z--) {
+          if (hr >= thresholds[z]) { zone = z; break; }
+        }
+        totals[zone] += dt;
+      }
+      return totals;
+    }
+
+    async function loadDetail(id, detailEl) {
+      detailEl.innerHTML = `<div class="detail-loading">Laddar...</div>`;
+
+      const [actRes, streamsRes, zones] = await Promise.all([
+        fetch(`/api/activity?id=${id}&user=a`),
+        fetch(`/api/streams?id=${id}&user=a`),
+        getZones(),
+      ]);
+
+      const act     = actRes.ok     ? await actRes.json()     : null;
+      const streams = streamsRes.ok ? await streamsRes.json() : null;
+
+      const polyline = act?.map?.polyline || act?.map?.summary_polyline;
+      const mapHTML = polyline
+        ? (polylineToSVG(polyline) ?? `<span class="no-map">Ingen kartdata</span>`)
+        : `<span class="no-map">Ingen kartdata</span>`;
+
+      // HR zones
+      const hrData   = streams?.heartrate?.data;
+      const timeData = streams?.time?.data;
+      const zoneTimes = calcZoneTimes(hrData, timeData, zones);
+      const totalZoneTime = zoneTimes ? zoneTimes.reduce((a,b) => a+b, 0) : 0;
+
+      const zonesHTML = zoneTimes
+        ? `<div>
+            <div class="section-label">Pulszoner</div>
+            ${zoneTimes.map((t, i) => `
+              <div class="zone-row">
+                <span class="zone-name">${ZONE_NAMES[i]}</span>
+                <div class="zone-bar-bg">
+                  <div class="zone-bar" style="width:${totalZoneTime ? (t/totalZoneTime*100).toFixed(1) : 0}%; background:${ZONE_COLORS[i]}"></div>
+                </div>
+                <span class="zone-time">${formatDuration(t)}</span>
+              </div>`).join("")}
+           </div>`
+        : `<div><div class="section-label">Pulszoner</div><span style="color:var(--muted);font-size:0.8rem">Ingen pulsdata</span></div>`;
+
+      // km splits
+      const splits = act?.splits_metric ?? [];
+      const isRun = act?.sport_type?.includes("Run");
+      const splitsHTML = splits.length
+        ? `<div>
+            <div class="section-label">Km-splittrar</div>
+            <table class="splits-table">
+              <thead><tr>
+                <th>km</th>
+                <th>${isRun ? "Tempo" : "Fart"}</th>
+                <th>Puls</th>
+                <th>Höjd</th>
+              </tr></thead>
+              <tbody>${splits.map((s, i) => `
+                <tr>
+                  <td>${i+1}</td>
+                  <td>${isRun ? formatPace(s.average_speed) : (s.average_speed*3.6).toFixed(1)}</td>
+                  <td>${s.average_heartrate ? Math.round(s.average_heartrate) : "—"}</td>
+                  <td>${s.elevation_difference >= 0 ? "+" : ""}${Math.round(s.elevation_difference)}m</td>
+                </tr>`).join("")}
+              </tbody>
+            </table>
+           </div>`
+        : "";
+
+      // Best efforts
+      const efforts = act?.best_efforts?.slice(0, 6) ?? [];
+      const effortsHTML = efforts.length
+        ? `<div>
+            <div class="section-label">Bästa insatser</div>
+            <ul class="efforts-list">
+              ${efforts.map(e => `
+                <li class="effort-row">
+                  <span class="effort-name">${e.name}</span>
+                  <span class="effort-time">${formatDuration(e.elapsed_time)}</span>
+                </li>`).join("")}
+            </ul>
+           </div>`
+        : "";
+
+      detailEl.innerHTML = `
+        <div class="detail-grid">
+          <div class="detail-map">${mapHTML}</div>
+          <div class="detail-right">
+            ${zonesHTML}
+            ${effortsHTML}
+          </div>
+        </div>
+        ${splitsHTML ? `<div style="padding:1.5rem;border-top:1px solid var(--border)">${splitsHTML}</div>` : ""}
+      `;
     }
 
     function renderCard(a) {
@@ -311,9 +337,8 @@
       const date = new Date(a.start_date_local);
       const dateStr = date.toLocaleDateString("sv-SE", { weekday:"short", day:"numeric", month:"short" });
       const isRun = a.sport_type?.includes("Run");
-
       return `
-        <div class="card">
+        <div class="card" data-id="${a.id}" onclick="toggleDetail(this)">
           <div class="card-top">
             <div style="min-width:0">
               <div class="card-eyebrow">${a.sport_type ?? "Aktivitet"} · ${dateStr}</div>
@@ -323,43 +348,39 @@
           </div>
           <div class="divider"></div>
           <div class="stats">
-            <div>
-              <div class="stat-label">Tid</div>
-              <div class="stat-value">${formatDuration(a.moving_time)}</div>
-            </div>
-            <div>
-              <div class="stat-label">${isRun ? "Tempo" : "Fart"}</div>
-              <div class="stat-value">
-                ${isRun ? formatPace(a.average_speed) : (a.average_speed * 3.6).toFixed(1)}
-                <span class="stat-unit">${isRun ? "/km" : "km/h"}</span>
-              </div>
-            </div>
-            <div>
-              <div class="stat-label">Puls</div>
-              <div class="stat-value">
-                ${a.average_heartrate ? Math.round(a.average_heartrate) : "—"}
-                <span class="stat-unit">${a.average_heartrate ? "bpm" : ""}</span>
-              </div>
-            </div>
-            <div>
-              <div class="stat-label">Höjd</div>
-              <div class="stat-value">
-                ${Math.round(a.total_elevation_gain)}<span class="stat-unit">m</span>
-              </div>
-            </div>
+            <div><div class="stat-label">Tid</div><div class="stat-value">${formatDuration(a.moving_time)}</div></div>
+            <div><div class="stat-label">${isRun ? "Tempo" : "Fart"}</div><div class="stat-value">${isRun ? formatPace(a.average_speed) : (a.average_speed*3.6).toFixed(1)}<span class="stat-unit">${isRun ? "/km" : "km/h"}</span></div></div>
+            <div><div class="stat-label">Puls</div><div class="stat-value">${a.average_heartrate ? Math.round(a.average_heartrate) : "—"}<span class="stat-unit">${a.average_heartrate ? "bpm" : ""}</span></div></div>
+            <div><div class="stat-label">Höjd</div><div class="stat-value">${Math.round(a.total_elevation_gain)}<span class="stat-unit">m</span></div></div>
           </div>
-        </div>`;
+        </div>
+        <div class="detail" id="detail-${a.id}"></div>`;
     }
 
+    function toggleDetail(card) {
+      const id = card.dataset.id;
+      const detail = document.getElementById(`detail-${id}`);
+      const isOpen = detail.classList.contains("open");
+      // close all
+      document.querySelectorAll(".detail.open").forEach(d => d.classList.remove("open"));
+      document.querySelectorAll(".card.active").forEach(c => c.classList.remove("active"));
+      if (!isOpen) {
+        detail.classList.add("open");
+        card.classList.add("active");
+        if (!detail.dataset.loaded) {
+          detail.dataset.loaded = "1";
+          loadDetail(id, detail);
+        }
+      }
+    }
+
+    const grid = document.getElementById("grid");
     grid.innerHTML = Array.from({length: 6}, () => `<div class="skeleton"></div>`).join("");
 
-    fetch(API)
+    fetch("/api/activities?user=a&per_page=30")
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
       .then(activities => {
-        if (!activities.length) {
-          grid.innerHTML = `<p style="color:var(--muted)">Inga aktiviteter hittades.</p>`;
-          return;
-        }
+        if (!activities.length) { grid.innerHTML = `<p style="color:var(--muted)">Inga aktiviteter.</p>`; return; }
         grid.innerHTML = activities.map(renderCard).join("");
       })
       .catch(err => {
