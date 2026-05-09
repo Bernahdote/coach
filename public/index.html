@@ -17,7 +17,6 @@
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --bg:       #080808;
       --surface:  #101010;
@@ -29,62 +28,37 @@
       --muted2:   #888888;
       --accent:   oklch(0.72 0.19 45);
       --accent-dim: color-mix(in srgb, oklch(0.72 0.19 45) 12%, transparent);
+      --chat-w:   380px;
       --z1: #3b82f6; --z2: #22c55e; --z3: #eab308; --z4: #f97316; --z5: #ef4444;
     }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: "DM Sans", -apple-system, sans-serif;
-      min-height: 100vh;
-    }
+    body { background: var(--bg); color: var(--text); font-family: "DM Sans", -apple-system, sans-serif; min-height: 100vh; overflow-x: hidden; }
 
     /* ── Header ── */
-    header {
-      position: fixed;
-      inset: 0 0 auto;
-      z-index: 50;
-      padding: 1.25rem 1.5rem;
-      transition: padding 0.3s;
-    }
-    header.scrolled { padding: 0.75rem 1.5rem; }
-    .header-inner {
-      max-width: 960px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-      border-radius: 999px; padding: 0.6rem 1.25rem;
-      transition: background 0.3s, border-color 0.3s;
-      border: 1px solid transparent;
-    }
-    header.scrolled .header-inner {
-      background: color-mix(in srgb, var(--surface) 80%, transparent);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border-color: var(--border);
-    }
+    header { position: fixed; inset: 0 0 auto; z-index: 50; padding: 1rem 1.5rem; transition: padding 0.3s; }
+    header.scrolled { padding: 0.6rem 1.5rem; }
+    .header-inner { max-width: calc(100% - 3rem); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; border-radius: 999px; padding: 0.55rem 1.25rem; transition: background 0.3s, border-color 0.3s; border: 1px solid transparent; }
+    header.scrolled .header-inner { background: color-mix(in srgb, var(--surface) 85%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-color: var(--border); }
     .logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--text); }
     .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
     .logo-name { font-size: 1rem; font-weight: 600; letter-spacing: -0.02em; }
     .header-tag { font-family: "DM Mono", monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); }
 
-    /* ── Main ── */
-    main { max-width: 960px; margin: 0 auto; padding: 7rem 1.5rem 5rem; }
+    /* ── Layout ── */
+    .layout { display: flex; min-height: 100vh; padding-top: 5rem; }
+    .feed { flex: 1; min-width: 0; padding: 2rem 1.5rem 5rem; max-width: 640px; margin: 0 auto; }
+    @media (min-width: 900px) { .feed { margin: 0; padding-right: 2rem; } }
+
+    /* ── Feed header ── */
     .page-eyebrow { font-family: "DM Mono", monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 0.75rem; }
-    .page-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; }
-    .page-sub { margin-top: 0.6rem; color: var(--muted2); font-size: 0.9rem; max-width: 440px; margin-bottom: 3rem; }
+    .page-title { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 2rem; }
 
-    /* ── Grid ── */
-    #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 0.75rem; }
-
-    /* ── Card ── */
-    .card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 1.25rem; padding: 1.25rem 1.5rem 1.5rem;
-      cursor: pointer; transition: border-color 0.2s, background 0.2s;
-    }
+    /* ── Cards ── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 1.25rem; padding: 1.25rem 1.5rem 1.5rem; cursor: pointer; transition: border-color 0.2s, background 0.2s; margin-bottom: 0.75rem; }
     .card:hover { border-color: var(--border2); background: var(--surface2); }
     .card.active { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
     .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
     .card-eyebrow { font-family: "DM Mono", monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 0.35rem; }
-    .card-name { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.025em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+    .card-name { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.025em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
     .badge { flex-shrink: 0; font-family: "DM Mono", monospace; font-size: 0.65rem; font-weight: 500; padding: 0.3rem 0.75rem; border-radius: 999px; }
     .badge-Run   { background: var(--accent-dim); color: var(--accent); }
     .badge-Ride  { background: color-mix(in srgb, #3b82f6 12%, transparent); color: #3b82f6; }
@@ -93,81 +67,86 @@
     .divider { height: 1px; background: var(--border); margin: 1.1rem 0; }
     .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
     .stat-label { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.3rem; }
-    .stat-value { font-size: 1.15rem; font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1; }
+    .stat-value { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1; }
     .stat-unit { font-size: 0.6rem; font-family: "DM Mono", monospace; color: var(--muted); margin-left: 0.15rem; }
 
-    /* ── Detail Panel ── */
-    .detail {
-      display: none; margin-top: 0.75rem;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 1.25rem; overflow: hidden;
-    }
+    /* ── Detail panel ── */
+    .detail { display: none; margin-bottom: 0.75rem; background: var(--surface); border: 1px solid var(--border); border-radius: 1.25rem; overflow: hidden; }
     .detail.open { display: block; }
-    .detail-loading { padding: 2rem; text-align: center; color: var(--muted); font-family: "DM Mono", monospace; font-size: 0.75rem; letter-spacing: 0.1em; }
-
-    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; }
-    @media (max-width: 640px) { .detail-grid { grid-template-columns: 1fr; } }
-
-    .detail-map {
-      background: #0d0d0d; border-right: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      min-height: 220px;
-    }
-    .detail-map svg { width: 100%; height: 100%; max-height: 260px; }
-    .no-map { color: var(--muted); font-family: "DM Mono", monospace; font-size: 0.65rem; letter-spacing: 0.1em; }
-
+    .detail-loading { padding: 2rem; text-align: center; color: var(--muted); font-family: "DM Mono", monospace; font-size: 0.75rem; }
+    .detail-map { background: #0d0d0d; display: flex; align-items: center; justify-content: center; min-height: 200px; }
+    .detail-map svg { width: 100%; max-height: 240px; }
+    .no-map { color: var(--muted); font-family: "DM Mono", monospace; font-size: 0.65rem; }
     .detail-right { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
-
-    /* HR Zones */
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; }
     .section-label { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 0.75rem; }
     .zone-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.45rem; }
     .zone-name { font-family: "DM Mono", monospace; font-size: 0.65rem; color: var(--muted2); width: 2.5rem; flex-shrink: 0; }
     .zone-bar-bg { flex: 1; background: var(--border); border-radius: 999px; height: 6px; overflow: hidden; }
     .zone-bar { height: 100%; border-radius: 999px; transition: width 0.6s cubic-bezier(0.16,1,0.3,1); }
     .zone-time { font-family: "DM Mono", monospace; font-size: 0.65rem; color: var(--muted2); width: 3rem; text-align: right; flex-shrink: 0; }
-
-    /* Splits */
     .splits-table { width: 100%; border-collapse: collapse; }
     .splits-table th { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); text-align: right; padding: 0 0.5rem 0.5rem; font-weight: 400; }
     .splits-table th:first-child { text-align: left; }
     .splits-table td { font-size: 0.85rem; font-variant-numeric: tabular-nums; text-align: right; padding: 0.35rem 0.5rem; border-top: 1px solid var(--border); color: var(--muted2); }
     .splits-table td:first-child { text-align: left; color: var(--text); font-family: "DM Mono", monospace; font-size: 0.75rem; }
-    .splits-table tr:hover td { background: var(--surface2); }
-
-    /* Best Efforts */
     .efforts-list { list-style: none; }
     .effort-row { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; border-top: 1px solid var(--border); }
     .effort-name { font-size: 0.85rem; color: var(--muted2); }
     .effort-time { font-family: "DM Mono", monospace; font-size: 0.8rem; color: var(--text); }
 
+    /* ── Chat panel ── */
+    .chat-panel {
+      width: var(--chat-w); flex-shrink: 0;
+      position: fixed; right: 0; top: 0; bottom: 0;
+      background: var(--surface); border-left: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      z-index: 40;
+    }
+    @media (max-width: 900px) { .chat-panel { display: none; } }
+
+    .chat-header { padding: 1.25rem 1.25rem 1rem; border-bottom: 1px solid var(--border); flex-shrink: 0; padding-top: 4.5rem; }
+    .chat-header-label { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 0.3rem; }
+    .chat-header-title { font-size: 0.95rem; font-weight: 600; letter-spacing: -0.02em; }
+
+    .chat-messages { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; scroll-behavior: smooth; }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+    .msg { max-width: 90%; }
+    .msg-user { align-self: flex-end; }
+    .msg-ai { align-self: flex-start; }
+    .msg-bubble {
+      padding: 0.75rem 1rem; border-radius: 1rem; font-size: 0.875rem; line-height: 1.6;
+    }
+    .msg-user .msg-bubble { background: var(--accent-dim); color: var(--text); border-bottom-right-radius: 0.25rem; }
+    .msg-ai .msg-bubble { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 0.25rem; }
+    .msg-thinking .msg-bubble { color: var(--muted); font-style: italic; }
+
+    .chat-input-wrap { padding: 1rem; border-top: 1px solid var(--border); flex-shrink: 0; }
+    .chat-form { display: flex; gap: 0.5rem; }
+    .chat-input {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 0.75rem;
+      padding: 0.6rem 0.875rem; color: var(--text); font-family: "DM Sans", sans-serif; font-size: 0.875rem;
+      outline: none; resize: none; min-height: 40px; max-height: 120px; overflow-y: auto;
+      transition: border-color 0.2s;
+    }
+    .chat-input:focus { border-color: var(--border2); }
+    .chat-input::placeholder { color: var(--muted); }
+    .chat-send {
+      flex-shrink: 0; background: var(--accent-dim); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+      color: var(--accent); border-radius: 0.75rem; padding: 0.6rem 1rem;
+      font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: background 0.2s;
+      font-family: "DM Sans", sans-serif;
+    }
+    .chat-send:hover { background: color-mix(in srgb, oklch(0.72 0.19 45) 20%, transparent); }
+    .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
     /* ── Skeleton ── */
-    .skeleton {
-      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
-      background-size: 200% 100%; animation: shimmer 1.5s infinite;
-      border-radius: 1.25rem; height: 148px; border: 1px solid var(--border);
-    }
+    .skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 1.25rem; height: 130px; border: 1px solid var(--border); margin-bottom: 0.75rem; }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
     .error { padding: 1rem 1.25rem; background: color-mix(in srgb, #ef4444 8%, transparent); border: 1px solid color-mix(in srgb, #ef4444 25%, transparent); border-radius: 0.75rem; color: #f87171; font-size: 0.875rem; }
-
-    /* ── Insight ── */
-    .insight-btn {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      font-family: "DM Sans", sans-serif; font-size: 0.8rem; font-weight: 500;
-      padding: 0.5rem 1rem; border-radius: 999px; cursor: pointer;
-      border: 1px solid var(--border2);
-      background: var(--accent-dim); color: var(--accent);
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .insight-btn:hover { background: color-mix(in srgb, oklch(0.72 0.19 45) 20%, transparent); }
-    .insight-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .insight-box {
-      margin-top: 1rem; padding: 1rem 1.25rem;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 0.75rem; font-size: 0.875rem; line-height: 1.65;
-      color: var(--muted2); display: none;
-    }
-    .insight-box.visible { display: block; }
   </style>
 </head>
 <body>
@@ -178,22 +157,36 @@
     </div>
   </header>
 
-  <main>
-    <p class="page-eyebrow">Live · Strava</p>
-    <h1 class="page-title">Senaste passen</h1>
-    <p class="page-sub">Klicka på ett pass för detaljer, karta och pulszoner.</p>
-    <div id="grid"></div>
-  </main>
+  <div class="layout">
+    <main class="feed">
+      <p class="page-eyebrow">Live · Strava</p>
+      <h1 class="page-title">Senaste passen</h1>
+      <div id="grid"></div>
+    </main>
+
+    <aside class="chat-panel">
+      <div class="chat-header">
+        <div class="chat-header-label">AI Coach</div>
+        <div class="chat-header-title">Pacecraft</div>
+      </div>
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="chat-input-wrap">
+        <form class="chat-form" id="chat-form">
+          <textarea class="chat-input" id="chat-input" placeholder="Skriv ett meddelande..." rows="1"></textarea>
+          <button class="chat-send" id="chat-send" type="submit">Skicka</button>
+        </form>
+      </div>
+    </aside>
+  </div>
 
   <script>
     window.addEventListener("scroll", () => {
       document.getElementById("header").classList.toggle("scrolled", window.scrollY > 20);
     }, { passive: true });
 
-    // ── Polyline decoder (Google encoding algorithm) ──
+    // ── Polyline decoder ──
     function decodePolyline(encoded) {
-      const coords = [];
-      let idx = 0, lat = 0, lng = 0;
+      const coords = []; let idx = 0, lat = 0, lng = 0;
       while (idx < encoded.length) {
         let b, shift = 0, result = 0;
         do { b = encoded.charCodeAt(idx++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
@@ -210,18 +203,16 @@
       const coords = decodePolyline(encoded);
       if (coords.length < 2) return null;
       const lats = coords.map(c => c[0]), lngs = coords.map(c => c[1]);
-      const minLat = Math.min(...lats), maxLat = Math.max(...lats);
-      const minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
-      const W = 400, H = 260, pad = 20;
+      const minLat = Math.min(...lats), maxLat = Math.max(...lats), minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
+      const W = 400, H = 240, pad = 20;
       const scaleX = (maxLng - minLng) || 1, scaleY = (maxLat - minLat) || 1;
       const scale = Math.min((W - pad*2) / scaleX, (H - pad*2) / scaleY);
       const offX = (W - scale * scaleX) / 2, offY = (H - scale * scaleY) / 2;
-      const points = coords.map(([la, ln]) =>
-        `${offX + (ln - minLng) * scale},${H - offY - (la - minLat) * scale}`
-      ).join(" ");
+      const points = coords.map(([la, ln]) => `${offX + (ln - minLng) * scale},${H - offY - (la - minLat) * scale}`).join(" ");
+      const start = points.split(" ")[0].split(",");
       return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
         <polyline points="${points}" fill="none" stroke="oklch(0.72 0.19 45)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
-        <circle cx="${points.split(" ")[0].split(",")[0]}" cy="${points.split(" ")[0].split(",")[1]}" r="4" fill="oklch(0.72 0.19 45)"/>
+        <circle cx="${start[0]}" cy="${start[1]}" r="4" fill="oklch(0.72 0.19 45)"/>
       </svg>`;
     }
 
@@ -245,8 +236,6 @@
 
     const ZONE_COLORS = ["var(--z1)","var(--z2)","var(--z3)","var(--z4)","var(--z5)"];
     const ZONE_NAMES  = ["Z1","Z2","Z3","Z4","Z5"];
-
-    // Cache zones so we only fetch once
     let zonesCache = null;
     async function getZones() {
       if (zonesCache) return zonesCache;
@@ -262,111 +251,144 @@
       for (let i = 1; i < hrStream.length; i++) {
         const hr = hrStream[i], dt = timeStream[i] - timeStream[i-1];
         let zone = 0;
-        for (let z = thresholds.length - 1; z >= 0; z--) {
-          if (hr >= thresholds[z]) { zone = z; break; }
-        }
+        for (let z = thresholds.length - 1; z >= 0; z--) { if (hr >= thresholds[z]) { zone = z; break; } }
         totals[zone] += dt;
       }
       return totals;
     }
 
+    // ── Weekly load ──
+    function calcWeeklyLoad(activities) {
+      const weeks = {};
+      activities.forEach(a => {
+        if (!a.start_date_local) return;
+        const d = new Date(a.start_date_local);
+        const day = d.getDay();
+        const monday = new Date(d); monday.setDate(d.getDate() - ((day + 6) % 7));
+        const key = monday.toISOString().slice(0, 10);
+        if (!weeks[key]) weeks[key] = { week: key, km: 0, time: 0, count: 0 };
+        weeks[key].km += a.distance / 1000;
+        weeks[key].time += a.moving_time;
+        weeks[key].count++;
+      });
+      return Object.values(weeks).sort((a, b) => b.week.localeCompare(a.week)).slice(0, 4);
+    }
+
+    // ── Chat ──
+    let chatMessages = [];
+    let chatContext = null;
+
+    function appendMessage(role, text) {
+      const container = document.getElementById("chat-messages");
+      const div = document.createElement("div");
+      div.className = `msg msg-${role}`;
+      div.innerHTML = `<div class="msg-bubble">${text.replace(/\n/g, "<br>")}</div>`;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+      return div;
+    }
+
+    function appendThinking() {
+      const container = document.getElementById("chat-messages");
+      const div = document.createElement("div");
+      div.className = "msg msg-ai msg-thinking";
+      div.innerHTML = `<div class="msg-bubble">Tänker...</div>`;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+      return div;
+    }
+
+    async function sendChat(userText) {
+      const send = document.getElementById("chat-send");
+      const input = document.getElementById("chat-input");
+      send.disabled = true;
+
+      if (userText) {
+        chatMessages.push({ role: "user", parts: [{ text: userText }] });
+        appendMessage("user", userText);
+      }
+
+      const thinking = appendThinking();
+
+      try {
+        const r = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: chatMessages, context: chatContext }),
+        });
+        const data = await r.json();
+        const reply = data.reply ?? data.error ?? "Något gick fel.";
+        thinking.remove();
+        appendMessage("ai", reply);
+        chatMessages.push({ role: "model", parts: [{ text: reply }] });
+      } catch {
+        thinking.remove();
+        appendMessage("ai", "Något gick fel.");
+      }
+
+      send.disabled = false;
+      input.value = "";
+      input.style.height = "auto";
+    }
+
+    async function initChat(activities, athlete) {
+      const weeklyLoad = calcWeeklyLoad(activities);
+      const recent10 = activities.slice(0, 10);
+      const latestId = activities[0]?.id;
+
+      let latestActivity = null;
+      if (latestId) {
+        const r = await fetch(`/api/activity?id=${latestId}&user=a`);
+        if (r.ok) latestActivity = await r.json();
+      }
+
+      chatContext = { athlete, latestActivity, recentActivities: recent10, weeklyLoad };
+      await sendChat(null); // trigger opening verdict
+    }
+
+    // ── Chat form ──
+    document.getElementById("chat-form").addEventListener("submit", e => {
+      e.preventDefault();
+      const val = document.getElementById("chat-input").value.trim();
+      if (val) sendChat(val);
+    });
+    document.getElementById("chat-input").addEventListener("keydown", e => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); document.getElementById("chat-form").dispatchEvent(new Event("submit")); }
+    });
+
+    // ── Activity detail ──
     async function loadDetail(id, detailEl) {
       detailEl.innerHTML = `<div class="detail-loading">Laddar...</div>`;
-
       const [actRes, streamsRes, zones] = await Promise.all([
         fetch(`/api/activity?id=${id}&user=a`),
         fetch(`/api/streams?id=${id}&user=a`),
         getZones(),
       ]);
-
       const act     = actRes.ok     ? await actRes.json()     : null;
       const streams = streamsRes.ok ? await streamsRes.json() : null;
-
       const polyline = act?.map?.polyline || act?.map?.summary_polyline;
-      const mapHTML = polyline
-        ? (polylineToSVG(polyline) ?? `<span class="no-map">Ingen kartdata</span>`)
-        : `<span class="no-map">Ingen kartdata</span>`;
-
-      // HR zones
-      const hrData   = streams?.heartrate?.data;
-      const timeData = streams?.time?.data;
+      const mapHTML = polyline ? (polylineToSVG(polyline) ?? `<span class="no-map">Ingen kartdata</span>`) : `<span class="no-map">Ingen kartdata</span>`;
+      const hrData = streams?.heartrate?.data, timeData = streams?.time?.data;
       const zoneTimes = calcZoneTimes(hrData, timeData, zones);
       const totalZoneTime = zoneTimes ? zoneTimes.reduce((a,b) => a+b, 0) : 0;
-
       const zonesHTML = zoneTimes
-        ? `<div>
-            <div class="section-label">Pulszoner</div>
-            ${zoneTimes.map((t, i) => `
-              <div class="zone-row">
-                <span class="zone-name">${ZONE_NAMES[i]}</span>
-                <div class="zone-bar-bg">
-                  <div class="zone-bar" style="width:${totalZoneTime ? (t/totalZoneTime*100).toFixed(1) : 0}%; background:${ZONE_COLORS[i]}"></div>
-                </div>
-                <span class="zone-time">${formatDuration(t)}</span>
-              </div>`).join("")}
-           </div>`
+        ? `<div><div class="section-label">Pulszoner</div>${zoneTimes.map((t,i) => `<div class="zone-row"><span class="zone-name">${ZONE_NAMES[i]}</span><div class="zone-bar-bg"><div class="zone-bar" style="width:${totalZoneTime?(t/totalZoneTime*100).toFixed(1):0}%;background:${ZONE_COLORS[i]}"></div></div><span class="zone-time">${formatDuration(t)}</span></div>`).join("")}</div>`
         : `<div><div class="section-label">Pulszoner</div><span style="color:var(--muted);font-size:0.8rem">Ingen pulsdata</span></div>`;
-
-      // km splits
       const splits = act?.splits_metric ?? [];
       const isRun = act?.sport_type?.includes("Run");
       const splitsHTML = splits.length
-        ? `<div>
-            <div class="section-label">Km-splittrar</div>
-            <table class="splits-table">
-              <thead><tr>
-                <th>km</th>
-                <th>${isRun ? "Tempo" : "Fart"}</th>
-                <th>Puls</th>
-                <th>Höjd</th>
-              </tr></thead>
-              <tbody>${splits.map((s, i) => `
-                <tr>
-                  <td>${i+1}</td>
-                  <td>${isRun ? formatPace(s.average_speed) : (s.average_speed*3.6).toFixed(1)}</td>
-                  <td>${s.average_heartrate ? Math.round(s.average_heartrate) : "—"}</td>
-                  <td>${s.elevation_difference >= 0 ? "+" : ""}${Math.round(s.elevation_difference)}m</td>
-                </tr>`).join("")}
-              </tbody>
-            </table>
-           </div>`
+        ? `<div><div class="section-label">Km-splittrar</div><table class="splits-table"><thead><tr><th>km</th><th>${isRun?"Tempo":"Fart"}</th><th>Puls</th><th>Höjd</th></tr></thead><tbody>${splits.map((s,i) => `<tr><td>${i+1}</td><td>${isRun?formatPace(s.average_speed):(s.average_speed*3.6).toFixed(1)}</td><td>${s.average_heartrate?Math.round(s.average_heartrate):"—"}</td><td>${s.elevation_difference>=0?"+":""}${Math.round(s.elevation_difference)}m</td></tr>`).join("")}</tbody></table></div>`
         : "";
-
-      // Best efforts
       const efforts = act?.best_efforts?.slice(0, 6) ?? [];
       const effortsHTML = efforts.length
-        ? `<div>
-            <div class="section-label">Bästa insatser</div>
-            <ul class="efforts-list">
-              ${efforts.map(e => `
-                <li class="effort-row">
-                  <span class="effort-name">${e.name}</span>
-                  <span class="effort-time">${formatDuration(e.elapsed_time)}</span>
-                </li>`).join("")}
-            </ul>
-           </div>`
+        ? `<div><div class="section-label">Bästa insatser</div><ul class="efforts-list">${efforts.map(e=>`<li class="effort-row"><span class="effort-name">${e.name}</span><span class="effort-time">${formatDuration(e.elapsed_time)}</span></li>`).join("")}</ul></div>`
         : "";
-
       detailEl.innerHTML = `
         <div class="detail-grid">
           <div class="detail-map">${mapHTML}</div>
-          <div class="detail-right">
-            ${zonesHTML}
-            ${effortsHTML}
-          </div>
+          <div class="detail-right">${zonesHTML}${effortsHTML}</div>
         </div>
-        ${splitsHTML ? `<div style="padding:1.5rem;border-top:1px solid var(--border)">${splitsHTML}</div>` : ""}
-        <div style="padding:1.25rem 1.5rem;border-top:1px solid var(--border)">
-          <button class="insight-btn" onclick="generateInsight(this, ${id})" data-act='${JSON.stringify({
-            name: act?.name, sport_type: act?.sport_type, start_date_local: act?.start_date_local,
-            distance: act?.distance, moving_time: act?.moving_time, average_speed: act?.average_speed,
-            average_heartrate: act?.average_heartrate, total_elevation_gain: act?.total_elevation_gain
-          })}' data-splits='${JSON.stringify(splits)}' data-zones='${JSON.stringify(zoneTimes)}'>
-            ✦ Analysera med AI
-          </button>
-          <div class="insight-box" id="insight-${id}"></div>
-        </div>
-      `;
+        ${splitsHTML ? `<div style="padding:1.5rem;border-top:1px solid var(--border)">${splitsHTML}</div>` : ""}`;
     }
 
     function renderCard(a) {
@@ -378,7 +400,7 @@
         <div class="card" data-id="${a.id}" onclick="toggleDetail(this)">
           <div class="card-top">
             <div style="min-width:0">
-              <div class="card-eyebrow">${a.sport_type ?? "Aktivitet"} · ${dateStr}</div>
+              <div class="card-eyebrow">${a.sport_type??"Aktivitet"} · ${dateStr}</div>
               <div class="card-name">${a.name}</div>
             </div>
             <span class="badge ${badgeClass(a.sport_type)}">${km} km</span>
@@ -386,8 +408,8 @@
           <div class="divider"></div>
           <div class="stats">
             <div><div class="stat-label">Tid</div><div class="stat-value">${formatDuration(a.moving_time)}</div></div>
-            <div><div class="stat-label">${isRun ? "Tempo" : "Fart"}</div><div class="stat-value">${isRun ? formatPace(a.average_speed) : (a.average_speed*3.6).toFixed(1)}<span class="stat-unit">${isRun ? "/km" : "km/h"}</span></div></div>
-            <div><div class="stat-label">Puls</div><div class="stat-value">${a.average_heartrate ? Math.round(a.average_heartrate) : "—"}<span class="stat-unit">${a.average_heartrate ? "bpm" : ""}</span></div></div>
+            <div><div class="stat-label">${isRun?"Tempo":"Fart"}</div><div class="stat-value">${isRun?formatPace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="stat-unit">${isRun?"/km":"km/h"}</span></div></div>
+            <div><div class="stat-label">Puls</div><div class="stat-value">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="stat-unit">${a.average_heartrate?"bpm":""}</span></div></div>
             <div><div class="stat-label">Höjd</div><div class="stat-value">${Math.round(a.total_elevation_gain)}<span class="stat-unit">m</span></div></div>
           </div>
         </div>
@@ -398,58 +420,30 @@
       const id = card.dataset.id;
       const detail = document.getElementById(`detail-${id}`);
       const isOpen = detail.classList.contains("open");
-      // close all
       document.querySelectorAll(".detail.open").forEach(d => d.classList.remove("open"));
       document.querySelectorAll(".card.active").forEach(c => c.classList.remove("active"));
       if (!isOpen) {
         detail.classList.add("open");
         card.classList.add("active");
-        if (!detail.dataset.loaded) {
-          detail.dataset.loaded = "1";
-          loadDetail(id, detail);
-        }
+        if (!detail.dataset.loaded) { detail.dataset.loaded = "1"; loadDetail(id, detail); }
       }
     }
 
-    async function generateInsight(btn, id) {
-      const box = document.getElementById(`insight-${id}`);
-      btn.disabled = true;
-      btn.textContent = "Analyserar...";
-      box.classList.add("visible");
-      box.textContent = "";
-
-      try {
-        const r = await fetch("/api/insight", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            activity: JSON.parse(btn.dataset.act),
-            splits: JSON.parse(btn.dataset.splits),
-            zoneTimes: JSON.parse(btn.dataset.zones),
-          }),
-        });
-        const data = await r.json();
-        box.textContent = data.insight ?? data.error ?? "Ingen respons";
-      } catch (e) {
-        box.textContent = "Något gick fel.";
-      }
-
-      btn.textContent = "✦ Analysera igen";
-      btn.disabled = false;
-    }
-
+    // ── Boot ──
     const grid = document.getElementById("grid");
     grid.innerHTML = Array.from({length: 6}, () => `<div class="skeleton"></div>`).join("");
 
-    fetch("/api/activities?user=a&per_page=30")
-      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-      .then(activities => {
-        if (!activities.length) { grid.innerHTML = `<p style="color:var(--muted)">Inga aktiviteter.</p>`; return; }
-        grid.innerHTML = activities.map(renderCard).join("");
-      })
-      .catch(err => {
-        grid.innerHTML = `<div class="error">Kunde inte hämta aktiviteter: ${err.message}</div>`;
-      });
+    Promise.all([
+      fetch("/api/activities?user=a&per_page=30").then(r => r.json()),
+      fetch("/api/stats?user=a").then(r => r.ok ? r.json() : null),
+    ]).then(([activities, athlete]) => {
+      if (!Array.isArray(activities)) { grid.innerHTML = `<div class="error">Kunde inte hämta aktiviteter.</div>`; return; }
+      if (!activities.length) { grid.innerHTML = `<p style="color:var(--muted)">Inga aktiviteter.</p>`; return; }
+      grid.innerHTML = activities.map(renderCard).join("");
+      initChat(activities, athlete);
+    }).catch(() => {
+      grid.innerHTML = `<div class="error">Något gick fel.</div>`;
+    });
   </script>
 </body>
 </html>
