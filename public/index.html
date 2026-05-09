@@ -6,545 +6,710 @@
   <title>Pacecraft</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,900;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script>
     const pwd = sessionStorage.getItem("auth");
     if (pwd !== "pacecraft") {
-      const input = prompt("Password:");
-      if (input !== "pacecraft") { document.write("<h2 style='font-family:sans-serif;padding:2rem;color:#fff;background:#000;min-height:100vh'>Access denied.</h2>"); throw new Error(); }
-      sessionStorage.setItem("auth", input);
+      const v = prompt("Password:");
+      if (v !== "pacecraft") { document.write("<body style='background:#000;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0'>Access denied.</body>"); throw 0; }
+      sessionStorage.setItem("auth", v);
     }
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg:        #060606;
-      --surface:   #0e0e0e;
-      --surface2:  #141414;
-      --surface3:  #1a1a1a;
-      --border:    #1e1e1e;
-      --border2:   #282828;
-      --text:      #f0ede8;
-      --text2:     #a09a92;
-      --muted:     #4a4540;
-      --accent:    oklch(0.72 0.19 45);
-      --accent2:   oklch(0.60 0.19 45);
-      --accent-bg: color-mix(in srgb, oklch(0.72 0.19 45) 10%, transparent);
-      --chat-w:    460px;
-      --z1:#3b82f6;--z2:#22c55e;--z3:#eab308;--z4:#f97316;--z5:#ef4444;
+      --bg:       #07080c;
+      --s1:       #0c0d12;
+      --s2:       #11121a;
+      --s3:       #16171f;
+      --b1:       #1c1d26;
+      --b2:       #252630;
+      --text:     #eeeaf4;
+      --text2:    #9b96a8;
+      --muted:    #48444f;
+      --accent:   #e8834a;
+      --accent2:  #f5a067;
+      --acc-glow: color-mix(in srgb,#e8834a 18%,transparent);
+      --acc-dim:  color-mix(in srgb,#e8834a 10%,transparent);
+      --run:      #e8834a; --ride: #60a5fa; --swim: #34d399; --other: #a78bfa;
+      --z1:#60a5fa;--z2:#34d399;--z3:#fbbf24;--z4:#f97316;--z5:#ef4444;
+      --chat-w:   460px;
+      --hdr:      68px;
     }
 
     html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--text); font-family: "DM Sans", system-ui, sans-serif; min-height: 100vh; overflow-x: hidden; }
-
-    /* ── Scrollbar ── */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-    /* ── Header ── */
-    header {
-      position: fixed; inset: 0 0 auto; z-index: 50;
-      padding: 1rem 1.5rem; transition: padding 0.4s ease;
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: "DM Sans", system-ui, sans-serif;
+      min-height: 100vh; overflow-x: hidden;
     }
-    header.scrolled { padding: 0.6rem 1.5rem; }
-    .header-inner {
-      max-width: calc(100% - 3rem); margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-      border-radius: 999px; padding: 0.55rem 1.5rem;
-      border: 1px solid transparent;
-      transition: background 0.4s, border-color 0.4s, backdrop-filter 0.4s;
-    }
-    header.scrolled .header-inner {
-      background: color-mix(in srgb, var(--surface) 90%, transparent);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-color: var(--border);
-    }
-    .logo { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; color: var(--text); }
-    .logo-mark { position: relative; width: 24px; height: 24px; }
-    .logo-ring { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border2); }
-    .logo-dot { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
-    .logo-name { font-size: 0.95rem; font-weight: 600; letter-spacing: -0.025em; }
-    .header-pill {
-      font-family: "DM Mono", monospace; font-size: 0.6rem;
-      text-transform: uppercase; letter-spacing: 0.14em;
-      color: var(--text2); padding: 0.3rem 0.75rem;
-      border: 1px solid var(--border); border-radius: 999px;
+    body::before {
+      content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 50% at 15% 0%, color-mix(in srgb,#e8834a 6%,transparent), transparent),
+        radial-gradient(ellipse 50% 40% at 85% 100%, color-mix(in srgb,#60a5fa 4%,transparent), transparent);
     }
 
-    /* ── Layout ── */
-    .layout { display: flex; min-height: 100vh; }
-    .feed { flex: 1; min-width: 0; padding: 5.5rem 2rem 4rem; }
-    @media (min-width: 960px) { .feed { padding-right: 2rem; } }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 2px; }
 
-    /* ── Hero card ── */
+    /* ── HEADER ── */
+    .hdr {
+      position: fixed; inset: 0 0 auto; z-index: 100; height: var(--hdr);
+      display: flex; align-items: center;
+      background: color-mix(in srgb, var(--s1) 85%, transparent);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--b1);
+    }
+    .hdr-inner {
+      width: 100%; display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center; padding: 0 1.5rem; gap: 1rem;
+    }
+
+    /* Logo */
+    .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); }
+    .logo-icon { position: relative; width: 32px; height: 32px; flex-shrink: 0; }
+    .logo-orbit {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1.5px solid var(--b2);
+      animation: spin 8s linear infinite;
+    }
+    .logo-sat {
+      position: absolute; top: -3px; left: 50%; transform: translateX(-50%);
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 10px var(--accent), 0 0 20px color-mix(in srgb,var(--accent) 40%,transparent);
+    }
+    .logo-core {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 5px; height: 5px; border-radius: 50%; background: var(--text2);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .logo-name { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.03em; }
+    .logo-name span { color: var(--accent); }
+
+    /* Center stats */
+    .hdr-center { display: flex; align-items: center; gap: 2rem; }
+    .hdr-stat { text-align: center; }
+    .hdr-stat-val { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.02em; }
+    .hdr-stat-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-top: 1px; }
+    .hdr-divider { width: 1px; height: 28px; background: var(--b1); }
+
+    /* Right */
+    .hdr-right { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; }
+    .hdr-athlete { display: flex; align-items: center; gap: 0.6rem; }
+    .hdr-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--acc-dim); border: 1.5px solid color-mix(in srgb,var(--accent) 30%,transparent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; color: var(--accent);
+    }
+    .hdr-athlete-name { font-size: 0.85rem; font-weight: 500; color: var(--text2); }
+    .live-pill {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em;
+      padding: 0.25rem 0.65rem; border-radius: 999px;
+      border: 1px solid var(--b2); color: var(--muted);
+    }
+    .live-dot {
+      width: 5px; height: 5px; border-radius: 50%; background: #34d399;
+      box-shadow: 0 0 6px #34d399;
+      animation: pulse-green 2s ease-in-out infinite;
+    }
+    @keyframes pulse-green { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+    /* ── LAYOUT ── */
+    .layout { display: flex; padding-top: var(--hdr); min-height: 100vh; position: relative; z-index: 1; }
+    .feed { flex: 1; min-width: 0; padding: 2rem 2rem 6rem; max-width: 900px; }
+
+    /* ── HERO ── */
     .hero {
-      position: relative; overflow: hidden;
-      border-radius: 1.5rem; border: 1px solid var(--border);
-      background: var(--surface); margin-bottom: 1.5rem;
+      position: relative; border-radius: 1.75rem; overflow: hidden;
+      border: 1px solid var(--b1); margin-bottom: 0.75rem;
+      background: var(--s1);
+      box-shadow: 0 0 0 1px var(--b1), 0 40px 80px -20px rgba(0,0,0,0.6);
     }
-    .hero-map {
-      position: relative; height: 260px; background: #080808;
-      border-bottom: 1px solid var(--border); overflow: hidden;
+
+    .hero-map-wrap {
+      position: relative; height: 320px; background: #050508; overflow: hidden;
     }
-    .hero-map svg { width: 100%; height: 100%; }
-    .hero-map-overlay {
+    .hero-map-wrap svg { width: 100%; height: 100%; }
+    .hero-map-grad {
       position: absolute; inset: 0;
-      background: linear-gradient(to bottom, transparent 40%, var(--surface) 100%);
+      background: linear-gradient(to bottom, rgba(5,5,8,0.1) 0%, rgba(5,5,8,0.0) 40%, rgba(12,13,18,0.95) 100%);
       pointer-events: none;
     }
-    .hero-map-placeholder {
-      height: 100%; display: flex; align-items: center; justify-content: center;
-      font-family: "DM Mono", monospace; font-size: 0.65rem;
-      text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted);
+    .hero-map-no { height: 100%; display: flex; align-items: center; justify-content: center; font-family: "DM Mono", monospace; font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+
+    /* Floating badge on map */
+    .hero-floating-badge {
+      position: absolute; top: 1.25rem; left: 1.5rem;
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.3rem 0.75rem 0.3rem 0.4rem;
+      background: color-mix(in srgb, var(--s1) 80%, transparent);
+      backdrop-filter: blur(12px); border: 1px solid var(--b2);
+      border-radius: 999px;
     }
-    .hero-body { padding: 1.5rem 2rem 2rem; }
-    .hero-meta {
-      display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;
+    .hero-type-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .hero-type-label { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em; }
+
+    .hero-date-badge {
+      position: absolute; top: 1.25rem; right: 1.5rem;
+      font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--text2); padding: 0.3rem 0.75rem;
+      background: color-mix(in srgb, var(--s1) 80%, transparent);
+      backdrop-filter: blur(12px); border: 1px solid var(--b2); border-radius: 999px;
     }
-    .hero-type-badge {
-      font-family: "DM Mono", monospace; font-size: 0.6rem; font-weight: 500;
-      text-transform: uppercase; letter-spacing: 0.12em;
-      padding: 0.25rem 0.7rem; border-radius: 999px;
-      background: var(--accent-bg); color: var(--accent);
-      border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+
+    .hero-body { padding: 0 2rem 2rem; }
+    .hero-name {
+      font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 900;
+      letter-spacing: -0.04em; line-height: 1.1;
+      margin-bottom: 1.75rem;
     }
-    .hero-date { font-family: "DM Mono", monospace; font-size: 0.65rem; color: var(--text2); }
-    .hero-name { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; letter-spacing: -0.035em; line-height: 1.15; margin-bottom: 1.75rem; }
 
-    .hero-stats-primary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border-radius: 1rem; overflow: hidden; margin-bottom: 1px; }
-    .hero-stats-secondary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border-radius: 1rem; overflow: hidden; }
-    .hero-stat { background: var(--surface2); padding: 1rem 1.25rem; }
-    .hero-stat-label { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.4rem; }
-    .hero-stat-value { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; line-height: 1; }
-    .hero-stat-unit { font-size: 0.65rem; font-family: "DM Mono", monospace; color: var(--text2); margin-left: 0.2rem; }
-    .hero-stat.secondary .hero-stat-value { font-size: 1.1rem; font-weight: 600; }
+    .hero-primary {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-radius: 1.1rem; overflow: hidden;
+      border: 1px solid var(--b1); margin-bottom: 2px;
+    }
+    .hero-secondary {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-radius: 1.1rem; overflow: hidden;
+      border: 1px solid var(--b1);
+    }
+    .hstat { background: var(--s2); padding: 1.1rem 1.25rem; border-right: 1px solid var(--b1); }
+    .hstat:last-child { border-right: none; }
+    .hstat-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.45rem; }
+    .hstat-val { font-size: 1.75rem; font-weight: 900; letter-spacing: -0.045em; line-height: 1; font-variant-numeric: tabular-nums; }
+    .hstat-unit { font-size: 0.6rem; font-family: "DM Mono", monospace; color: var(--text2); margin-left: 0.15rem; vertical-align: middle; }
+    .hstat.sm .hstat-val { font-size: 1.15rem; font-weight: 700; }
 
-    /* ── Section header ── */
-    .section-header { display: flex; align-items: center; gap: 1rem; margin: 2rem 0 1rem; }
-    .section-title { font-size: 0.7rem; font-family: "DM Mono", monospace; text-transform: uppercase; letter-spacing: 0.18em; color: var(--muted); }
-    .section-line { flex: 1; height: 1px; background: var(--border); }
+    /* ── WEEK STRIP ── */
+    .week-strip {
+      background: var(--s1); border: 1px solid var(--b1); border-radius: 1.25rem;
+      padding: 1.25rem 1.5rem; margin-bottom: 2rem;
+      display: flex; align-items: flex-end; gap: 1rem;
+    }
+    .week-label { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.5rem; writing-mode: vertical-lr; transform: rotate(180deg); flex-shrink: 0; }
+    .week-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 0.5rem; flex: 1; align-items: flex-end; }
+    .week-day { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+    .week-bar-wrap { height: 60px; display: flex; align-items: flex-end; width: 100%; }
+    .week-bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 3px; transition: height 0.6s cubic-bezier(0.16,1,0.3,1); }
+    .week-day-name { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+    .week-km { font-family: "DM Mono", monospace; font-size: 0.6rem; color: var(--text2); }
+    .week-stats { display: flex; flex-direction: column; gap: 0.5rem; flex-shrink: 0; padding-left: 1rem; border-left: 1px solid var(--b1); }
+    .week-total-val { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.04em; color: var(--accent); }
+    .week-total-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
 
-    /* ── Activity grid ── */
-    .activity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0.75rem; }
+    /* ── SECTION HEADER ── */
+    .sec-hdr { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .sec-title { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); white-space: nowrap; }
+    .sec-line { flex: 1; height: 1px; background: var(--b1); }
+    .sec-count { font-family: "DM Mono", monospace; font-size: 0.6rem; color: var(--muted); }
 
-    /* ── Activity card ── */
+    /* ── CARDS ── */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0.625rem; }
+
     .card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 1.125rem; padding: 1.125rem 1.25rem 1.25rem;
-      cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      position: relative; background: var(--s1); border: 1px solid var(--b1);
+      border-radius: 1.25rem; padding: 1.125rem 1.25rem 1.25rem;
+      cursor: pointer; overflow: hidden;
+      transition: border-color 0.25s, background 0.25s, transform 0.2s, box-shadow 0.25s;
     }
-    .card:hover { border-color: var(--border2); background: var(--surface2); transform: translateY(-1px); }
-    .card.active { border-color: color-mix(in srgb, var(--accent) 35%, transparent); background: var(--surface2); }
-    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.875rem; }
-    .card-meta { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.3rem; }
-    .card-name { font-size: 0.95rem; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
-    .card-badge { flex-shrink: 0; font-family: "DM Mono", monospace; font-size: 0.6rem; font-weight: 500; padding: 0.25rem 0.65rem; border-radius: 999px; }
-    .badge-Run  { background: var(--accent-bg); color: var(--accent); }
-    .badge-Ride { background: color-mix(in srgb,#3b82f6 10%,transparent); color:#3b82f6; }
-    .badge-Swim { background: color-mix(in srgb,#06b6d4 10%,transparent); color:#06b6d4; }
-    .badge-Other{ background: color-mix(in srgb,#8b5cf6 10%,transparent); color:#8b5cf6; }
-    .card-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.25rem; }
-    .card-stat-label { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 0.2rem; }
-    .card-stat-value { font-size: 1rem; font-weight: 600; letter-spacing: -0.025em; font-variant-numeric: tabular-nums; }
-    .card-stat-unit { font-size: 0.55rem; font-family: "DM Mono", monospace; color: var(--text2); }
+    .card::before {
+      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+      border-radius: 4px 0 0 4px; transition: opacity 0.2s;
+    }
+    .card-run::before   { background: var(--run); }
+    .card-ride::before  { background: var(--ride); }
+    .card-swim::before  { background: var(--swim); }
+    .card-other::before { background: var(--other); }
+    .card:hover { border-color: var(--b2); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px var(--b2); }
+    .card.active { border-color: color-mix(in srgb,var(--accent) 40%,transparent); box-shadow: 0 0 0 1px color-mix(in srgb,var(--accent) 20%,transparent), 0 8px 32px rgba(0,0,0,0.4); }
 
-    /* ── Detail panel ── */
-    .detail { display: none; margin: -0.25rem 0 0.75rem; background: var(--surface); border: 1px solid var(--border); border-top: none; border-radius: 0 0 1.125rem 1.125rem; overflow: hidden; }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.875rem; padding-left: 0.5rem; }
+    .card-meta { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 0.3rem; }
+    .card-name { font-size: 0.95rem; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+    .card-badge {
+      flex-shrink: 0; font-size: 1rem; font-weight: 900; letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+    }
+    .card-badge-unit { font-family: "DM Mono", monospace; font-size: 0.55rem; color: var(--text2); margin-left: 0.1rem; }
+    .card-stats { display: grid; grid-template-columns: repeat(4,1fr); padding-left: 0.5rem; }
+    .cstat-lbl { font-family: "DM Mono", monospace; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.2rem; }
+    .cstat-val { font-size: 0.95rem; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+    .cstat-unit { font-size: 0.5rem; font-family: "DM Mono", monospace; color: var(--text2); }
+
+    /* ── DETAIL ── */
+    .detail { display: none; background: var(--s1); border: 1px solid var(--b1); border-top: none; border-radius: 0 0 1.25rem 1.25rem; overflow: hidden; margin-bottom: 0.625rem; margin-top: -0.4rem; }
     .detail.open { display: block; }
-    .detail-loading { padding: 2rem; text-align: center; color: var(--muted); font-family: "DM Mono", monospace; font-size: 0.7rem; letter-spacing: 0.1em; }
-    .detail-map-sm { background: #080808; height: 160px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); }
-    .detail-map-sm svg { width: 100%; height: 100%; }
-    .detail-cols { display: grid; grid-template-columns: 1fr 1fr; }
-    .detail-col { padding: 1.25rem; }
-    .detail-col + .detail-col { border-left: 1px solid var(--border); }
-    .detail-section-label { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.75rem; }
-    .zone-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
-    .zone-name { font-family: "DM Mono", monospace; font-size: 0.6rem; color: var(--text2); width: 2rem; flex-shrink: 0; }
-    .zone-bar-bg { flex: 1; background: var(--border); border-radius: 999px; height: 5px; overflow: hidden; }
-    .zone-bar { height: 100%; border-radius: 999px; transition: width 0.7s cubic-bezier(0.16,1,0.3,1); }
-    .zone-time { font-family: "DM Mono", monospace; font-size: 0.6rem; color: var(--text2); width: 2.75rem; text-align: right; flex-shrink: 0; }
-    .effort-row { display: flex; justify-content: space-between; padding: 0.35rem 0; border-top: 1px solid var(--border); }
-    .effort-name { font-size: 0.8rem; color: var(--text2); }
-    .effort-time { font-family: "DM Mono", monospace; font-size: 0.75rem; }
-    .splits-wrap { padding: 1.25rem; border-top: 1px solid var(--border); overflow-x: auto; }
-    .splits-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    .splits-table th { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); text-align: right; padding: 0 0.75rem 0.6rem; font-weight: 400; }
-    .splits-table th:first-child { text-align: left; }
-    .splits-table td { text-align: right; padding: 0.35rem 0.75rem; border-top: 1px solid var(--border); color: var(--text2); font-variant-numeric: tabular-nums; }
-    .splits-table td:first-child { text-align: left; color: var(--text); font-family: "DM Mono", monospace; font-size: 0.72rem; }
-    .splits-table tr:hover td { background: var(--surface2); }
+    .detail-map { height: 180px; background: #050508; overflow: hidden; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--b1); }
+    .detail-map svg { width: 100%; height: 100%; }
+    .detail-body { display: grid; grid-template-columns: 1fr 1fr; }
+    .dcol { padding: 1.1rem 1.25rem; }
+    .dcol + .dcol { border-left: 1px solid var(--b1); }
+    .dlbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.65rem; }
+    .zrow { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
+    .zname { font-family: "DM Mono", monospace; font-size: 0.58rem; color: var(--text2); width: 1.8rem; flex-shrink: 0; }
+    .zbg { flex: 1; background: var(--b1); border-radius: 999px; height: 5px; overflow: hidden; }
+    .zbar { height: 100%; border-radius: 999px; transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
+    .zt { font-family: "DM Mono", monospace; font-size: 0.58rem; color: var(--text2); width: 2.5rem; text-align: right; flex-shrink: 0; }
+    .erow { display: flex; justify-content: space-between; align-items: center; padding: 0.3rem 0; border-top: 1px solid var(--b1); }
+    .ename { font-size: 0.78rem; color: var(--text2); }
+    .etime { font-family: "DM Mono", monospace; font-size: 0.75rem; }
+    .splits-wrap { border-top: 1px solid var(--b1); padding: 1.1rem 1.25rem; overflow-x: auto; }
+    .st { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .st th { font-family: "DM Mono", monospace; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); text-align: right; padding: 0 0.6rem 0.5rem; font-weight: 400; }
+    .st th:first-child { text-align: left; }
+    .st td { text-align: right; padding: 0.3rem 0.6rem; border-top: 1px solid var(--b1); color: var(--text2); font-variant-numeric: tabular-nums; }
+    .st td:first-child { text-align: left; color: var(--text); font-family: "DM Mono", monospace; font-size: 0.7rem; }
+    .st tr:hover td { background: var(--s2); }
 
-    /* ── Skeleton ── */
-    .skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 200% 100%; animation: shimmer 1.6s infinite; border-radius: 1.125rem; height: 120px; border: 1px solid var(--border); }
-    .hero-skeleton { height: 420px; border-radius: 1.5rem; }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    /* ── SKELETON ── */
+    .sk { background: linear-gradient(90deg, var(--s1) 25%, var(--s2) 50%, var(--s1) 75%); background-size: 200% 100%; animation: sh 1.6s infinite; border-radius: 1.25rem; border: 1px solid var(--b1); }
+    .sk-hero { height: 480px; border-radius: 1.75rem; margin-bottom: 0.75rem; }
+    .sk-card { height: 110px; }
+    .sk-week { height: 100px; border-radius: 1.25rem; margin-bottom: 2rem; }
+    @keyframes sh { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-    /* ── Chat panel ── */
-    .chat-panel {
+    /* ── CHAT PANEL ── */
+    .chat {
       width: var(--chat-w); flex-shrink: 0;
       position: fixed; right: 0; top: 0; bottom: 0;
-      background: var(--surface); border-left: 1px solid var(--border);
-      display: flex; flex-direction: column; z-index: 40;
+      background: var(--s1); border-left: 1px solid var(--b1);
+      display: flex; flex-direction: column; z-index: 90;
     }
-    @media (max-width: 960px) { .chat-panel { display: none; } }
+    @media(max-width:960px){.chat{display:none}}
 
-    .chat-header { padding: 4.75rem 1.25rem 0; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .chat-hdr { padding-top: var(--hdr); border-bottom: 1px solid var(--b1); flex-shrink: 0; }
     .chat-tabs { display: flex; }
-    .chat-tab { flex: 1; padding: 0.75rem 1rem; font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); border-bottom: 2px solid transparent; cursor: pointer; transition: color 0.2s, border-color 0.2s; text-align: center; user-select: none; }
-    .chat-tab.active { color: var(--text); border-color: var(--accent); }
+    .tab-btn {
+      flex: 1; padding: 0.8rem 1rem; font-family: "DM Mono", monospace;
+      font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--muted); border-bottom: 2px solid transparent;
+      cursor: pointer; transition: color 0.2s, border-color 0.2s; text-align: center; user-select: none;
+    }
+    .tab-btn.on { color: var(--text); border-color: var(--accent); }
 
-    .tab-panel { display: none; flex: 1; overflow: hidden; flex-direction: column; }
-    .tab-panel.active { display: flex; }
+    .tab { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+    .tab.on { display: flex; }
 
-    .chat-messages { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.875rem; scroll-behavior: smooth; }
+    .msgs {
+      flex: 1; overflow-y: auto; padding: 1.25rem;
+      display: flex; flex-direction: column; gap: 0.75rem;
+      scroll-behavior: smooth;
+    }
+    .msgs::-webkit-scrollbar { width: 3px; }
+    .msgs::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 2px; }
 
-    .msg { max-width: 88%; animation: msg-in 0.3s cubic-bezier(0.16,1,0.3,1) both; }
-    .msg-user { align-self: flex-end; }
-    .msg-ai   { align-self: flex-start; }
-    @keyframes msg-in { from{opacity:0;transform:translateY(8px) scale(0.97)} to{opacity:1;transform:none} }
+    .msg { max-width: 86%; animation: mi 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+    .msg-u { align-self: flex-end; }
+    .msg-a { align-self: flex-start; }
+    @keyframes mi { from{opacity:0;transform:translateY(8px) scale(0.96)} to{opacity:1;transform:none} }
 
-    .msg-bubble { padding: 0.7rem 0.95rem; border-radius: 1rem; font-size: 0.85rem; line-height: 1.65; }
-    .msg-user .msg-bubble { background: var(--accent-bg); color: var(--text); border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent); border-bottom-right-radius: 0.2rem; }
-    .msg-ai .msg-bubble { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 0.2rem; }
-    .msg-thinking .msg-bubble { color: var(--muted); font-style: italic; font-size: 0.8rem; }
-    .msg-thinking .msg-bubble::after { content: ""; display: inline-block; animation: dots 1.2s steps(4,end) infinite; }
+    .bubble { padding: 0.7rem 0.95rem; border-radius: 1rem; font-size: 0.84rem; line-height: 1.65; }
+    .msg-u .bubble { background: var(--acc-dim); border: 1px solid color-mix(in srgb,var(--accent) 18%,transparent); border-bottom-right-radius: 0.25rem; color: var(--text); }
+    .msg-a .bubble { background: var(--s2); border: 1px solid var(--b1); border-bottom-left-radius: 0.25rem; color: var(--text); }
+    .msg-think .bubble { color: var(--muted); font-style: italic; font-size: 0.8rem; }
+    .msg-think .bubble::after { content: ""; animation: dots 1.2s steps(4,end) infinite; }
     @keyframes dots { 0%,20%{content:""} 40%{content:"."} 60%{content:".."} 80%,100%{content:"..."} }
 
-    .chat-input-wrap { padding: 1rem; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--surface); }
+    .chat-input-wrap { padding: 1rem; border-top: 1px solid var(--b1); flex-shrink: 0; }
     .chat-form { display: flex; gap: 0.5rem; align-items: flex-end; }
-    .chat-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 0.875rem; padding: 0.65rem 1rem; color: var(--text); font-family: "DM Sans", sans-serif; font-size: 0.875rem; outline: none; resize: none; min-height: 42px; max-height: 120px; transition: border-color 0.2s; line-height: 1.5; }
-    .chat-input:focus { border-color: var(--border2); }
-    .chat-input::placeholder { color: var(--muted); }
-    .chat-send { width: 42px; height: 42px; flex-shrink: 0; background: var(--accent); border: none; color: #000; border-radius: 0.875rem; font-size: 1rem; cursor: pointer; transition: opacity 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; font-weight: 700; }
-    .chat-send:hover { opacity: 0.85; }
-    .chat-send:active { transform: scale(0.94); }
-    .chat-send:disabled { opacity: 0.3; cursor: not-allowed; }
+    .chat-in {
+      flex: 1; background: var(--s2); border: 1px solid var(--b1); border-radius: 0.875rem;
+      padding: 0.65rem 1rem; color: var(--text); font-family: "DM Sans", sans-serif; font-size: 0.875rem;
+      outline: none; resize: none; min-height: 42px; max-height: 120px;
+      transition: border-color 0.2s; line-height: 1.5;
+    }
+    .chat-in:focus { border-color: var(--b2); }
+    .chat-in::placeholder { color: var(--muted); }
+    .send-btn {
+      width: 42px; height: 42px; flex-shrink: 0;
+      background: var(--accent); border: none; border-radius: 0.875rem;
+      color: #000; font-size: 1.1rem; font-weight: 900; cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .send-btn:hover { opacity: 0.85; }
+    .send-btn:active { transform: scale(0.92); }
+    .send-btn:disabled { opacity: 0.25; cursor: not-allowed; }
 
-    /* Recent workouts tab */
-    .recent-list { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
-    .recent-item { padding: 0.875rem 1rem; border-radius: 0.875rem; border: 1px solid var(--border); background: var(--surface2); cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
-    .recent-item:hover { border-color: var(--border2); transform: translateX(-2px); }
-    .recent-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem; }
-    .recent-name { font-size: 0.85rem; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
-    .recent-date { font-family: "DM Mono", monospace; font-size: 0.58rem; color: var(--muted); flex-shrink: 0; }
-    .recent-stats { display: flex; gap: 0.875rem; }
-    .recent-stat { font-family: "DM Mono", monospace; font-size: 0.62rem; color: var(--text2); }
-    .recent-stat b { color: var(--text); font-weight: 500; }
+    /* Recent tab */
+    .recent { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .ritem {
+      padding: 0.875rem 1rem; border-radius: 0.875rem;
+      border: 1px solid var(--b1); background: var(--s2);
+      cursor: pointer; transition: border-color 0.2s, transform 0.15s;
+      display: flex; flex-direction: column; gap: 0.45rem;
+    }
+    .ritem:hover { border-color: var(--b2); transform: translateX(-2px); }
+    .ritem-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .ritem-name { font-size: 0.85rem; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
+    .ritem-date { font-family: "DM Mono", monospace; font-size: 0.55rem; color: var(--muted); }
+    .ritem-stats { display: flex; gap: 0.875rem; }
+    .rstat { font-family: "DM Mono", monospace; font-size: 0.6rem; color: var(--text2); }
+    .rstat b { color: var(--text); font-weight: 500; }
   </style>
 </head>
 <body>
-  <header id="header">
-    <div class="header-inner">
+
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="hdr-inner">
       <a class="logo" href="/">
-        <div class="logo-mark"><div class="logo-ring"></div><div class="logo-dot"></div></div>
-        <span class="logo-name">Pacecraft</span>
+        <div class="logo-icon">
+          <div class="logo-orbit"></div>
+          <div class="logo-sat"></div>
+          <div class="logo-core"></div>
+        </div>
+        <span class="logo-name">Pace<span>craft</span></span>
       </a>
-      <div class="header-pill">Training Dashboard</div>
+
+      <div class="hdr-center" id="hdr-stats">
+        <div class="hdr-stat"><div class="hdr-stat-val" id="hdr-week">—</div><div class="hdr-stat-lbl">This week</div></div>
+        <div class="hdr-divider"></div>
+        <div class="hdr-stat"><div class="hdr-stat-val" id="hdr-ytd">—</div><div class="hdr-stat-lbl">YTD</div></div>
+        <div class="hdr-divider"></div>
+        <div class="hdr-stat"><div class="hdr-stat-val" id="hdr-runs">—</div><div class="hdr-stat-lbl">YTD runs</div></div>
+      </div>
+
+      <div class="hdr-right">
+        <div class="live-pill"><div class="live-dot"></div>Live</div>
+        <div class="hdr-athlete">
+          <div class="hdr-avatar" id="hdr-avatar">W</div>
+          <span class="hdr-athlete-name" id="hdr-name">Loading...</span>
+        </div>
+      </div>
     </div>
   </header>
 
   <div class="layout">
     <main class="feed">
-      <div id="hero-area"><div class="skeleton hero-skeleton"></div></div>
+      <!-- Hero -->
+      <div id="hero"><div class="sk sk-hero"></div></div>
 
-      <div class="section-header">
-        <span class="section-title">Previous runs</span>
-        <div class="section-line"></div>
+      <!-- Week strip -->
+      <div id="week-wrap"><div class="sk sk-week"></div></div>
+
+      <!-- Previous -->
+      <div class="sec-hdr">
+        <span class="sec-title">Previous sessions</span>
+        <div class="sec-line"></div>
+        <span class="sec-count" id="run-count"></span>
       </div>
-
-      <div class="activity-grid" id="grid">
-        <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+      <div class="grid" id="grid">
+        <div class="sk sk-card"></div><div class="sk sk-card"></div><div class="sk sk-card"></div>
       </div>
     </main>
 
-    <aside class="chat-panel">
-      <div class="chat-header">
+    <!-- CHAT -->
+    <aside class="chat">
+      <div class="chat-hdr">
         <div class="chat-tabs">
-          <div class="chat-tab active" onclick="switchTab('coach')" id="tab-coach">AI Coach</div>
-          <div class="chat-tab" onclick="switchTab('recent')" id="tab-recent">Recent</div>
+          <div class="tab-btn on" onclick="switchTab('coach')" id="tb-coach">AI Coach</div>
+          <div class="tab-btn" onclick="switchTab('recent')" id="tb-recent">Sessions</div>
         </div>
       </div>
-      <div class="tab-panel active" id="panel-coach">
-        <div class="chat-messages" id="chat-messages"></div>
+      <div class="tab on" id="tp-coach">
+        <div class="msgs" id="msgs"></div>
         <div class="chat-input-wrap">
           <form class="chat-form" id="chat-form">
-            <textarea class="chat-input" id="chat-input" placeholder="Ask your coach..." rows="1"></textarea>
-            <button class="chat-send" id="chat-send" type="submit">↑</button>
+            <textarea class="chat-in" id="chat-in" placeholder="Ask your coach..." rows="1"></textarea>
+            <button class="send-btn" id="send-btn" type="submit">↑</button>
           </form>
         </div>
       </div>
-      <div class="tab-panel" id="panel-recent">
-        <div class="recent-list" id="recent-list"></div>
+      <div class="tab" id="tp-recent">
+        <div class="recent" id="recent-list"></div>
       </div>
     </aside>
   </div>
 
   <script>
-    // ── Header scroll ──
-    window.addEventListener("scroll", () => {
-      document.getElementById("header").classList.toggle("scrolled", window.scrollY > 20);
-    }, { passive: true });
+    // ── Utils ──
+    const dur = s => { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60; return h?`${h}:${String(m).padStart(2,"0")}:${String(sc).padStart(2,"0")}`:`${m}:${String(sc).padStart(2,"0")}`; };
+    const pace = mps => { if(!mps)return"—"; const spk=1000/mps,m=Math.floor(spk/60),s=Math.round(spk%60); return`${m}:${String(s).padStart(2,"0")}`; };
+    const km = d => (d/1000).toFixed(2);
+    const actType = t => { if(!t)return"other"; if(t.includes("Run"))return"run"; if(t.includes("Ride"))return"ride"; if(t==="Swim")return"swim"; return"other"; };
+    const typeColor = t => ({run:"var(--run)",ride:"var(--ride)",swim:"var(--swim)",other:"var(--other)"})[actType(t)]||"var(--other)";
 
     // ── Polyline ──
-    function decodePolyline(enc) {
-      const c=[]; let i=0,lat=0,lng=0;
-      while(i<enc.length){
-        let b,s=0,r=0;
-        do{b=enc.charCodeAt(i++)-63;r|=(b&0x1f)<<s;s+=5;}while(b>=0x20);
-        lat+=(r&1)?~(r>>1):(r>>1); s=0;r=0;
-        do{b=enc.charCodeAt(i++)-63;r|=(b&0x1f)<<s;s+=5;}while(b>=0x20);
-        lng+=(r&1)?~(r>>1):(r>>1);
-        c.push([lat/1e5,lng/1e5]);
-      }
-      return c;
-    }
+    function decode(enc){const c=[];let i=0,la=0,ln=0;while(i<enc.length){let b,s=0,r=0;do{b=enc.charCodeAt(i++)-63;r|=(b&0x1f)<<s;s+=5;}while(b>=0x20);la+=(r&1)?~(r>>1):(r>>1);s=0;r=0;do{b=enc.charCodeAt(i++)-63;r|=(b&0x1f)<<s;s+=5;}while(b>=0x20);ln+=(r&1)?~(r>>1):(r>>1);c.push([la/1e5,ln/1e5]);}return c;}
 
-    function renderMap(enc, W, H, pad=20) {
-      const coords = decodePolyline(enc);
-      if(coords.length<2) return null;
-      const lats=coords.map(c=>c[0]),lngs=coords.map(c=>c[1]);
-      const minLat=Math.min(...lats),maxLat=Math.max(...lats),minLng=Math.min(...lngs),maxLng=Math.max(...lngs);
-      const sx=(maxLng-minLng)||1,sy=(maxLat-minLat)||1;
-      const scale=Math.min((W-pad*2)/sx,(H-pad*2)/sy);
-      const ox=(W-scale*sx)/2,oy=(H-scale*sy)/2;
-      const pts=coords.map(([la,ln])=>`${ox+(ln-minLng)*scale},${H-oy-(la-minLat)*scale}`).join(" ");
-      const start=pts.split(" ")[0].split(",");
-      return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-        <polyline points="${pts}" fill="none" stroke="oklch(0.72 0.19 45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
-        <circle cx="${start[0]}" cy="${start[1]}" r="5" fill="oklch(0.72 0.19 45)" opacity="0.9"/>
+    function mapSVG(enc,W,H,pad=20,strokeW=2){
+      const c=decode(enc); if(c.length<2)return null;
+      const las=c.map(x=>x[0]),lns=c.map(x=>x[1]);
+      const mla=Math.min(...las),xla=Math.max(...las),mln=Math.min(...lns),xln=Math.max(...lns);
+      const sx=(xln-mln)||1,sy=(xla-mla)||1,sc=Math.min((W-pad*2)/sx,(H-pad*2)/sy);
+      const ox=(W-sc*sx)/2,oy=(H-sc*sy)/2;
+      const pts=c.map(([a,n])=>`${ox+(n-mln)*sc},${H-oy-(a-mla)*sc}`).join(" ");
+      const [sx0,sy0]=pts.split(" ")[0].split(",");
+      const [ex0,ey0]=pts.split(" ").at(-1).split(",");
+      return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="${strokeW}" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)" opacity="0.85"/>
+        <circle cx="${sx0}" cy="${sy0}" r="5" fill="var(--accent)" opacity="0.9"/>
+        <circle cx="${sx0}" cy="${sy0}" r="9" fill="var(--accent)" opacity="0.15"/>
+        <circle cx="${ex0}" cy="${ey0}" r="3" fill="var(--text2)" opacity="0.5"/>
       </svg>`;
     }
 
-    // ── Formatters ──
-    function dur(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return h>0?`${h}:${String(m).padStart(2,"0")}:${String(sc).padStart(2,"0")}`:`${m}:${String(sc).padStart(2,"0")}`;}
-    function pace(mps){if(!mps)return"—";const spk=1000/mps,m=Math.floor(spk/60),s=Math.round(spk%60);return`${m}:${String(s).padStart(2,"0")}`;}
-    function badgeCls(t){if(!t)return"badge-Other";if(t.includes("Run"))return"badge-Run";if(t.includes("Ride"))return"badge-Ride";if(t==="Swim")return"badge-Swim";return"badge-Other";}
+    // ── Header stats ──
+    function applyAthleteStats(athlete) {
+      if(!athlete) return;
+      document.getElementById("hdr-name").textContent = `${athlete.firstname} ${athlete.lastname}`;
+      document.getElementById("hdr-avatar").textContent = (athlete.firstname?.[0]||"?") + (athlete.lastname?.[0]||"");
+      if(athlete.stats) {
+        const s = athlete.stats;
+        document.getElementById("hdr-ytd").textContent = `${((s.ytd_run_totals?.distance||0)/1000).toFixed(0)} km`;
+        document.getElementById("hdr-runs").textContent = s.ytd_run_totals?.count || "—";
+      }
+    }
 
-    const ZONE_COLORS=["var(--z1)","var(--z2)","var(--z3)","var(--z4)","var(--z5)"];
-    let zonesCache=null;
-    async function getZones(){if(zonesCache)return zonesCache;const r=await fetch("/api/zones?user=a");zonesCache=r.ok?await r.json():null;return zonesCache;}
-    function calcZoneTimes(hr,t,zones){
-      const th=zones?.heart_rate?.zones?.map(z=>z.min)??[];
-      if(!th.length||!hr?.length)return null;
-      const tot=new Array(th.length).fill(0);
-      for(let i=1;i<hr.length;i++){const v=hr[i],dt=t[i]-t[i-1];let z=0;for(let x=th.length-1;x>=0;x--){if(v>=th[x]){z=x;break;}}tot[z]+=dt;}
-      return tot;
+    function applyWeekKm(activities) {
+      const now = new Date(), weekAgo = new Date(now - 7*864e5);
+      const total = activities.filter(a=>new Date(a.start_date_local)>=weekAgo).reduce((s,a)=>s+a.distance/1000,0);
+      document.getElementById("hdr-week").textContent = `${total.toFixed(1)} km`;
+    }
+
+    // ── Week strip ──
+    function renderWeekStrip(activities) {
+      const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+      const today = new Date(); today.setHours(0,0,0,0);
+      const data = Array.from({length:7},(_,i)=>{
+        const d = new Date(today); d.setDate(today.getDate()-6+i);
+        const dayActs = activities.filter(a=>{const ad=new Date(a.start_date_local);ad.setHours(0,0,0,0);return ad.getTime()===d.getTime();});
+        const totalKm = dayActs.reduce((s,a)=>s+a.distance/1000,0);
+        const isToday = i===6;
+        return {label:days[(d.getDay()+6)%7],km:totalKm,isToday,acts:dayActs};
+      });
+      const maxKm = Math.max(...data.map(d=>d.km),0.1);
+      const weekTotal = data.reduce((s,d)=>s+d.km,0);
+      const weekRuns = data.reduce((s,d)=>s+d.acts.length,0);
+
+      document.getElementById("week-wrap").innerHTML = `
+        <div class="week-strip">
+          <div style="display:flex;flex-direction:column;gap:0.25rem;flex-shrink:0">
+            <div class="week-total-val">${weekTotal.toFixed(1)}<span style="font-size:0.7rem;font-family:'DM Mono',monospace;color:var(--text2);margin-left:0.2rem">km</span></div>
+            <div class="week-total-lbl">This week</div>
+            <div style="margin-top:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text2)">${weekRuns} session${weekRuns!==1?"s":""}</div>
+          </div>
+          <div style="width:1px;background:var(--b1);align-self:stretch;margin:0 0.5rem"></div>
+          <div class="week-days">
+            ${data.map(d=>`
+              <div class="week-day">
+                <div class="week-bar-wrap">
+                  <div class="week-bar" style="height:${d.km?Math.max(d.km/maxKm*100,8):3}%;background:${d.km?(d.isToday?"var(--accent)":"color-mix(in srgb,var(--accent) 55%,var(--b2))"):"var(--b1)"}"></div>
+                </div>
+                <div class="week-day-name" style="color:${d.isToday?"var(--accent)":"var(--muted)"}">${d.label}</div>
+                ${d.km?`<div class="week-km">${d.km.toFixed(1)}</div>`:`<div class="week-km" style="opacity:0">0</div>`}
+              </div>`).join("")}
+          </div>
+        </div>`;
     }
 
     // ── Hero ──
     function renderHero(a) {
-      const km = (a.distance/1000).toFixed(2);
       const isRun = a.sport_type?.includes("Run");
-      const date = new Date(a.start_date_local);
-      const dateStr = date.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-      const polyline = a.map?.summary_polyline;
-      const mapHTML = polyline
-        ? `<div class="hero-map">${renderMap(polyline,900,260,28)||"<div class='hero-map-placeholder'>No route data</div>"}<div class="hero-map-overlay"></div></div>`
-        : `<div class="hero-map"><div class="hero-map-placeholder">No route data</div></div>`;
-
-      document.getElementById("hero-area").innerHTML = `
-        ${mapHTML}
-        <div class="hero-body">
-          <div class="hero-meta">
-            <span class="hero-type-badge">${a.sport_type}</span>
-            <span class="hero-date">${dateStr}</span>
+      const date = new Date(a.start_date_local).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+      const poly = a.map?.summary_polyline;
+      const svgMap = poly ? mapSVG(poly,900,320,32,2.5) : null;
+      const mapArea = svgMap
+        ? `<div class="hero-map-wrap">${svgMap}<div class="hero-map-grad"></div></div>`
+        : `<div class="hero-map-wrap"><div class="hero-map-no">No route data</div><div class="hero-map-grad"></div></div>`;
+      const col = typeColor(a.sport_type);
+      document.getElementById("hero").innerHTML = `
+        <div class="hero">
+          ${mapArea}
+          <div style="position:absolute;top:1.25rem;left:1.5rem;display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0.75rem 0.3rem 0.5rem;background:color-mix(in srgb,var(--s1) 85%,transparent);backdrop-filter:blur(12px);border:1px solid var(--b2);border-radius:999px">
+            <div style="width:7px;height:7px;border-radius:50%;background:${col};box-shadow:0 0 8px ${col}"></div>
+            <span style="font-family:'DM Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.12em">${a.sport_type||"Activity"}</span>
           </div>
-          <div class="hero-name">${a.name}</div>
-          <div class="hero-stats-primary" style="margin-bottom:1px">
-            <div class="hero-stat">
-              <div class="hero-stat-label">Distance</div>
-              <div class="hero-stat-value">${km}<span class="hero-stat-unit">km</span></div>
+          <div style="position:absolute;top:1.25rem;right:1.5rem;font-family:'DM Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text2);padding:0.3rem 0.75rem;background:color-mix(in srgb,var(--s1) 85%,transparent);backdrop-filter:blur(12px);border:1px solid var(--b2);border-radius:999px">${date}</div>
+          <div class="hero-body">
+            <div class="hero-name">${a.name}</div>
+            <div class="hero-primary" style="margin-bottom:2px">
+              <div class="hstat">
+                <div class="hstat-lbl">Distance</div>
+                <div class="hstat-val">${km(a.distance)}<span class="hstat-unit">km</span></div>
+              </div>
+              <div class="hstat">
+                <div class="hstat-lbl">${isRun?"Avg pace":"Speed"}</div>
+                <div class="hstat-val">${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="hstat-unit">${isRun?"/km":"km/h"}</span></div>
+              </div>
+              <div class="hstat">
+                <div class="hstat-lbl">Avg HR</div>
+                <div class="hstat-val">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="hstat-unit">${a.average_heartrate?"bpm":""}</span></div>
+              </div>
+              <div class="hstat">
+                <div class="hstat-lbl">Duration</div>
+                <div class="hstat-val" style="font-size:1.4rem">${dur(a.moving_time)}</div>
+              </div>
             </div>
-            <div class="hero-stat">
-              <div class="hero-stat-label">${isRun?"Avg pace":"Avg speed"}</div>
-              <div class="hero-stat-value">${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="hero-stat-unit">${isRun?"/km":"km/h"}</span></div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-label">Avg HR</div>
-              <div class="hero-stat-value">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="hero-stat-unit">${a.average_heartrate?"bpm":""}</span></div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-label">Duration</div>
-              <div class="hero-stat-value" style="font-size:1.3rem">${dur(a.moving_time)}</div>
-            </div>
-          </div>
-          <div class="hero-stats-secondary">
-            <div class="hero-stat secondary">
-              <div class="hero-stat-label">Elevation</div>
-              <div class="hero-stat-value">${Math.round(a.total_elevation_gain)}<span class="hero-stat-unit">m</span></div>
-            </div>
-            <div class="hero-stat secondary">
-              <div class="hero-stat-label">Max HR</div>
-              <div class="hero-stat-value">${a.max_heartrate?Math.round(a.max_heartrate):"—"}<span class="hero-stat-unit">${a.max_heartrate?"bpm":""}</span></div>
-            </div>
-            <div class="hero-stat secondary">
-              <div class="hero-stat-label">Cadence</div>
-              <div class="hero-stat-value">${a.average_cadence?Math.round(a.average_cadence*2):"—"}<span class="hero-stat-unit">${a.average_cadence?"spm":""}</span></div>
-            </div>
-            <div class="hero-stat secondary">
-              <div class="hero-stat-label">Calories</div>
-              <div class="hero-stat-value">${a.calories||"—"}<span class="hero-stat-unit">${a.calories?"kcal":""}</span></div>
+            <div class="hero-secondary">
+              <div class="hstat sm"><div class="hstat-lbl">Elevation</div><div class="hstat-val">${Math.round(a.total_elevation_gain)}<span class="hstat-unit">m</span></div></div>
+              <div class="hstat sm"><div class="hstat-lbl">Max HR</div><div class="hstat-val">${a.max_heartrate?Math.round(a.max_heartrate):"—"}<span class="hstat-unit">${a.max_heartrate?"bpm":""}</span></div></div>
+              <div class="hstat sm"><div class="hstat-lbl">Cadence</div><div class="hstat-val">${a.average_cadence?Math.round(a.average_cadence*2):"—"}<span class="hstat-unit">${a.average_cadence?"spm":""}</span></div></div>
+              <div class="hstat sm"><div class="hstat-lbl">Calories</div><div class="hstat-val">${a.calories||"—"}<span class="hstat-unit">${a.calories?"kcal":""}</span></div></div>
             </div>
           </div>
         </div>`;
     }
 
-    // ── Activity cards (previous runs) ──
+    // ── Cards ──
     function renderCard(a) {
-      const km=(a.distance/1000).toFixed(2);
-      const date=new Date(a.start_date_local).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
-      const isRun=a.sport_type?.includes("Run");
+      const isRun = a.sport_type?.includes("Run"), t = actType(a.sport_type);
+      const date = new Date(a.start_date_local).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
       return `
-        <div class="card" data-id="${a.id}" onclick="toggleDetail(this)">
+        <div class="card card-${t}" data-id="${a.id}" onclick="toggleDetail(this)">
           <div class="card-top">
             <div style="min-width:0">
-              <div class="card-meta">${a.sport_type} · ${date}</div>
+              <div class="card-meta">${a.sport_type||"Activity"} · ${date}</div>
               <div class="card-name">${a.name}</div>
             </div>
-            <span class="card-badge ${badgeCls(a.sport_type)}">${km} km</span>
+            <div style="text-align:right;flex-shrink:0">
+              <div class="card-badge">${km(a.distance)}<span class="card-badge-unit">km</span></div>
+            </div>
           </div>
           <div class="card-stats">
-            <div><div class="card-stat-label">Time</div><div class="card-stat-value">${dur(a.moving_time)}</div></div>
-            <div><div class="card-stat-label">${isRun?"Pace":"Speed"}</div><div class="card-stat-value">${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="card-stat-unit">${isRun?"/km":"km/h"}</span></div></div>
-            <div><div class="card-stat-label">HR</div><div class="card-stat-value">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="card-stat-unit">${a.average_heartrate?"bpm":""}</span></div></div>
-            <div><div class="card-stat-label">Elev</div><div class="card-stat-value">${Math.round(a.total_elevation_gain)}<span class="card-stat-unit">m</span></div></div>
+            <div><div class="cstat-lbl">Time</div><div class="cstat-val">${dur(a.moving_time)}</div></div>
+            <div><div class="cstat-lbl">${isRun?"Pace":"Speed"}</div><div class="cstat-val">${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="cstat-unit">${isRun?"/km":"km/h"}</span></div></div>
+            <div><div class="cstat-lbl">HR</div><div class="cstat-val">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="cstat-unit">${a.average_heartrate?"bpm":""}</span></div></div>
+            <div><div class="cstat-lbl">Elev</div><div class="cstat-val">${Math.round(a.total_elevation_gain)}<span class="cstat-unit">m</span></div></div>
           </div>
         </div>
-        <div class="detail" id="detail-${a.id}"></div>`;
+        <div class="detail" id="d-${a.id}"></div>`;
     }
 
-    async function loadDetail(id, el) {
-      el.innerHTML=`<div class="detail-loading">Loading...</div>`;
-      const [actRes,streamsRes,zones]=await Promise.all([fetch(`/api/activity?id=${id}&user=a`),fetch(`/api/streams?id=${id}&user=a`),getZones()]);
-      const act=actRes.ok?await actRes.json():null;
-      const streams=streamsRes.ok?await streamsRes.json():null;
-      const polyline=act?.map?.polyline||act?.map?.summary_polyline;
-      const mapSVG=polyline?renderMap(polyline,460,160,16):null;
-      const mapHTML=mapSVG?`<div class="detail-map-sm">${mapSVG}</div>`:``;
+    // ── Detail ──
+    let zonesCache = null;
+    async function getZones(){if(zonesCache)return zonesCache;const r=await fetch("/api/zones?user=a");zonesCache=r.ok?await r.json():null;return zonesCache;}
+    function calcZT(hr,t,zones){const th=zones?.heart_rate?.zones?.map(z=>z.min)??[];if(!th.length||!hr?.length)return null;const tot=new Array(th.length).fill(0);for(let i=1;i<hr.length;i++){const v=hr[i],dt=t[i]-t[i-1];let z=0;for(let x=th.length-1;x>=0;x--){if(v>=th[x]){z=x;break;}}tot[z]+=dt;}return tot;}
+    const ZC=["var(--z1)","var(--z2)","var(--z3)","var(--z4)","var(--z5)"];
+
+    async function loadDetail(id,el){
+      el.innerHTML=`<div style="padding:2rem;text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em">Loading...</div>`;
+      const[aR,sR,zones]=await Promise.all([fetch(`/api/activity?id=${id}&user=a`),fetch(`/api/streams?id=${id}&user=a`),getZones()]);
+      const act=aR.ok?await aR.json():null,streams=sR.ok?await sR.json():null;
+      const poly=act?.map?.polyline||act?.map?.summary_polyline;
+      const svg=poly?mapSVG(poly,460,180,16,2):null;
+      const mapH=svg?`<div class="detail-map">${svg}</div>`:``;
       const hr=streams?.heartrate?.data,t=streams?.time?.data;
-      const zt=calcZoneTimes(hr,t,zones),tzTotal=zt?zt.reduce((a,b)=>a+b,0):0;
-      const zonesHTML=zt?`<div class="detail-col"><div class="detail-section-label">HR Zones</div>${zt.map((v,i)=>`<div class="zone-row"><span class="zone-name">Z${i+1}</span><div class="zone-bar-bg"><div class="zone-bar" style="width:${tzTotal?(v/tzTotal*100).toFixed(1):0}%;background:${ZONE_COLORS[i]}"></div></div><span class="zone-time">${dur(v)}</span></div>`).join("")}</div>`:`<div class="detail-col"><div class="detail-section-label">HR Zones</div><span style="color:var(--muted);font-size:0.8rem">No HR data</span></div>`;
-      const efforts=act?.best_efforts?.slice(0,6)??[];
-      const effortsHTML=`<div class="detail-col"><div class="detail-section-label">Best efforts</div>${efforts.map(e=>`<div class="effort-row"><span class="effort-name">${e.name}</span><span class="effort-time">${dur(e.elapsed_time)}</span></div>`).join("")}</div>`;
-      const splits=act?.splits_metric??[];
-      const isRun=act?.sport_type?.includes("Run");
-      const splitsHTML=splits.length?`<div class="splits-wrap"><div class="detail-section-label" style="margin-bottom:0.6rem">Km splits</div><table class="splits-table"><thead><tr><th>km</th><th>${isRun?"Pace":"Speed"}</th><th>HR</th><th>Cad</th><th>Elev</th></tr></thead><tbody>${splits.map((s,i)=>`<tr><td>${i+1}</td><td>${isRun?pace(s.average_speed):(s.average_speed*3.6).toFixed(1)}</td><td>${s.average_heartrate?Math.round(s.average_heartrate):"—"}</td><td>${s.average_cadence?Math.round(s.average_cadence*2):"—"}</td><td>${s.elevation_difference>=0?"+":""}${Math.round(s.elevation_difference)}m</td></tr>`).join("")}</tbody></table></div>`:``;
-      el.innerHTML=`${mapHTML}<div class="detail-cols">${zonesHTML}${effortsHTML}</div>${splitsHTML}`;
+      const zt=calcZT(hr,t,zones),zTotal=zt?zt.reduce((a,b)=>a+b,0):0;
+      const zonesH=zt?`<div class="dcol"><div class="dlbl">HR Zones</div>${zt.map((v,i)=>`<div class="zrow"><span class="zname">Z${i+1}</span><div class="zbg"><div class="zbar" style="width:${zTotal?(v/zTotal*100).toFixed(1):0}%;background:${ZC[i]}"></div></div><span class="zt">${dur(v)}</span></div>`).join("")}</div>`:`<div class="dcol"><div class="dlbl">HR Zones</div><span style="color:var(--muted);font-size:0.8rem">No HR data</span></div>`;
+      const efs=act?.best_efforts?.slice(0,6)??[];
+      const efsH=`<div class="dcol"><div class="dlbl">Best efforts</div>${efs.map(e=>`<div class="erow"><span class="ename">${e.name}</span><span class="etime">${dur(e.elapsed_time)}</span></div>`).join("")||`<span style="color:var(--muted);font-size:0.8rem">No data</span>`}</div>`;
+      const splits=act?.splits_metric??[],isRun=act?.sport_type?.includes("Run");
+      const splH=splits.length?`<div class="splits-wrap"><div class="dlbl" style="margin-bottom:0.5rem">Km splits</div><table class="st"><thead><tr><th>km</th><th>${isRun?"Pace":"Speed"}</th><th>HR</th><th>Cad</th><th>Elev</th></tr></thead><tbody>${splits.map((s,i)=>`<tr><td>${i+1}</td><td>${isRun?pace(s.average_speed):(s.average_speed*3.6).toFixed(1)}</td><td>${s.average_heartrate?Math.round(s.average_heartrate):"—"}</td><td>${s.average_cadence?Math.round(s.average_cadence*2):"—"}</td><td>${s.elevation_difference>=0?"+":""}${Math.round(s.elevation_difference)}m</td></tr>`).join("")}</tbody></table></div>`:``;
+      el.innerHTML=`${mapH}<div class="detail-body">${zonesH}${efsH}</div>${splH}`;
     }
 
-    function toggleDetail(card) {
-      const id=card.dataset.id,detail=document.getElementById(`detail-${id}`),isOpen=detail.classList.contains("open");
+    function toggleDetail(card){
+      const id=card.dataset.id,el=document.getElementById(`d-${id}`),open=el.classList.contains("open");
       document.querySelectorAll(".detail.open").forEach(d=>d.classList.remove("open"));
       document.querySelectorAll(".card.active").forEach(c=>c.classList.remove("active"));
-      if(!isOpen){detail.classList.add("open");card.classList.add("active");if(!detail.dataset.loaded){detail.dataset.loaded="1";loadDetail(id,detail);}}
+      if(!open){el.classList.add("open");card.classList.add("active");if(!el.dataset.loaded){el.dataset.loaded="1";loadDetail(id,el);}}
     }
 
     // ── Chat ──
-    let chatMessages=[], chatContext=null;
+    let chatMsgs=[], chatCtx=null;
+    const msgsEl=()=>document.getElementById("msgs");
 
-    function appendMsg(role,text){
-      const c=document.getElementById("chat-messages");
-      const d=document.createElement("div");
+    function addMsg(role,text){
+      const c=msgsEl(),d=document.createElement("div");
       d.className=`msg msg-${role}`;
-      d.innerHTML=`<div class="msg-bubble">${text.replace(/\n/g,"<br>")}</div>`;
-      c.appendChild(d); c.scrollTop=c.scrollHeight; return d;
+      d.innerHTML=`<div class="bubble">${text.replace(/\n/g,"<br>")}</div>`;
+      c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
     }
-    function appendThinking(){
-      const c=document.getElementById("chat-messages");
-      const d=document.createElement("div");
-      d.className="msg msg-ai msg-thinking";
-      d.innerHTML=`<div class="msg-bubble">Analysing</div>`;
-      c.appendChild(d); c.scrollTop=c.scrollHeight; return d;
+    function addThinking(){
+      const c=msgsEl(),d=document.createElement("div");
+      d.className="msg msg-a msg-think";
+      d.innerHTML=`<div class="bubble">Analysing</div>`;
+      c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
     }
 
-    async function sendChat(userText){
-      const send=document.getElementById("chat-send"),input=document.getElementById("chat-input");
-      send.disabled=true;
-      if(userText){chatMessages.push({role:"user",parts:[{text:userText}]});appendMsg("user",userText);}
-      const thinking=appendThinking();
+    async function sendMsg(text){
+      const btn=document.getElementById("send-btn"),inp=document.getElementById("chat-in");
+      btn.disabled=true;
+      if(text){chatMsgs.push({role:"user",parts:[{text}]});addMsg("u",text);}
+      const t=addThinking();
       try{
-        const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:chatMessages,context:chatContext})});
-        const data=await r.json();
-        const reply=data.reply??data.error??"Something went wrong.";
-        thinking.remove();appendMsg("ai",reply);
-        chatMessages.push({role:"model",parts:[{text:reply}]});
-      }catch{thinking.remove();appendMsg("ai","Something went wrong.");}
-      send.disabled=false; input.value=""; input.style.height="auto";
+        const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:chatMsgs,context:chatCtx})});
+        const d=await r.json();
+        const reply=d.reply??d.error??"Something went wrong.";
+        t.remove();addMsg("a",reply);
+        chatMsgs.push({role:"model",parts:[{text:reply}]});
+      }catch{t.remove();addMsg("a","Something went wrong.");}
+      btn.disabled=false;inp.value="";inp.style.height="auto";
     }
 
-    async function initChat(activities, athlete){
-      const recent10=activities.slice(0,10);
-      const weeklyLoad=calcWeeklyLoad(activities);
-      const latestId=activities[0]?.id;
+    function calcWeeklyLoad(acts){
+      const w={};
+      acts.forEach(a=>{if(!a.start_date_local)return;const d=new Date(a.start_date_local),day=d.getDay(),mon=new Date(d);mon.setDate(d.getDate()-((day+6)%7));const k=mon.toISOString().slice(0,10);if(!w[k])w[k]={week:k,km:0,time:0,count:0};w[k].km+=a.distance/1000;w[k].time+=a.moving_time;w[k].count++;});
+      return Object.values(w).sort((a,b)=>b.week.localeCompare(a.week)).slice(0,4);
+    }
+
+    async function initChat(acts, athlete){
+      const recent10=acts.slice(0,10),weeklyLoad=calcWeeklyLoad(acts),lid=acts[0]?.id;
       let latestActivity=null,latestStreams=null;
-      if(latestId){
-        const [aR,sR]=await Promise.all([fetch(`/api/activity?id=${latestId}&user=a`),fetch(`/api/streams?id=${latestId}&user=a`)]);
-        if(aR.ok)latestActivity=await aR.json();
-        if(sR.ok)latestStreams=await sR.json();
-      }
-      chatContext={athlete,latestActivity,latestStreams,recentActivities:recent10,weeklyLoad};
-      chatMessages.push({role:"user",parts:[{text:"Analysis of past activity"}]});
-      await sendChat(null);
-    }
-
-    function calcWeeklyLoad(activities){
-      const weeks={};
-      activities.forEach(a=>{
-        if(!a.start_date_local)return;
-        const d=new Date(a.start_date_local),day=d.getDay();
-        const mon=new Date(d);mon.setDate(d.getDate()-((day+6)%7));
-        const key=mon.toISOString().slice(0,10);
-        if(!weeks[key])weeks[key]={week:key,km:0,time:0,count:0};
-        weeks[key].km+=a.distance/1000;weeks[key].time+=a.moving_time;weeks[key].count++;
-      });
-      return Object.values(weeks).sort((a,b)=>b.week.localeCompare(a.week)).slice(0,4);
+      if(lid){const[aR,sR]=await Promise.all([fetch(`/api/activity?id=${lid}&user=a`),fetch(`/api/streams?id=${lid}&user=a`)]);if(aR.ok)latestActivity=await aR.json();if(sR.ok)latestStreams=await sR.json();}
+      chatCtx={athlete,latestActivity,latestStreams,recentActivities:recent10,weeklyLoad};
+      chatMsgs.push({role:"user",parts:[{text:"Analysis of past activity"}]});
+      await sendMsg(null);
     }
 
     // ── Tabs ──
     function switchTab(name){
-      document.querySelectorAll(".chat-tab").forEach(t=>t.classList.remove("active"));
-      document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
-      document.getElementById(`tab-${name}`).classList.add("active");
-      document.getElementById(`panel-${name}`).classList.add("active");
+      document.querySelectorAll(".tab-btn").forEach(t=>t.classList.remove("on"));
+      document.querySelectorAll(".tab").forEach(t=>t.classList.remove("on"));
+      document.getElementById(`tb-${name}`).classList.add("on");
+      document.getElementById(`tp-${name}`).classList.add("on");
     }
 
-    function populateRecent(activities){
-      document.getElementById("recent-list").innerHTML=activities.slice(0,15).map(a=>{
-        const km=(a.distance/1000).toFixed(1),isRun=a.sport_type?.includes("Run");
-        const date=new Date(a.start_date_local).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
-        return `<div class="recent-item" onclick="switchTab('coach');scrollToCard('${a.id}')">
-          <div class="recent-top"><div class="recent-name">${a.name}</div><div class="recent-date">${date}</div></div>
-          <div class="recent-stats">
-            <div class="recent-stat"><b>${km}</b> km</div>
-            <div class="recent-stat"><b>${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}</b> ${isRun?"/km":"km/h"}</div>
-            <div class="recent-stat"><b>${a.average_heartrate?Math.round(a.average_heartrate):"—"}</b> ${a.average_heartrate?"bpm":""}</div>
+    function populateRecent(acts){
+      document.getElementById("recent-list").innerHTML=acts.slice(0,20).map(a=>{
+        const isRun=a.sport_type?.includes("Run"),date=new Date(a.start_date_local).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+        return `<div class="ritem" onclick="switchTab('coach');scrollToCard('${a.id}')">
+          <div class="ritem-top"><div class="ritem-name">${a.name}</div><div class="ritem-date">${date}</div></div>
+          <div class="ritem-stats">
+            <div class="rstat"><b>${(a.distance/1000).toFixed(1)}</b> km</div>
+            <div class="rstat"><b>${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}</b> ${isRun?"/km":"km/h"}</div>
+            <div class="rstat"><b>${a.average_heartrate?Math.round(a.average_heartrate):"—"}</b> ${a.average_heartrate?"bpm":""}</div>
           </div>
         </div>`;
       }).join("");
     }
 
-    function scrollToCard(id){
-      const c=document.querySelector(`.card[data-id="${id}"]`);
-      if(c){c.scrollIntoView({behavior:"smooth",block:"center"});c.click();}
-    }
+    function scrollToCard(id){const c=document.querySelector(`.card[data-id="${id}"]`);if(c){c.scrollIntoView({behavior:"smooth",block:"center"});c.click();}}
 
-    document.getElementById("chat-form").addEventListener("submit",e=>{e.preventDefault();const v=document.getElementById("chat-input").value.trim();if(v)sendChat(v);});
-    document.getElementById("chat-input").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();document.getElementById("chat-form").dispatchEvent(new Event("submit"));}});
+    // ── Scroll header ──
+    window.addEventListener("scroll",()=>document.querySelector(".hdr").style.boxShadow=window.scrollY>10?"0 1px 40px rgba(0,0,0,0.4)":"",{passive:true});
+
+    // ── Form ──
+    document.getElementById("chat-form").addEventListener("submit",e=>{e.preventDefault();const v=document.getElementById("chat-in").value.trim();if(v)sendMsg(v);});
+    document.getElementById("chat-in").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();document.getElementById("chat-form").dispatchEvent(new Event("submit"));}});
 
     // ── Boot ──
     Promise.all([
       fetch("/api/activities?user=a&per_page=30").then(r=>r.json()),
       fetch("/api/stats?user=a").then(r=>r.ok?r.json():null),
-    ]).then(([activities,athlete])=>{
-      if(!Array.isArray(activities)){document.getElementById("hero-area").innerHTML=`<div style="color:#f87171;padding:1rem">Failed to load activities.</div>`;return;}
-      if(!activities.length){document.getElementById("hero-area").innerHTML=`<div style="color:var(--muted);padding:1rem">No activities found.</div>`;return;}
-      renderHero(activities[0]);
-      document.getElementById("grid").innerHTML=activities.slice(1).map(renderCard).join("");
-      populateRecent(activities);
-      initChat(activities,athlete);
-    }).catch(()=>{
-      document.getElementById("hero-area").innerHTML=`<div style="color:#f87171;padding:1rem">Something went wrong.</div>`;
+    ]).then(([acts,athlete])=>{
+      if(!Array.isArray(acts)||!acts.length){document.getElementById("hero").innerHTML=`<div style="color:var(--muted);padding:2rem">No activities found.</div>`;return;}
+      applyAthleteStats(athlete);
+      applyWeekKm(acts);
+      renderHero(acts[0]);
+      renderWeekStrip(acts);
+      document.getElementById("grid").innerHTML=acts.slice(1).map(renderCard).join("");
+      document.getElementById("run-count").textContent=`${acts.length-1} sessions`;
+      populateRecent(acts);
+      initChat(acts,athlete);
+    }).catch(err=>{
+      document.getElementById("hero").innerHTML=`<div style="color:#f87171;padding:2rem">Failed to load: ${err.message}</div>`;
     });
   </script>
 </body>
