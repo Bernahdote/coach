@@ -141,6 +141,25 @@
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     .error { padding: 1rem 1.25rem; background: color-mix(in srgb, #ef4444 8%, transparent); border: 1px solid color-mix(in srgb, #ef4444 25%, transparent); border-radius: 0.75rem; color: #f87171; font-size: 0.875rem; }
+
+    /* ── Insight ── */
+    .insight-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: "DM Sans", sans-serif; font-size: 0.8rem; font-weight: 500;
+      padding: 0.5rem 1rem; border-radius: 999px; cursor: pointer;
+      border: 1px solid var(--border2);
+      background: var(--accent-dim); color: var(--accent);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .insight-btn:hover { background: color-mix(in srgb, oklch(0.72 0.19 45) 20%, transparent); }
+    .insight-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .insight-box {
+      margin-top: 1rem; padding: 1rem 1.25rem;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 0.75rem; font-size: 0.875rem; line-height: 1.65;
+      color: var(--muted2); display: none;
+    }
+    .insight-box.visible { display: block; }
   </style>
 </head>
 <body>
@@ -329,6 +348,16 @@
           </div>
         </div>
         ${splitsHTML ? `<div style="padding:1.5rem;border-top:1px solid var(--border)">${splitsHTML}</div>` : ""}
+        <div style="padding:1.25rem 1.5rem;border-top:1px solid var(--border)">
+          <button class="insight-btn" onclick="generateInsight(this, ${id})" data-act='${JSON.stringify({
+            name: act?.name, sport_type: act?.sport_type, start_date_local: act?.start_date_local,
+            distance: act?.distance, moving_time: act?.moving_time, average_speed: act?.average_speed,
+            average_heartrate: act?.average_heartrate, total_elevation_gain: act?.total_elevation_gain
+          })}' data-splits='${JSON.stringify(splits)}' data-zones='${JSON.stringify(zoneTimes)}'>
+            ✦ Analysera med AI
+          </button>
+          <div class="insight-box" id="insight-${id}"></div>
+        </div>
       `;
     }
 
@@ -372,6 +401,33 @@
           loadDetail(id, detail);
         }
       }
+    }
+
+    async function generateInsight(btn, id) {
+      const box = document.getElementById(`insight-${id}`);
+      btn.disabled = true;
+      btn.textContent = "Analyserar...";
+      box.classList.add("visible");
+      box.textContent = "";
+
+      try {
+        const r = await fetch("/api/insight", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            activity: JSON.parse(btn.dataset.act),
+            splits: JSON.parse(btn.dataset.splits),
+            zoneTimes: JSON.parse(btn.dataset.zones),
+          }),
+        });
+        const data = await r.json();
+        box.textContent = data.insight ?? data.error ?? "Ingen respons";
+      } catch (e) {
+        box.textContent = "Något gick fel.";
+      }
+
+      btn.textContent = "✦ Analysera igen";
+      btn.disabled = false;
     }
 
     const grid = document.getElementById("grid");
