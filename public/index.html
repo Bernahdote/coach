@@ -7,6 +7,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    const pwd = sessionStorage.getItem("auth");
+    if (pwd !== "pacecraft") {
+      const input = prompt("Ange lösenord:");
+      if (input !== "pacecraft") { document.write("<h2 style='font-family:sans-serif;padding:2rem'>Fel lösenord.</h2>"); throw new Error("Unauthorized"); }
+      sessionStorage.setItem("auth", input);
+    }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
