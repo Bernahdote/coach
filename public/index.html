@@ -19,21 +19,23 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #07080c;
-      --s1:       #0c0d12;
-      --s2:       #11121a;
-      --s3:       #16171f;
-      --b1:       #1c1d26;
-      --b2:       #252630;
-      --text:     #eeeaf4;
-      --text2:    #9b96a8;
-      --muted:    #48444f;
-      --accent:   #e8834a;
-      --accent2:  #f5a067;
-      --acc-glow: color-mix(in srgb,#e8834a 18%,transparent);
-      --acc-dim:  color-mix(in srgb,#e8834a 10%,transparent);
-      --run:      #e8834a; --ride: #60a5fa; --swim: #34d399; --other: #a78bfa;
-      --z1:#60a5fa;--z2:#34d399;--z3:#fbbf24;--z4:#f97316;--z5:#ef4444;
+      --bg:       #08070f;
+      --s1:       #0e0c18;
+      --s2:       #131120;
+      --s3:       #181526;
+      --b1:       #1f1c30;
+      --b2:       #2c2840;
+      --text:     #f0ecff;
+      --text2:    #9d97b8;
+      --muted:    #4a4560;
+      --accent:   #ff6b35;
+      --accent2:  #ff9a6c;
+      --cyan:     #00d4ff;
+      --purple:   #a855f7;
+      --acc-glow: color-mix(in srgb,#ff6b35 20%,transparent);
+      --acc-dim:  color-mix(in srgb,#ff6b35 12%,transparent);
+      --run:      #ff6b35; --ride: #00d4ff; --swim: #10f5a8; --other: #a855f7;
+      --z1:#00d4ff;--z2:#10f5a8;--z3:#fbbf24;--z4:#ff6b35;--z5:#ef4444;
       --chat-w:   460px;
       --hdr:      68px;
     }
@@ -47,8 +49,9 @@
     body::before {
       content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 60% 50% at 15% 0%, color-mix(in srgb,#e8834a 6%,transparent), transparent),
-        radial-gradient(ellipse 50% 40% at 85% 100%, color-mix(in srgb,#60a5fa 4%,transparent), transparent);
+        radial-gradient(ellipse 70% 50% at 10% 0%, color-mix(in srgb,#ff6b35 8%,transparent), transparent),
+        radial-gradient(ellipse 50% 40% at 90% 100%, color-mix(in srgb,#a855f7 8%,transparent), transparent),
+        radial-gradient(ellipse 40% 30% at 60% 50%, color-mix(in srgb,#00d4ff 4%,transparent), transparent);
     }
 
     ::-webkit-scrollbar { width: 3px; }
@@ -167,6 +170,8 @@
       font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 900;
       letter-spacing: -0.04em; line-height: 1.1;
       margin-bottom: 1.75rem;
+      background: linear-gradient(135deg, var(--text) 0%, var(--accent2) 60%, var(--cyan) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
 
     .hero-primary {
@@ -200,7 +205,7 @@
     .week-day-name { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
     .week-km { font-family: "DM Mono", monospace; font-size: 0.6rem; color: var(--text2); }
     .week-stats { display: flex; flex-direction: column; gap: 0.5rem; flex-shrink: 0; padding-left: 1rem; border-left: 1px solid var(--b1); }
-    .week-total-val { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.04em; color: var(--accent); }
+    .week-total-val { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.04em; background: linear-gradient(135deg, var(--accent), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .week-total-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
 
     /* ── SECTION HEADER ── */
@@ -407,23 +412,16 @@
 
     <!-- CHAT -->
     <aside class="chat">
-      <div class="chat-hdr">
-        <div class="chat-tabs">
-          <div class="tab-btn on" onclick="switchTab('coach')" id="tb-coach">AI Coach</div>
-          <div class="tab-btn" onclick="switchTab('recent')" id="tb-recent">Sessions</div>
-        </div>
+      <div class="chat-hdr" style="padding:calc(var(--hdr) + 1rem) 1.25rem 0.875rem;border-bottom:1px solid var(--b1)">
+        <div style="font-family:'DM Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.16em;color:var(--muted);margin-bottom:0.2rem">AI Coach</div>
+        <div style="font-size:0.95rem;font-weight:700;letter-spacing:-0.02em;background:linear-gradient(135deg,var(--text),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Pacecraft Intelligence</div>
       </div>
-      <div class="tab on" id="tp-coach">
-        <div class="msgs" id="msgs"></div>
-        <div class="chat-input-wrap">
-          <form class="chat-form" id="chat-form">
-            <textarea class="chat-in" id="chat-in" placeholder="Ask your coach..." rows="1"></textarea>
-            <button class="send-btn" id="send-btn" type="submit">↑</button>
-          </form>
-        </div>
-      </div>
-      <div class="tab" id="tp-recent">
-        <div class="recent" id="recent-list"></div>
+      <div class="msgs" id="msgs"></div>
+      <div class="chat-input-wrap">
+        <form class="chat-form" id="chat-form">
+          <textarea class="chat-in" id="chat-in" placeholder="Ask your coach..." rows="1"></textarea>
+          <button class="send-btn" id="send-btn" type="submit">↑</button>
+        </form>
       </div>
     </aside>
   </div>
@@ -504,7 +502,7 @@
             ${data.map(d=>`
               <div class="week-day">
                 <div class="week-bar-wrap">
-                  <div class="week-bar" style="height:${d.km?Math.max(d.km/maxKm*100,8):3}%;background:${d.km?(d.isToday?"var(--accent)":"color-mix(in srgb,var(--accent) 55%,var(--b2))"):"var(--b1)"}"></div>
+                  <div class="week-bar" style="height:${d.km?Math.max(d.km/maxKm*100,8):3}%;background:${d.km?(d.isToday?"linear-gradient(to top,var(--accent),var(--cyan))":"color-mix(in srgb,var(--accent) 40%,var(--b2))"):"var(--b1)"}"></div>
                 </div>
                 <div class="week-day-name" style="color:${d.isToday?"var(--accent)":"var(--muted)"}">${d.label}</div>
                 ${d.km?`<div class="week-km">${d.km.toFixed(1)}</div>`:`<div class="week-km" style="opacity:0">0</div>`}
