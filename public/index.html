@@ -1,231 +1,270 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pacecraft — Träningsdashboard</title>
+  <title>Pacecraft</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script>
     const pwd = sessionStorage.getItem("auth");
     if (pwd !== "pacecraft") {
-      const input = prompt("Ange lösenord:");
-      if (input !== "pacecraft") { document.write("<h2 style='font-family:sans-serif;padding:2rem'>Fel lösenord.</h2>"); throw new Error("Unauthorized"); }
+      const input = prompt("Password:");
+      if (input !== "pacecraft") { document.write("<h2 style='font-family:sans-serif;padding:2rem;color:#fff;background:#000;min-height:100vh'>Access denied.</h2>"); throw new Error(); }
       sessionStorage.setItem("auth", input);
     }
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg:       #080808;
-      --surface:  #101010;
-      --surface2: #161616;
-      --border:   #1f1f1f;
-      --border2:  #2a2a2a;
-      --text:     #f2f0ed;
-      --muted:    #555555;
-      --muted2:   #888888;
-      --accent:   oklch(0.72 0.19 45);
-      --accent-dim: color-mix(in srgb, oklch(0.72 0.19 45) 12%, transparent);
-      --chat-w:   460px;
-      --z1: #3b82f6; --z2: #22c55e; --z3: #eab308; --z4: #f97316; --z5: #ef4444;
+      --bg:        #060606;
+      --surface:   #0e0e0e;
+      --surface2:  #141414;
+      --surface3:  #1a1a1a;
+      --border:    #1e1e1e;
+      --border2:   #282828;
+      --text:      #f0ede8;
+      --text2:     #a09a92;
+      --muted:     #4a4540;
+      --accent:    oklch(0.72 0.19 45);
+      --accent2:   oklch(0.60 0.19 45);
+      --accent-bg: color-mix(in srgb, oklch(0.72 0.19 45) 10%, transparent);
+      --chat-w:    460px;
+      --z1:#3b82f6;--z2:#22c55e;--z3:#eab308;--z4:#f97316;--z5:#ef4444;
     }
-    body { background: var(--bg); color: var(--text); font-family: "DM Sans", -apple-system, sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: "DM Sans", system-ui, sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
     /* ── Header ── */
-    header { position: fixed; inset: 0 0 auto; z-index: 50; padding: 1rem 1.5rem; transition: padding 0.3s; }
+    header {
+      position: fixed; inset: 0 0 auto; z-index: 50;
+      padding: 1rem 1.5rem; transition: padding 0.4s ease;
+    }
     header.scrolled { padding: 0.6rem 1.5rem; }
-    .header-inner { max-width: calc(100% - 3rem); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; border-radius: 999px; padding: 0.55rem 1.25rem; transition: background 0.3s, border-color 0.3s; border: 1px solid transparent; }
-    header.scrolled .header-inner { background: color-mix(in srgb, var(--surface) 85%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-color: var(--border); }
-    .logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--text); }
-    .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
-    .logo-name { font-size: 1rem; font-weight: 600; letter-spacing: -0.02em; }
-    .header-tag { font-family: "DM Mono", monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); }
+    .header-inner {
+      max-width: calc(100% - 3rem); margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      border-radius: 999px; padding: 0.55rem 1.5rem;
+      border: 1px solid transparent;
+      transition: background 0.4s, border-color 0.4s, backdrop-filter 0.4s;
+    }
+    header.scrolled .header-inner {
+      background: color-mix(in srgb, var(--surface) 90%, transparent);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-color: var(--border);
+    }
+    .logo { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; color: var(--text); }
+    .logo-mark { position: relative; width: 24px; height: 24px; }
+    .logo-ring { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border2); }
+    .logo-dot { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+    .logo-name { font-size: 0.95rem; font-weight: 600; letter-spacing: -0.025em; }
+    .header-pill {
+      font-family: "DM Mono", monospace; font-size: 0.6rem;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--text2); padding: 0.3rem 0.75rem;
+      border: 1px solid var(--border); border-radius: 999px;
+    }
 
     /* ── Layout ── */
-    .layout { display: flex; min-height: 100vh; padding-top: 5rem; }
-    .feed { flex: 1; min-width: 0; padding: 2rem 1.5rem 5rem; max-width: 640px; margin: 0 auto; }
-    @media (min-width: 900px) { .feed { margin: 0; padding-right: 2rem; } }
+    .layout { display: flex; min-height: 100vh; }
+    .feed { flex: 1; min-width: 0; padding: 5.5rem 2rem 4rem; }
+    @media (min-width: 960px) { .feed { padding-right: 2rem; } }
 
-    /* ── Feed header ── */
-    .page-eyebrow { font-family: "DM Mono", monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 0.75rem; }
-    .page-title { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 2rem; }
+    /* ── Hero card ── */
+    .hero {
+      position: relative; overflow: hidden;
+      border-radius: 1.5rem; border: 1px solid var(--border);
+      background: var(--surface); margin-bottom: 1.5rem;
+    }
+    .hero-map {
+      position: relative; height: 260px; background: #080808;
+      border-bottom: 1px solid var(--border); overflow: hidden;
+    }
+    .hero-map svg { width: 100%; height: 100%; }
+    .hero-map-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, var(--surface) 100%);
+      pointer-events: none;
+    }
+    .hero-map-placeholder {
+      height: 100%; display: flex; align-items: center; justify-content: center;
+      font-family: "DM Mono", monospace; font-size: 0.65rem;
+      text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted);
+    }
+    .hero-body { padding: 1.5rem 2rem 2rem; }
+    .hero-meta {
+      display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;
+    }
+    .hero-type-badge {
+      font-family: "DM Mono", monospace; font-size: 0.6rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      padding: 0.25rem 0.7rem; border-radius: 999px;
+      background: var(--accent-bg); color: var(--accent);
+      border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    }
+    .hero-date { font-family: "DM Mono", monospace; font-size: 0.65rem; color: var(--text2); }
+    .hero-name { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; letter-spacing: -0.035em; line-height: 1.15; margin-bottom: 1.75rem; }
 
-    /* ── Cards ── */
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 1.25rem; padding: 1.25rem 1.5rem 1.5rem; cursor: pointer; transition: border-color 0.2s, background 0.2s; margin-bottom: 0.75rem; }
-    .card:hover { border-color: var(--border2); background: var(--surface2); }
-    .card.active { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
-    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
-    .card-eyebrow { font-family: "DM Mono", monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 0.35rem; }
-    .card-name { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.025em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
-    .badge { flex-shrink: 0; font-family: "DM Mono", monospace; font-size: 0.65rem; font-weight: 500; padding: 0.3rem 0.75rem; border-radius: 999px; }
-    .badge-Run   { background: var(--accent-dim); color: var(--accent); }
-    .badge-Ride  { background: color-mix(in srgb, #3b82f6 12%, transparent); color: #3b82f6; }
-    .badge-Swim  { background: color-mix(in srgb, #06b6d4 12%, transparent); color: #06b6d4; }
-    .badge-Other { background: color-mix(in srgb, #8b5cf6 12%, transparent); color: #8b5cf6; }
-    .divider { height: 1px; background: var(--border); margin: 1.1rem 0; }
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
-    .stat-label { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.3rem; }
-    .stat-value { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1; }
-    .stat-unit { font-size: 0.6rem; font-family: "DM Mono", monospace; color: var(--muted); margin-left: 0.15rem; }
+    .hero-stats-primary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border-radius: 1rem; overflow: hidden; margin-bottom: 1px; }
+    .hero-stats-secondary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border-radius: 1rem; overflow: hidden; }
+    .hero-stat { background: var(--surface2); padding: 1rem 1.25rem; }
+    .hero-stat-label { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.4rem; }
+    .hero-stat-value { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; line-height: 1; }
+    .hero-stat-unit { font-size: 0.65rem; font-family: "DM Mono", monospace; color: var(--text2); margin-left: 0.2rem; }
+    .hero-stat.secondary .hero-stat-value { font-size: 1.1rem; font-weight: 600; }
+
+    /* ── Section header ── */
+    .section-header { display: flex; align-items: center; gap: 1rem; margin: 2rem 0 1rem; }
+    .section-title { font-size: 0.7rem; font-family: "DM Mono", monospace; text-transform: uppercase; letter-spacing: 0.18em; color: var(--muted); }
+    .section-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* ── Activity grid ── */
+    .activity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0.75rem; }
+
+    /* ── Activity card ── */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 1.125rem; padding: 1.125rem 1.25rem 1.25rem;
+      cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    }
+    .card:hover { border-color: var(--border2); background: var(--surface2); transform: translateY(-1px); }
+    .card.active { border-color: color-mix(in srgb, var(--accent) 35%, transparent); background: var(--surface2); }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.875rem; }
+    .card-meta { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.3rem; }
+    .card-name { font-size: 0.95rem; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+    .card-badge { flex-shrink: 0; font-family: "DM Mono", monospace; font-size: 0.6rem; font-weight: 500; padding: 0.25rem 0.65rem; border-radius: 999px; }
+    .badge-Run  { background: var(--accent-bg); color: var(--accent); }
+    .badge-Ride { background: color-mix(in srgb,#3b82f6 10%,transparent); color:#3b82f6; }
+    .badge-Swim { background: color-mix(in srgb,#06b6d4 10%,transparent); color:#06b6d4; }
+    .badge-Other{ background: color-mix(in srgb,#8b5cf6 10%,transparent); color:#8b5cf6; }
+    .card-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.25rem; }
+    .card-stat-label { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 0.2rem; }
+    .card-stat-value { font-size: 1rem; font-weight: 600; letter-spacing: -0.025em; font-variant-numeric: tabular-nums; }
+    .card-stat-unit { font-size: 0.55rem; font-family: "DM Mono", monospace; color: var(--text2); }
 
     /* ── Detail panel ── */
-    .detail { display: none; margin-bottom: 0.75rem; background: var(--surface); border: 1px solid var(--border); border-radius: 1.25rem; overflow: hidden; }
+    .detail { display: none; margin: -0.25rem 0 0.75rem; background: var(--surface); border: 1px solid var(--border); border-top: none; border-radius: 0 0 1.125rem 1.125rem; overflow: hidden; }
     .detail.open { display: block; }
-    .detail-loading { padding: 2rem; text-align: center; color: var(--muted); font-family: "DM Mono", monospace; font-size: 0.75rem; }
-    .detail-map { background: #0d0d0d; display: flex; align-items: center; justify-content: center; min-height: 200px; }
-    .detail-map svg { width: 100%; max-height: 240px; }
-    .no-map { color: var(--muted); font-family: "DM Mono", monospace; font-size: 0.65rem; }
-    .detail-right { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
-    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; }
-    .section-label { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 0.75rem; }
-    .zone-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.45rem; }
-    .zone-name { font-family: "DM Mono", monospace; font-size: 0.65rem; color: var(--muted2); width: 2.5rem; flex-shrink: 0; }
-    .zone-bar-bg { flex: 1; background: var(--border); border-radius: 999px; height: 6px; overflow: hidden; }
-    .zone-bar { height: 100%; border-radius: 999px; transition: width 0.6s cubic-bezier(0.16,1,0.3,1); }
-    .zone-time { font-family: "DM Mono", monospace; font-size: 0.65rem; color: var(--muted2); width: 3rem; text-align: right; flex-shrink: 0; }
-    .splits-table { width: 100%; border-collapse: collapse; }
-    .splits-table th { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); text-align: right; padding: 0 0.5rem 0.5rem; font-weight: 400; }
+    .detail-loading { padding: 2rem; text-align: center; color: var(--muted); font-family: "DM Mono", monospace; font-size: 0.7rem; letter-spacing: 0.1em; }
+    .detail-map-sm { background: #080808; height: 160px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); }
+    .detail-map-sm svg { width: 100%; height: 100%; }
+    .detail-cols { display: grid; grid-template-columns: 1fr 1fr; }
+    .detail-col { padding: 1.25rem; }
+    .detail-col + .detail-col { border-left: 1px solid var(--border); }
+    .detail-section-label { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.75rem; }
+    .zone-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
+    .zone-name { font-family: "DM Mono", monospace; font-size: 0.6rem; color: var(--text2); width: 2rem; flex-shrink: 0; }
+    .zone-bar-bg { flex: 1; background: var(--border); border-radius: 999px; height: 5px; overflow: hidden; }
+    .zone-bar { height: 100%; border-radius: 999px; transition: width 0.7s cubic-bezier(0.16,1,0.3,1); }
+    .zone-time { font-family: "DM Mono", monospace; font-size: 0.6rem; color: var(--text2); width: 2.75rem; text-align: right; flex-shrink: 0; }
+    .effort-row { display: flex; justify-content: space-between; padding: 0.35rem 0; border-top: 1px solid var(--border); }
+    .effort-name { font-size: 0.8rem; color: var(--text2); }
+    .effort-time { font-family: "DM Mono", monospace; font-size: 0.75rem; }
+    .splits-wrap { padding: 1.25rem; border-top: 1px solid var(--border); overflow-x: auto; }
+    .splits-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .splits-table th { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); text-align: right; padding: 0 0.75rem 0.6rem; font-weight: 400; }
     .splits-table th:first-child { text-align: left; }
-    .splits-table td { font-size: 0.85rem; font-variant-numeric: tabular-nums; text-align: right; padding: 0.35rem 0.5rem; border-top: 1px solid var(--border); color: var(--muted2); }
-    .splits-table td:first-child { text-align: left; color: var(--text); font-family: "DM Mono", monospace; font-size: 0.75rem; }
-    .efforts-list { list-style: none; }
-    .effort-row { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; border-top: 1px solid var(--border); }
-    .effort-name { font-size: 0.85rem; color: var(--muted2); }
-    .effort-time { font-family: "DM Mono", monospace; font-size: 0.8rem; color: var(--text); }
+    .splits-table td { text-align: right; padding: 0.35rem 0.75rem; border-top: 1px solid var(--border); color: var(--text2); font-variant-numeric: tabular-nums; }
+    .splits-table td:first-child { text-align: left; color: var(--text); font-family: "DM Mono", monospace; font-size: 0.72rem; }
+    .splits-table tr:hover td { background: var(--surface2); }
+
+    /* ── Skeleton ── */
+    .skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 200% 100%; animation: shimmer 1.6s infinite; border-radius: 1.125rem; height: 120px; border: 1px solid var(--border); }
+    .hero-skeleton { height: 420px; border-radius: 1.5rem; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
     /* ── Chat panel ── */
     .chat-panel {
       width: var(--chat-w); flex-shrink: 0;
       position: fixed; right: 0; top: 0; bottom: 0;
       background: var(--surface); border-left: 1px solid var(--border);
-      display: flex; flex-direction: column;
-      z-index: 40;
+      display: flex; flex-direction: column; z-index: 40;
     }
-    @media (max-width: 900px) { .chat-panel { display: none; } }
+    @media (max-width: 960px) { .chat-panel { display: none; } }
 
-    .chat-header { padding: 4.5rem 1.25rem 0; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-    .chat-tabs { display: flex; gap: 0; }
-    .chat-tab {
-      flex: 1; padding: 0.75rem 1rem; font-size: 0.8rem; font-weight: 500;
-      color: var(--muted); border-bottom: 2px solid transparent;
-      cursor: pointer; transition: color 0.2s, border-color 0.2s;
-      text-align: center; user-select: none;
-    }
+    .chat-header { padding: 4.75rem 1.25rem 0; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .chat-tabs { display: flex; }
+    .chat-tab { flex: 1; padding: 0.75rem 1rem; font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); border-bottom: 2px solid transparent; cursor: pointer; transition: color 0.2s, border-color 0.2s; text-align: center; user-select: none; }
     .chat-tab.active { color: var(--text); border-color: var(--accent); }
-    .chat-tab-label { font-family: "DM Mono", monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; }
 
     .tab-panel { display: none; flex: 1; overflow: hidden; flex-direction: column; }
     .tab-panel.active { display: flex; }
 
-    .chat-messages { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; scroll-behavior: smooth; }
-    .chat-messages::-webkit-scrollbar { width: 4px; }
-    .chat-messages::-webkit-scrollbar-track { background: transparent; }
-    .chat-messages::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.875rem; scroll-behavior: smooth; }
+
+    .msg { max-width: 88%; animation: msg-in 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+    .msg-user { align-self: flex-end; }
+    .msg-ai   { align-self: flex-start; }
+    @keyframes msg-in { from{opacity:0;transform:translateY(8px) scale(0.97)} to{opacity:1;transform:none} }
+
+    .msg-bubble { padding: 0.7rem 0.95rem; border-radius: 1rem; font-size: 0.85rem; line-height: 1.65; }
+    .msg-user .msg-bubble { background: var(--accent-bg); color: var(--text); border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent); border-bottom-right-radius: 0.2rem; }
+    .msg-ai .msg-bubble { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 0.2rem; }
+    .msg-thinking .msg-bubble { color: var(--muted); font-style: italic; font-size: 0.8rem; }
+    .msg-thinking .msg-bubble::after { content: ""; display: inline-block; animation: dots 1.2s steps(4,end) infinite; }
+    @keyframes dots { 0%,20%{content:""} 40%{content:"."} 60%{content:".."} 80%,100%{content:"..."} }
+
+    .chat-input-wrap { padding: 1rem; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--surface); }
+    .chat-form { display: flex; gap: 0.5rem; align-items: flex-end; }
+    .chat-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 0.875rem; padding: 0.65rem 1rem; color: var(--text); font-family: "DM Sans", sans-serif; font-size: 0.875rem; outline: none; resize: none; min-height: 42px; max-height: 120px; transition: border-color 0.2s; line-height: 1.5; }
+    .chat-input:focus { border-color: var(--border2); }
+    .chat-input::placeholder { color: var(--muted); }
+    .chat-send { width: 42px; height: 42px; flex-shrink: 0; background: var(--accent); border: none; color: #000; border-radius: 0.875rem; font-size: 1rem; cursor: pointer; transition: opacity 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .chat-send:hover { opacity: 0.85; }
+    .chat-send:active { transform: scale(0.94); }
+    .chat-send:disabled { opacity: 0.3; cursor: not-allowed; }
 
     /* Recent workouts tab */
     .recent-list { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
-    .recent-item {
-      padding: 0.875rem 1rem; border-radius: 0.875rem;
-      border: 1px solid var(--border); background: var(--surface2);
-      cursor: pointer; transition: border-color 0.2s;
-    }
-    .recent-item:hover { border-color: var(--border2); }
-    .recent-item-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem; }
-    .recent-item-name { font-size: 0.875rem; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
-    .recent-item-date { font-family: "DM Mono", monospace; font-size: 0.6rem; color: var(--muted); flex-shrink: 0; }
-    .recent-item-stats { display: flex; gap: 1rem; }
-    .recent-stat { font-family: "DM Mono", monospace; font-size: 0.65rem; color: var(--muted2); }
-    .recent-stat span { color: var(--text); }
-
-    .msg {
-      max-width: 90%;
-      animation: msg-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-    .msg-user { align-self: flex-end; }
-    .msg-ai   { align-self: flex-start; }
-
-    @keyframes msg-in {
-      from { opacity: 0; transform: translateY(10px) scale(0.97); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .msg-bubble {
-      padding: 0.75rem 1rem; border-radius: 1rem; font-size: 0.875rem; line-height: 1.6;
-      transition: box-shadow 0.2s;
-    }
-    .msg-user .msg-bubble { background: var(--accent-dim); color: var(--text); border-bottom-right-radius: 0.25rem; }
-    .msg-ai .msg-bubble { background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 0.25rem; }
-    .msg-thinking .msg-bubble { color: var(--muted); font-style: italic; }
-
-    /* thinking dots */
-    .msg-thinking .msg-bubble::after {
-      content: "";
-      display: inline-block;
-      width: 1.5em;
-      animation: dots 1.2s steps(4, end) infinite;
-    }
-    @keyframes dots {
-      0%, 20%  { content: ""; }
-      40%      { content: "."; }
-      60%      { content: ".."; }
-      80%, 100%{ content: "..."; }
-    }
-
-    .chat-input-wrap { padding: 1rem; border-top: 1px solid var(--border); flex-shrink: 0; }
-    .chat-form { display: flex; gap: 0.5rem; }
-    .chat-input {
-      flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 0.75rem;
-      padding: 0.6rem 0.875rem; color: var(--text); font-family: "DM Sans", sans-serif; font-size: 0.875rem;
-      outline: none; resize: none; min-height: 40px; max-height: 120px; overflow-y: auto;
-      transition: border-color 0.2s;
-    }
-    .chat-input:focus { border-color: var(--border2); }
-    .chat-input::placeholder { color: var(--muted); }
-    .chat-send {
-      flex-shrink: 0; background: var(--accent-dim); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-      color: var(--accent); border-radius: 0.75rem; padding: 0.6rem 1rem;
-      font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: background 0.2s;
-      font-family: "DM Sans", sans-serif;
-    }
-    .chat-send:hover { background: color-mix(in srgb, oklch(0.72 0.19 45) 20%, transparent); }
-    .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    /* ── Skeleton ── */
-    .skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 1.25rem; height: 130px; border: 1px solid var(--border); margin-bottom: 0.75rem; }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-    .error { padding: 1rem 1.25rem; background: color-mix(in srgb, #ef4444 8%, transparent); border: 1px solid color-mix(in srgb, #ef4444 25%, transparent); border-radius: 0.75rem; color: #f87171; font-size: 0.875rem; }
+    .recent-item { padding: 0.875rem 1rem; border-radius: 0.875rem; border: 1px solid var(--border); background: var(--surface2); cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
+    .recent-item:hover { border-color: var(--border2); transform: translateX(-2px); }
+    .recent-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem; }
+    .recent-name { font-size: 0.85rem; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+    .recent-date { font-family: "DM Mono", monospace; font-size: 0.58rem; color: var(--muted); flex-shrink: 0; }
+    .recent-stats { display: flex; gap: 0.875rem; }
+    .recent-stat { font-family: "DM Mono", monospace; font-size: 0.62rem; color: var(--text2); }
+    .recent-stat b { color: var(--text); font-weight: 500; }
   </style>
 </head>
 <body>
   <header id="header">
     <div class="header-inner">
-      <a class="logo" href="/"><span class="logo-dot"></span><span class="logo-name">Pacecraft</span></a>
-      <span class="header-tag">Träningsdashboard</span>
+      <a class="logo" href="/">
+        <div class="logo-mark"><div class="logo-ring"></div><div class="logo-dot"></div></div>
+        <span class="logo-name">Pacecraft</span>
+      </a>
+      <div class="header-pill">Training Dashboard</div>
     </div>
   </header>
 
   <div class="layout">
     <main class="feed">
-      <p class="page-eyebrow">Live · Strava</p>
-      <h1 class="page-title">Senaste passen</h1>
-      <div id="grid"></div>
+      <div id="hero-area"><div class="skeleton hero-skeleton"></div></div>
+
+      <div class="section-header">
+        <span class="section-title">Previous runs</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="activity-grid" id="grid">
+        <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+      </div>
     </main>
 
     <aside class="chat-panel">
       <div class="chat-header">
         <div class="chat-tabs">
-          <div class="chat-tab active" onclick="switchTab('coach')" id="tab-coach">
-            <span class="chat-tab-label">AI Coach</span>
-          </div>
-          <div class="chat-tab" onclick="switchTab('recent')" id="tab-recent">
-            <span class="chat-tab-label">Recent Workouts</span>
-          </div>
+          <div class="chat-tab active" onclick="switchTab('coach')" id="tab-coach">AI Coach</div>
+          <div class="chat-tab" onclick="switchTab('recent')" id="tab-recent">Recent</div>
         </div>
       </div>
-
-      <!-- Coach tab -->
       <div class="tab-panel active" id="panel-coach">
         <div class="chat-messages" id="chat-messages"></div>
         <div class="chat-input-wrap">
@@ -235,8 +274,6 @@
           </form>
         </div>
       </div>
-
-      <!-- Recent workouts tab -->
       <div class="tab-panel" id="panel-recent">
         <div class="recent-list" id="recent-list"></div>
       </div>
@@ -244,312 +281,270 @@
   </div>
 
   <script>
+    // ── Header scroll ──
     window.addEventListener("scroll", () => {
       document.getElementById("header").classList.toggle("scrolled", window.scrollY > 20);
     }, { passive: true });
 
-    // ── Polyline decoder ──
-    function decodePolyline(encoded) {
-      const coords = []; let idx = 0, lat = 0, lng = 0;
-      while (idx < encoded.length) {
-        let b, shift = 0, result = 0;
-        do { b = encoded.charCodeAt(idx++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-        lat += (result & 1) ? ~(result >> 1) : result >> 1;
-        shift = 0; result = 0;
-        do { b = encoded.charCodeAt(idx++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-        lng += (result & 1) ? ~(result >> 1) : result >> 1;
-        coords.push([lat / 1e5, lng / 1e5]);
+    // ── Polyline ──
+    function decodePolyline(enc) {
+      const c=[]; let i=0,lat=0,lng=0;
+      while(i<enc.length){
+        let b,s=0,r=0;
+        do{b=enc.charCodeAt(i++)-63;r|=(b&0x1f)<<s;s+=5;}while(b>=0x20);
+        lat+=(r&1)?~(r>>1):(r>>1); s=0;r=0;
+        do{b=enc.charCodeAt(i++)-63;r|=(b&0x1f)<<s;s+=5;}while(b>=0x20);
+        lng+=(r&1)?~(r>>1):(r>>1);
+        c.push([lat/1e5,lng/1e5]);
       }
-      return coords;
+      return c;
     }
 
-    function polylineToSVG(encoded) {
-      const coords = decodePolyline(encoded);
-      if (coords.length < 2) return null;
-      const lats = coords.map(c => c[0]), lngs = coords.map(c => c[1]);
-      const minLat = Math.min(...lats), maxLat = Math.max(...lats), minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
-      const W = 400, H = 240, pad = 20;
-      const scaleX = (maxLng - minLng) || 1, scaleY = (maxLat - minLat) || 1;
-      const scale = Math.min((W - pad*2) / scaleX, (H - pad*2) / scaleY);
-      const offX = (W - scale * scaleX) / 2, offY = (H - scale * scaleY) / 2;
-      const points = coords.map(([la, ln]) => `${offX + (ln - minLng) * scale},${H - offY - (la - minLat) * scale}`).join(" ");
-      const start = points.split(" ")[0].split(",");
-      return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-        <polyline points="${points}" fill="none" stroke="oklch(0.72 0.19 45)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
-        <circle cx="${start[0]}" cy="${start[1]}" r="4" fill="oklch(0.72 0.19 45)"/>
+    function renderMap(enc, W, H, pad=20) {
+      const coords = decodePolyline(enc);
+      if(coords.length<2) return null;
+      const lats=coords.map(c=>c[0]),lngs=coords.map(c=>c[1]);
+      const minLat=Math.min(...lats),maxLat=Math.max(...lats),minLng=Math.min(...lngs),maxLng=Math.max(...lngs);
+      const sx=(maxLng-minLng)||1,sy=(maxLat-minLat)||1;
+      const scale=Math.min((W-pad*2)/sx,(H-pad*2)/sy);
+      const ox=(W-scale*sx)/2,oy=(H-scale*sy)/2;
+      const pts=coords.map(([la,ln])=>`${ox+(ln-minLng)*scale},${H-oy-(la-minLat)*scale}`).join(" ");
+      const start=pts.split(" ")[0].split(",");
+      return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <polyline points="${pts}" fill="none" stroke="oklch(0.72 0.19 45)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="${start[0]}" cy="${start[1]}" r="5" fill="oklch(0.72 0.19 45)" opacity="0.9"/>
       </svg>`;
     }
 
-    function formatDuration(s) {
-      const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
-      if (h > 0) return `${h}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
-      return `${m}:${String(sec).padStart(2,"0")}`;
-    }
-    function formatPace(mps) {
-      if (!mps) return "—";
-      const spk = 1000 / mps, m = Math.floor(spk / 60), s = Math.round(spk % 60);
-      return `${m}:${String(s).padStart(2,"0")}`;
-    }
-    function badgeClass(type) {
-      if (!type) return "badge-Other";
-      if (type.includes("Run")) return "badge-Run";
-      if (type.includes("Ride")) return "badge-Ride";
-      if (type === "Swim") return "badge-Swim";
-      return "badge-Other";
+    // ── Formatters ──
+    function dur(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return h>0?`${h}:${String(m).padStart(2,"0")}:${String(sc).padStart(2,"0")}`:`${m}:${String(sc).padStart(2,"0")}`;}
+    function pace(mps){if(!mps)return"—";const spk=1000/mps,m=Math.floor(spk/60),s=Math.round(spk%60);return`${m}:${String(s).padStart(2,"0")}`;}
+    function badgeCls(t){if(!t)return"badge-Other";if(t.includes("Run"))return"badge-Run";if(t.includes("Ride"))return"badge-Ride";if(t==="Swim")return"badge-Swim";return"badge-Other";}
+
+    const ZONE_COLORS=["var(--z1)","var(--z2)","var(--z3)","var(--z4)","var(--z5)"];
+    let zonesCache=null;
+    async function getZones(){if(zonesCache)return zonesCache;const r=await fetch("/api/zones?user=a");zonesCache=r.ok?await r.json():null;return zonesCache;}
+    function calcZoneTimes(hr,t,zones){
+      const th=zones?.heart_rate?.zones?.map(z=>z.min)??[];
+      if(!th.length||!hr?.length)return null;
+      const tot=new Array(th.length).fill(0);
+      for(let i=1;i<hr.length;i++){const v=hr[i],dt=t[i]-t[i-1];let z=0;for(let x=th.length-1;x>=0;x--){if(v>=th[x]){z=x;break;}}tot[z]+=dt;}
+      return tot;
     }
 
-    const ZONE_COLORS = ["var(--z1)","var(--z2)","var(--z3)","var(--z4)","var(--z5)"];
-    const ZONE_NAMES  = ["Z1","Z2","Z3","Z4","Z5"];
-    let zonesCache = null;
-    async function getZones() {
-      if (zonesCache) return zonesCache;
-      const r = await fetch("/api/zones?user=a");
-      zonesCache = r.ok ? await r.json() : null;
-      return zonesCache;
-    }
-
-    function calcZoneTimes(hrStream, timeStream, zones) {
-      const thresholds = zones?.heart_rate?.zones?.map(z => z.min) ?? [];
-      if (!thresholds.length || !hrStream?.length) return null;
-      const totals = new Array(thresholds.length).fill(0);
-      for (let i = 1; i < hrStream.length; i++) {
-        const hr = hrStream[i], dt = timeStream[i] - timeStream[i-1];
-        let zone = 0;
-        for (let z = thresholds.length - 1; z >= 0; z--) { if (hr >= thresholds[z]) { zone = z; break; } }
-        totals[zone] += dt;
-      }
-      return totals;
-    }
-
-    // ── Weekly load ──
-    function calcWeeklyLoad(activities) {
-      const weeks = {};
-      activities.forEach(a => {
-        if (!a.start_date_local) return;
-        const d = new Date(a.start_date_local);
-        const day = d.getDay();
-        const monday = new Date(d); monday.setDate(d.getDate() - ((day + 6) % 7));
-        const key = monday.toISOString().slice(0, 10);
-        if (!weeks[key]) weeks[key] = { week: key, km: 0, time: 0, count: 0 };
-        weeks[key].km += a.distance / 1000;
-        weeks[key].time += a.moving_time;
-        weeks[key].count++;
-      });
-      return Object.values(weeks).sort((a, b) => b.week.localeCompare(a.week)).slice(0, 4);
-    }
-
-    // ── Chat ──
-    let chatMessages = [];
-    let chatContext = null;
-
-    function appendMessage(role, text) {
-      const container = document.getElementById("chat-messages");
-      const div = document.createElement("div");
-      div.className = `msg msg-${role}`;
-      div.innerHTML = `<div class="msg-bubble">${text.replace(/\n/g, "<br>")}</div>`;
-      container.appendChild(div);
-      container.scrollTop = container.scrollHeight;
-      return div;
-    }
-
-    function appendThinking() {
-      const container = document.getElementById("chat-messages");
-      const div = document.createElement("div");
-      div.className = "msg msg-ai msg-thinking";
-      div.innerHTML = `<div class="msg-bubble">Analyserar</div>`;
-      container.appendChild(div);
-      container.scrollTop = container.scrollHeight;
-      return div;
-    }
-
-    async function sendChat(userText) {
-      const send = document.getElementById("chat-send");
-      const input = document.getElementById("chat-input");
-      send.disabled = true;
-
-      if (userText) {
-        chatMessages.push({ role: "user", parts: [{ text: userText }] });
-        appendMessage("user", userText);
-      }
-      // if null, message was already pushed by caller (initChat)
-
-      const thinking = appendThinking();
-
-      try {
-        const r = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: chatMessages, context: chatContext }),
-        });
-        const data = await r.json();
-        const reply = data.reply ?? data.error ?? "Något gick fel.";
-        thinking.remove();
-        appendMessage("ai", reply);
-        chatMessages.push({ role: "model", parts: [{ text: reply }] });
-      } catch {
-        thinking.remove();
-        appendMessage("ai", "Något gick fel.");
-      }
-
-      send.disabled = false;
-      input.value = "";
-      input.style.height = "auto";
-    }
-
-    async function initChat(activities, athlete) {
-      const weeklyLoad = calcWeeklyLoad(activities);
-      const recent10 = activities.slice(0, 10);
-      const latestId = activities[0]?.id;
-
-      let latestActivity = null, latestStreams = null;
-      if (latestId) {
-        const [actRes, streamsRes] = await Promise.all([
-          fetch(`/api/activity?id=${latestId}&user=a`),
-          fetch(`/api/streams?id=${latestId}&user=a`),
-        ]);
-        if (actRes.ok) latestActivity = await actRes.json();
-        if (streamsRes.ok) latestStreams = await streamsRes.json();
-      }
-
-      chatContext = { athlete, latestActivity, latestStreams, recentActivities: recent10, weeklyLoad };
-      // Push opening prompt silently — don't show it in the UI
-      chatMessages.push({ role: "user", parts: [{ text: "Analysis of past activity" }] });
-      await sendChat(null);
-    }
-
-    // ── Chat form ──
-    document.getElementById("chat-form").addEventListener("submit", e => {
-      e.preventDefault();
-      const val = document.getElementById("chat-input").value.trim();
-      if (val) sendChat(val);
-    });
-    document.getElementById("chat-input").addEventListener("keydown", e => {
-      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); document.getElementById("chat-form").dispatchEvent(new Event("submit")); }
-    });
-
-    // ── Activity detail ──
-    async function loadDetail(id, detailEl) {
-      detailEl.innerHTML = `<div class="detail-loading">Laddar...</div>`;
-      const [actRes, streamsRes, zones] = await Promise.all([
-        fetch(`/api/activity?id=${id}&user=a`),
-        fetch(`/api/streams?id=${id}&user=a`),
-        getZones(),
-      ]);
-      const act     = actRes.ok     ? await actRes.json()     : null;
-      const streams = streamsRes.ok ? await streamsRes.json() : null;
-      const polyline = act?.map?.polyline || act?.map?.summary_polyline;
-      const mapHTML = polyline ? (polylineToSVG(polyline) ?? `<span class="no-map">Ingen kartdata</span>`) : `<span class="no-map">Ingen kartdata</span>`;
-      const hrData = streams?.heartrate?.data, timeData = streams?.time?.data;
-      const zoneTimes = calcZoneTimes(hrData, timeData, zones);
-      const totalZoneTime = zoneTimes ? zoneTimes.reduce((a,b) => a+b, 0) : 0;
-      const zonesHTML = zoneTimes
-        ? `<div><div class="section-label">Pulszoner</div>${zoneTimes.map((t,i) => `<div class="zone-row"><span class="zone-name">${ZONE_NAMES[i]}</span><div class="zone-bar-bg"><div class="zone-bar" style="width:${totalZoneTime?(t/totalZoneTime*100).toFixed(1):0}%;background:${ZONE_COLORS[i]}"></div></div><span class="zone-time">${formatDuration(t)}</span></div>`).join("")}</div>`
-        : `<div><div class="section-label">Pulszoner</div><span style="color:var(--muted);font-size:0.8rem">Ingen pulsdata</span></div>`;
-      const splits = act?.splits_metric ?? [];
-      const isRun = act?.sport_type?.includes("Run");
-      const splitsHTML = splits.length
-        ? `<div><div class="section-label">Km-splittrar</div><table class="splits-table"><thead><tr><th>km</th><th>${isRun?"Tempo":"Fart"}</th><th>Puls</th><th>Höjd</th></tr></thead><tbody>${splits.map((s,i) => `<tr><td>${i+1}</td><td>${isRun?formatPace(s.average_speed):(s.average_speed*3.6).toFixed(1)}</td><td>${s.average_heartrate?Math.round(s.average_heartrate):"—"}</td><td>${s.elevation_difference>=0?"+":""}${Math.round(s.elevation_difference)}m</td></tr>`).join("")}</tbody></table></div>`
-        : "";
-      const efforts = act?.best_efforts?.slice(0, 6) ?? [];
-      const effortsHTML = efforts.length
-        ? `<div><div class="section-label">Bästa insatser</div><ul class="efforts-list">${efforts.map(e=>`<li class="effort-row"><span class="effort-name">${e.name}</span><span class="effort-time">${formatDuration(e.elapsed_time)}</span></li>`).join("")}</ul></div>`
-        : "";
-      detailEl.innerHTML = `
-        <div class="detail-grid">
-          <div class="detail-map">${mapHTML}</div>
-          <div class="detail-right">${zonesHTML}${effortsHTML}</div>
-        </div>
-        ${splitsHTML ? `<div style="padding:1.5rem;border-top:1px solid var(--border)">${splitsHTML}</div>` : ""}`;
-    }
-
-    function renderCard(a) {
-      const km = (a.distance / 1000).toFixed(2);
-      const date = new Date(a.start_date_local);
-      const dateStr = date.toLocaleDateString("sv-SE", { weekday:"short", day:"numeric", month:"short" });
+    // ── Hero ──
+    function renderHero(a) {
+      const km = (a.distance/1000).toFixed(2);
       const isRun = a.sport_type?.includes("Run");
+      const date = new Date(a.start_date_local);
+      const dateStr = date.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+      const polyline = a.map?.summary_polyline;
+      const mapHTML = polyline
+        ? `<div class="hero-map">${renderMap(polyline,900,260,28)||"<div class='hero-map-placeholder'>No route data</div>"}<div class="hero-map-overlay"></div></div>`
+        : `<div class="hero-map"><div class="hero-map-placeholder">No route data</div></div>`;
+
+      document.getElementById("hero-area").innerHTML = `
+        ${mapHTML}
+        <div class="hero-body">
+          <div class="hero-meta">
+            <span class="hero-type-badge">${a.sport_type}</span>
+            <span class="hero-date">${dateStr}</span>
+          </div>
+          <div class="hero-name">${a.name}</div>
+          <div class="hero-stats-primary" style="margin-bottom:1px">
+            <div class="hero-stat">
+              <div class="hero-stat-label">Distance</div>
+              <div class="hero-stat-value">${km}<span class="hero-stat-unit">km</span></div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-label">${isRun?"Avg pace":"Avg speed"}</div>
+              <div class="hero-stat-value">${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="hero-stat-unit">${isRun?"/km":"km/h"}</span></div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-label">Avg HR</div>
+              <div class="hero-stat-value">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="hero-stat-unit">${a.average_heartrate?"bpm":""}</span></div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-label">Duration</div>
+              <div class="hero-stat-value" style="font-size:1.3rem">${dur(a.moving_time)}</div>
+            </div>
+          </div>
+          <div class="hero-stats-secondary">
+            <div class="hero-stat secondary">
+              <div class="hero-stat-label">Elevation</div>
+              <div class="hero-stat-value">${Math.round(a.total_elevation_gain)}<span class="hero-stat-unit">m</span></div>
+            </div>
+            <div class="hero-stat secondary">
+              <div class="hero-stat-label">Max HR</div>
+              <div class="hero-stat-value">${a.max_heartrate?Math.round(a.max_heartrate):"—"}<span class="hero-stat-unit">${a.max_heartrate?"bpm":""}</span></div>
+            </div>
+            <div class="hero-stat secondary">
+              <div class="hero-stat-label">Cadence</div>
+              <div class="hero-stat-value">${a.average_cadence?Math.round(a.average_cadence*2):"—"}<span class="hero-stat-unit">${a.average_cadence?"spm":""}</span></div>
+            </div>
+            <div class="hero-stat secondary">
+              <div class="hero-stat-label">Calories</div>
+              <div class="hero-stat-value">${a.calories||"—"}<span class="hero-stat-unit">${a.calories?"kcal":""}</span></div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // ── Activity cards (previous runs) ──
+    function renderCard(a) {
+      const km=(a.distance/1000).toFixed(2);
+      const date=new Date(a.start_date_local).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+      const isRun=a.sport_type?.includes("Run");
       return `
         <div class="card" data-id="${a.id}" onclick="toggleDetail(this)">
           <div class="card-top">
             <div style="min-width:0">
-              <div class="card-eyebrow">${a.sport_type??"Aktivitet"} · ${dateStr}</div>
+              <div class="card-meta">${a.sport_type} · ${date}</div>
               <div class="card-name">${a.name}</div>
             </div>
-            <span class="badge ${badgeClass(a.sport_type)}">${km} km</span>
+            <span class="card-badge ${badgeCls(a.sport_type)}">${km} km</span>
           </div>
-          <div class="divider"></div>
-          <div class="stats">
-            <div><div class="stat-label">Tid</div><div class="stat-value">${formatDuration(a.moving_time)}</div></div>
-            <div><div class="stat-label">${isRun?"Tempo":"Fart"}</div><div class="stat-value">${isRun?formatPace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="stat-unit">${isRun?"/km":"km/h"}</span></div></div>
-            <div><div class="stat-label">Puls</div><div class="stat-value">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="stat-unit">${a.average_heartrate?"bpm":""}</span></div></div>
-            <div><div class="stat-label">Höjd</div><div class="stat-value">${Math.round(a.total_elevation_gain)}<span class="stat-unit">m</span></div></div>
+          <div class="card-stats">
+            <div><div class="card-stat-label">Time</div><div class="card-stat-value">${dur(a.moving_time)}</div></div>
+            <div><div class="card-stat-label">${isRun?"Pace":"Speed"}</div><div class="card-stat-value">${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="card-stat-unit">${isRun?"/km":"km/h"}</span></div></div>
+            <div><div class="card-stat-label">HR</div><div class="card-stat-value">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="card-stat-unit">${a.average_heartrate?"bpm":""}</span></div></div>
+            <div><div class="card-stat-label">Elev</div><div class="card-stat-value">${Math.round(a.total_elevation_gain)}<span class="card-stat-unit">m</span></div></div>
           </div>
         </div>
         <div class="detail" id="detail-${a.id}"></div>`;
     }
 
+    async function loadDetail(id, el) {
+      el.innerHTML=`<div class="detail-loading">Loading...</div>`;
+      const [actRes,streamsRes,zones]=await Promise.all([fetch(`/api/activity?id=${id}&user=a`),fetch(`/api/streams?id=${id}&user=a`),getZones()]);
+      const act=actRes.ok?await actRes.json():null;
+      const streams=streamsRes.ok?await streamsRes.json():null;
+      const polyline=act?.map?.polyline||act?.map?.summary_polyline;
+      const mapSVG=polyline?renderMap(polyline,460,160,16):null;
+      const mapHTML=mapSVG?`<div class="detail-map-sm">${mapSVG}</div>`:``;
+      const hr=streams?.heartrate?.data,t=streams?.time?.data;
+      const zt=calcZoneTimes(hr,t,zones),tzTotal=zt?zt.reduce((a,b)=>a+b,0):0;
+      const zonesHTML=zt?`<div class="detail-col"><div class="detail-section-label">HR Zones</div>${zt.map((v,i)=>`<div class="zone-row"><span class="zone-name">Z${i+1}</span><div class="zone-bar-bg"><div class="zone-bar" style="width:${tzTotal?(v/tzTotal*100).toFixed(1):0}%;background:${ZONE_COLORS[i]}"></div></div><span class="zone-time">${dur(v)}</span></div>`).join("")}</div>`:`<div class="detail-col"><div class="detail-section-label">HR Zones</div><span style="color:var(--muted);font-size:0.8rem">No HR data</span></div>`;
+      const efforts=act?.best_efforts?.slice(0,6)??[];
+      const effortsHTML=`<div class="detail-col"><div class="detail-section-label">Best efforts</div>${efforts.map(e=>`<div class="effort-row"><span class="effort-name">${e.name}</span><span class="effort-time">${dur(e.elapsed_time)}</span></div>`).join("")}</div>`;
+      const splits=act?.splits_metric??[];
+      const isRun=act?.sport_type?.includes("Run");
+      const splitsHTML=splits.length?`<div class="splits-wrap"><div class="detail-section-label" style="margin-bottom:0.6rem">Km splits</div><table class="splits-table"><thead><tr><th>km</th><th>${isRun?"Pace":"Speed"}</th><th>HR</th><th>Cad</th><th>Elev</th></tr></thead><tbody>${splits.map((s,i)=>`<tr><td>${i+1}</td><td>${isRun?pace(s.average_speed):(s.average_speed*3.6).toFixed(1)}</td><td>${s.average_heartrate?Math.round(s.average_heartrate):"—"}</td><td>${s.average_cadence?Math.round(s.average_cadence*2):"—"}</td><td>${s.elevation_difference>=0?"+":""}${Math.round(s.elevation_difference)}m</td></tr>`).join("")}</tbody></table></div>`:``;
+      el.innerHTML=`${mapHTML}<div class="detail-cols">${zonesHTML}${effortsHTML}</div>${splitsHTML}`;
+    }
+
     function toggleDetail(card) {
-      const id = card.dataset.id;
-      const detail = document.getElementById(`detail-${id}`);
-      const isOpen = detail.classList.contains("open");
-      document.querySelectorAll(".detail.open").forEach(d => d.classList.remove("open"));
-      document.querySelectorAll(".card.active").forEach(c => c.classList.remove("active"));
-      if (!isOpen) {
-        detail.classList.add("open");
-        card.classList.add("active");
-        if (!detail.dataset.loaded) { detail.dataset.loaded = "1"; loadDetail(id, detail); }
+      const id=card.dataset.id,detail=document.getElementById(`detail-${id}`),isOpen=detail.classList.contains("open");
+      document.querySelectorAll(".detail.open").forEach(d=>d.classList.remove("open"));
+      document.querySelectorAll(".card.active").forEach(c=>c.classList.remove("active"));
+      if(!isOpen){detail.classList.add("open");card.classList.add("active");if(!detail.dataset.loaded){detail.dataset.loaded="1";loadDetail(id,detail);}}
+    }
+
+    // ── Chat ──
+    let chatMessages=[], chatContext=null;
+
+    function appendMsg(role,text){
+      const c=document.getElementById("chat-messages");
+      const d=document.createElement("div");
+      d.className=`msg msg-${role}`;
+      d.innerHTML=`<div class="msg-bubble">${text.replace(/\n/g,"<br>")}</div>`;
+      c.appendChild(d); c.scrollTop=c.scrollHeight; return d;
+    }
+    function appendThinking(){
+      const c=document.getElementById("chat-messages");
+      const d=document.createElement("div");
+      d.className="msg msg-ai msg-thinking";
+      d.innerHTML=`<div class="msg-bubble">Analysing</div>`;
+      c.appendChild(d); c.scrollTop=c.scrollHeight; return d;
+    }
+
+    async function sendChat(userText){
+      const send=document.getElementById("chat-send"),input=document.getElementById("chat-input");
+      send.disabled=true;
+      if(userText){chatMessages.push({role:"user",parts:[{text:userText}]});appendMsg("user",userText);}
+      const thinking=appendThinking();
+      try{
+        const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:chatMessages,context:chatContext})});
+        const data=await r.json();
+        const reply=data.reply??data.error??"Something went wrong.";
+        thinking.remove();appendMsg("ai",reply);
+        chatMessages.push({role:"model",parts:[{text:reply}]});
+      }catch{thinking.remove();appendMsg("ai","Something went wrong.");}
+      send.disabled=false; input.value=""; input.style.height="auto";
+    }
+
+    async function initChat(activities, athlete){
+      const recent10=activities.slice(0,10);
+      const weeklyLoad=calcWeeklyLoad(activities);
+      const latestId=activities[0]?.id;
+      let latestActivity=null,latestStreams=null;
+      if(latestId){
+        const [aR,sR]=await Promise.all([fetch(`/api/activity?id=${latestId}&user=a`),fetch(`/api/streams?id=${latestId}&user=a`)]);
+        if(aR.ok)latestActivity=await aR.json();
+        if(sR.ok)latestStreams=await sR.json();
       }
+      chatContext={athlete,latestActivity,latestStreams,recentActivities:recent10,weeklyLoad};
+      chatMessages.push({role:"user",parts:[{text:"Analysis of past activity"}]});
+      await sendChat(null);
+    }
+
+    function calcWeeklyLoad(activities){
+      const weeks={};
+      activities.forEach(a=>{
+        if(!a.start_date_local)return;
+        const d=new Date(a.start_date_local),day=d.getDay();
+        const mon=new Date(d);mon.setDate(d.getDate()-((day+6)%7));
+        const key=mon.toISOString().slice(0,10);
+        if(!weeks[key])weeks[key]={week:key,km:0,time:0,count:0};
+        weeks[key].km+=a.distance/1000;weeks[key].time+=a.moving_time;weeks[key].count++;
+      });
+      return Object.values(weeks).sort((a,b)=>b.week.localeCompare(a.week)).slice(0,4);
     }
 
     // ── Tabs ──
-    function switchTab(name) {
-      document.querySelectorAll(".chat-tab").forEach(t => t.classList.remove("active"));
-      document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+    function switchTab(name){
+      document.querySelectorAll(".chat-tab").forEach(t=>t.classList.remove("active"));
+      document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
       document.getElementById(`tab-${name}`).classList.add("active");
       document.getElementById(`panel-${name}`).classList.add("active");
     }
 
-    function populateRecent(activities) {
-      const list = document.getElementById("recent-list");
-      list.innerHTML = activities.slice(0, 15).map(a => {
-        const km = (a.distance / 1000).toFixed(1);
-        const isRun = a.sport_type?.includes("Run");
-        const date = new Date(a.start_date_local).toLocaleDateString("sv-SE", { day:"numeric", month:"short" });
-        const pace = isRun ? formatPace(a.average_speed) : (a.average_speed * 3.6).toFixed(1);
-        const hr = a.average_heartrate ? Math.round(a.average_heartrate) + " bpm" : "—";
+    function populateRecent(activities){
+      document.getElementById("recent-list").innerHTML=activities.slice(0,15).map(a=>{
+        const km=(a.distance/1000).toFixed(1),isRun=a.sport_type?.includes("Run");
+        const date=new Date(a.start_date_local).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
         return `<div class="recent-item" onclick="switchTab('coach');scrollToCard('${a.id}')">
-          <div class="recent-item-top">
-            <div class="recent-item-name">${a.name}</div>
-            <div class="recent-item-date">${date}</div>
-          </div>
-          <div class="recent-item-stats">
-            <div class="recent-stat"><span>${km}</span> km</div>
-            <div class="recent-stat"><span>${pace}</span> ${isRun ? "/km" : "km/h"}</div>
-            <div class="recent-stat"><span>${hr}</span></div>
+          <div class="recent-top"><div class="recent-name">${a.name}</div><div class="recent-date">${date}</div></div>
+          <div class="recent-stats">
+            <div class="recent-stat"><b>${km}</b> km</div>
+            <div class="recent-stat"><b>${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}</b> ${isRun?"/km":"km/h"}</div>
+            <div class="recent-stat"><b>${a.average_heartrate?Math.round(a.average_heartrate):"—"}</b> ${a.average_heartrate?"bpm":""}</div>
           </div>
         </div>`;
       }).join("");
     }
 
-    function scrollToCard(id) {
-      const card = document.querySelector(`.card[data-id="${id}"]`);
-      if (card) { card.scrollIntoView({ behavior: "smooth", block: "center" }); card.click(); }
+    function scrollToCard(id){
+      const c=document.querySelector(`.card[data-id="${id}"]`);
+      if(c){c.scrollIntoView({behavior:"smooth",block:"center"});c.click();}
     }
 
-    // ── Boot ──
-    const grid = document.getElementById("grid");
-    grid.innerHTML = Array.from({length: 6}, () => `<div class="skeleton"></div>`).join("");
+    document.getElementById("chat-form").addEventListener("submit",e=>{e.preventDefault();const v=document.getElementById("chat-input").value.trim();if(v)sendChat(v);});
+    document.getElementById("chat-input").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();document.getElementById("chat-form").dispatchEvent(new Event("submit"));}});
 
+    // ── Boot ──
     Promise.all([
-      fetch("/api/activities?user=a&per_page=30").then(r => r.json()),
-      fetch("/api/stats?user=a").then(r => r.ok ? r.json() : null),
-    ]).then(([activities, athlete]) => {
-      if (!Array.isArray(activities)) { grid.innerHTML = `<div class="error">Kunde inte hämta aktiviteter.</div>`; return; }
-      if (!activities.length) { grid.innerHTML = `<p style="color:var(--muted)">Inga aktiviteter.</p>`; return; }
-      grid.innerHTML = activities.map(renderCard).join("");
+      fetch("/api/activities?user=a&per_page=30").then(r=>r.json()),
+      fetch("/api/stats?user=a").then(r=>r.ok?r.json():null),
+    ]).then(([activities,athlete])=>{
+      if(!Array.isArray(activities)){document.getElementById("hero-area").innerHTML=`<div style="color:#f87171;padding:1rem">Failed to load activities.</div>`;return;}
+      if(!activities.length){document.getElementById("hero-area").innerHTML=`<div style="color:var(--muted);padding:1rem">No activities found.</div>`;return;}
+      renderHero(activities[0]);
+      document.getElementById("grid").innerHTML=activities.slice(1).map(renderCard).join("");
       populateRecent(activities);
-      initChat(activities, athlete);
-    }).catch(() => {
-      grid.innerHTML = `<div class="error">Något gick fel.</div>`;
+      initChat(activities,athlete);
+    }).catch(()=>{
+      document.getElementById("hero-area").innerHTML=`<div style="color:#f87171;padding:1rem">Something went wrong.</div>`;
     });
   </script>
 </body>
