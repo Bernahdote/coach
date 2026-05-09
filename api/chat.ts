@@ -135,36 +135,36 @@ function buildSystemPrompt(ctx: any): string {
 
   if (ctx.latestStreams) {
     const s = ctx.latestStreams;
-    const stats: string[] = [];
-    if (s.cadence?.data?.length) {
-      const cads = s.cadence.data.filter((v: number) => v > 0);
-      const avgCad = Math.round(cads.reduce((a: number, b: number) => a + b, 0) / cads.length * 2);
-      stats.push(`avg cadence ${avgCad}spm`);
-    }
-    if (s.altitude?.data?.length) {
-      const alts = s.altitude.data;
-      const gain = alts.reduce((acc: number, v: number, i: number) => i > 0 && v > alts[i-1] ? acc + (v - alts[i-1]) : acc, 0);
-      stats.push(`elevation profile available (${Math.round(gain)}m gain from GPS)`);
-    }
-    if (s.grade_smooth?.data?.length) {
-      const grades = s.grade_smooth.data;
-      const maxGrade = Math.max(...grades).toFixed(1);
-      const minGrade = Math.min(...grades).toFixed(1);
-      stats.push(`grade range ${minGrade}% to ${maxGrade}%`);
-    }
-    if (s.temp?.data?.length) {
-      const temps = s.temp.data;
-      const avgTemp = Math.round(temps.reduce((a: number, b: number) => a + b, 0) / temps.length);
-      stats.push(`avg temp ${avgTemp}°C`);
-    }
-    if (s.watts?.data?.length) {
-      const watts = s.watts.data.filter((v: number) => v > 0);
-      const avgW = Math.round(watts.reduce((a: number, b: number) => a + b, 0) / watts.length);
-      stats.push(`avg power ${avgW}W from stream`);
-    }
-    if (stats.length) {
-      lines.push(`STREAM DATA SUMMARY: ${stats.join(", ")}`);
-      lines.push("");
+    const time = s.time?.data as number[] | undefined;
+    if (time?.length) {
+      // Build columns for whatever streams exist
+      const cols: { key: string; label: string; data: number[]; fmt: (v: number) => string }[] = [];
+      if (s.heartrate?.data)       cols.push({ key:"hr",    label:"hr_bpm",    data: s.heartrate.data,       fmt: v => Math.round(v).toString() });
+      if (s.velocity_smooth?.data) cols.push({ key:"pace",  label:"pace_minkm",data: s.velocity_smooth.data,  fmt: v => v > 0 ? formatPace(v) : "—" });
+      if (s.cadence?.data)         cols.push({ key:"cad",   label:"cad_spm",   data: s.cadence.data,          fmt: v => Math.round(v * 2).toString() });
+      if (s.altitude?.data)        cols.push({ key:"alt",   label:"alt_m",     data: s.altitude.data,         fmt: v => Math.round(v).toString() });
+      if (s.grade_smooth?.data)    cols.push({ key:"grade", label:"grade_pct", data: s.grade_smooth.data,     fmt: v => v.toFixed(1) });
+      if (s.watts?.data)           cols.push({ key:"watts", label:"watts",     data: s.watts.data,            fmt: v => Math.round(v).toString() });
+      if (s.temp?.data)            cols.push({ key:"temp",  label:"temp_c",    data: s.temp.data,             fmt: v => Math.round(v).toString() });
+
+      if (cols.length) {
+        // Downsample: one row every 10 seconds
+        const INTERVAL = 10;
+        const rows: string[] = [];
+        let nextT = 0;
+        for (let i = 0; i < time.length; i++) {
+          if (time[i] >= nextT) {
+            const mins = Math.floor(time[i] / 60), secs = time[i] % 60;
+            const t = `${mins}:${String(secs).padStart(2,"0")}`;
+            const vals = cols.map(c => c.data[i] != null ? c.fmt(c.data[i]) : "—");
+            rows.push(`${t},${vals.join(",")}`);
+            nextT += INTERVAL;
+          }
+        }
+        lines.push(`STREAM DATA (sampled every 10s — time,${cols.map(c => c.label).join(",")})`);
+        lines.push(rows.join("\n"));
+        lines.push("");
+      }
     }
   }
 
