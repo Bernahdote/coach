@@ -22,7 +22,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       body: JSON.stringify({
         system_instruction: { parts: [{ text: systemInstruction }] },
         contents: messages,
-        generationConfig: { temperature: 0.75, maxOutputTokens: 600 },
+        generationConfig: { temperature: 0.75, maxOutputTokens: 1024 },
       }),
     });
 
