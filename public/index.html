@@ -11,7 +11,7 @@
     const pwd = sessionStorage.getItem("auth");
     if (pwd !== "pacecraft") {
       const v = prompt("Password:");
-      if (v !== "pacecraft") { document.write("<body style='background:#000;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0'>Access denied.</body>"); throw 0; }
+      if (v !== "pacecraft") { document.write("<body style='background:#fff;color:#000;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0'>Access denied.</body>"); throw 0; }
       sessionStorage.setItem("auth", v);
     }
   </script>
@@ -19,405 +19,306 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #08070f;
-      --s1:       #0e0c18;
-      --s2:       #131120;
-      --s3:       #181526;
-      --b1:       #1f1c30;
-      --b2:       #2c2840;
-      --text:     #f0ecff;
-      --text2:    #9d97b8;
-      --muted:    #4a4560;
-      --accent:   #ff6b35;
-      --accent2:  #ff9a6c;
-      --cyan:     #00d4ff;
-      --purple:   #a855f7;
-      --acc-glow: color-mix(in srgb,#ff6b35 20%,transparent);
-      --acc-dim:  color-mix(in srgb,#ff6b35 12%,transparent);
-      --run:      #ff6b35; --ride: #00d4ff; --swim: #10f5a8; --other: #a855f7;
-      --z1:#00d4ff;--z2:#10f5a8;--z3:#fbbf24;--z4:#ff6b35;--z5:#ef4444;
-      --chat-w:   460px;
-      --hdr:      68px;
+      --bg:      #f7f5f0;
+      --white:   #ffffff;
+      --s2:      #f0ede8;
+      --border:  #e2ddd8;
+      --border2: #ccc8c2;
+      --text:    #1a1714;
+      --text2:   #6b6560;
+      --muted:   #a8a29c;
+      --orange:  #ff5500;
+      --orange2: #ff7733;
+      --cyan:    #0088cc;
+      --purple:  #7c3aed;
+      --green:   #16a34a;
+      --chat-w:  460px;
+      --hdr:     64px;
+      --z1:#0088cc;--z2:#16a34a;--z3:#eab308;--z4:#ff5500;--z5:#dc2626;
     }
 
     html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg); color: var(--text);
-      font-family: "DM Sans", system-ui, sans-serif;
-      min-height: 100vh; overflow-x: hidden;
-    }
-    body::before {
-      content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 70% 50% at 10% 0%, color-mix(in srgb,#ff6b35 8%,transparent), transparent),
-        radial-gradient(ellipse 50% 40% at 90% 100%, color-mix(in srgb,#a855f7 8%,transparent), transparent),
-        radial-gradient(ellipse 40% 30% at 60% 50%, color-mix(in srgb,#00d4ff 4%,transparent), transparent);
-    }
+    body { background: var(--bg); color: var(--text); font-family: "DM Sans", system-ui, sans-serif; min-height: 100vh; overflow-x: hidden; }
 
-    ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 2px; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
     /* ── HEADER ── */
     .hdr {
       position: fixed; inset: 0 0 auto; z-index: 100; height: var(--hdr);
+      background: rgba(247,245,240,0.92);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
       display: flex; align-items: center;
-      background: color-mix(in srgb, var(--s1) 85%, transparent);
-      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--b1);
+      transition: box-shadow 0.3s;
     }
-    .hdr-inner {
-      width: 100%; display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center; padding: 0 1.5rem; gap: 1rem;
-    }
+    .hdr.raised { box-shadow: 0 2px 24px rgba(0,0,0,0.08); }
+    .hdr-inner { width: 100%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 1.75rem; gap: 1rem; }
 
-    /* Logo */
     .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); }
     .logo-icon { position: relative; width: 32px; height: 32px; flex-shrink: 0; }
-    .logo-orbit {
-      width: 32px; height: 32px; border-radius: 50%;
-      border: 1.5px solid var(--b2);
-      animation: spin 8s linear infinite;
-    }
-    .logo-sat {
-      position: absolute; top: -3px; left: 50%; transform: translateX(-50%);
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--accent); box-shadow: 0 0 10px var(--accent), 0 0 20px color-mix(in srgb,var(--accent) 40%,transparent);
-    }
-    .logo-core {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-      width: 5px; height: 5px; border-radius: 50%; background: var(--text2);
-    }
+    .logo-ring { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border2); animation: spin 8s linear infinite; }
+    .logo-sat { position: absolute; top: -3px; left: 50%; transform: translateX(-50%); width: 8px; height: 8px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 12px var(--orange); }
+    .logo-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 5px; height: 5px; border-radius: 50%; background: var(--text2); }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .logo-name { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.03em; }
-    .logo-name span { color: var(--accent); }
+    .logo-name { font-size: 1rem; font-weight: 800; letter-spacing: -0.03em; }
 
-    /* Center stats */
-    .hdr-center { display: flex; align-items: center; gap: 2rem; }
-    .hdr-stat { text-align: center; }
+    .hdr-center { display: flex; align-items: center; gap: 1.75rem; }
     .hdr-stat-val { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.02em; }
-    .hdr-stat-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-top: 1px; }
-    .hdr-divider { width: 1px; height: 28px; background: var(--b1); }
+    .hdr-stat-lbl { font-family: "DM Mono", monospace; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+    .hdr-sep { width: 1px; height: 28px; background: var(--border); }
 
-    /* Right */
     .hdr-right { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; }
-    .hdr-athlete { display: flex; align-items: center; gap: 0.6rem; }
-    .hdr-avatar {
-      width: 30px; height: 30px; border-radius: 50%;
-      background: var(--acc-dim); border: 1.5px solid color-mix(in srgb,var(--accent) 30%,transparent);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.7rem; font-weight: 700; color: var(--accent);
-    }
-    .hdr-athlete-name { font-size: 0.85rem; font-weight: 500; color: var(--text2); }
-    .live-pill {
-      display: flex; align-items: center; gap: 0.4rem;
-      font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em;
-      padding: 0.25rem 0.65rem; border-radius: 999px;
-      border: 1px solid var(--b2); color: var(--muted);
-    }
-    .live-dot {
-      width: 5px; height: 5px; border-radius: 50%; background: #34d399;
-      box-shadow: 0 0 6px #34d399;
-      animation: pulse-green 2s ease-in-out infinite;
-    }
-    @keyframes pulse-green { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+    .hdr-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, var(--orange), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; color: #fff; }
+    .hdr-name { font-size: 0.85rem; font-weight: 500; color: var(--text2); }
+    .live-pill { display: flex; align-items: center; gap: 0.35rem; font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 0.25rem 0.65rem; border-radius: 999px; border: 1px solid var(--border); }
+    .live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
     /* ── LAYOUT ── */
-    .layout { display: flex; padding-top: var(--hdr); min-height: 100vh; position: relative; z-index: 1; }
-    .feed { flex: 1; min-width: 0; padding: 2rem 2rem 6rem; max-width: 900px; }
+    .layout { display: flex; padding-top: var(--hdr); min-height: 100vh; }
+    .feed { flex: 1; min-width: 0; padding: 0 0 6rem; }
 
-    /* ── HERO ── */
-    .hero {
-      position: relative; border-radius: 1.75rem; overflow: hidden;
-      border: 1px solid var(--b1); margin-bottom: 0.75rem;
-      background: var(--s1);
-      box-shadow: 0 0 0 1px var(--b1), 0 40px 80px -20px rgba(0,0,0,0.6);
+    /* ── BRAND HERO ── */
+    .brand-hero {
+      background: var(--text);
+      padding: 4rem 2.5rem 3rem;
+      position: relative; overflow: hidden;
     }
-
-    .hero-map-wrap {
-      position: relative; height: 320px; background: #050508; overflow: hidden;
+    .brand-hero::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 80% at 80% 50%, color-mix(in srgb,var(--orange) 20%,transparent), transparent),
+        radial-gradient(ellipse 40% 60% at 10% 80%, color-mix(in srgb,var(--purple) 15%,transparent), transparent);
     }
-    .hero-map-wrap svg { width: 100%; height: 100%; }
-    .hero-map-grad {
-      position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(5,5,8,0.1) 0%, rgba(5,5,8,0.0) 40%, rgba(12,13,18,0.95) 100%);
-      pointer-events: none;
+    .brand-logo-large {
+      display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.5rem; position: relative;
     }
-    .hero-map-no { height: 100%; display: flex; align-items: center; justify-content: center; font-family: "DM Mono", monospace; font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
-
-    /* Floating badge on map */
-    .hero-floating-badge {
-      position: absolute; top: 1.25rem; left: 1.5rem;
-      display: flex; align-items: center; gap: 0.5rem;
-      padding: 0.3rem 0.75rem 0.3rem 0.4rem;
-      background: color-mix(in srgb, var(--s1) 80%, transparent);
-      backdrop-filter: blur(12px); border: 1px solid var(--b2);
-      border-radius: 999px;
-    }
-    .hero-type-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .hero-type-label { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em; }
-
-    .hero-date-badge {
-      position: absolute; top: 1.25rem; right: 1.5rem;
-      font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em;
-      color: var(--text2); padding: 0.3rem 0.75rem;
-      background: color-mix(in srgb, var(--s1) 80%, transparent);
-      backdrop-filter: blur(12px); border: 1px solid var(--b2); border-radius: 999px;
-    }
-
-    .hero-body { padding: 0 2rem 2rem; }
-    .hero-name {
-      font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 900;
-      letter-spacing: -0.04em; line-height: 1.1;
-      margin-bottom: 1.75rem;
-      background: linear-gradient(135deg, var(--text) 0%, var(--accent2) 60%, var(--cyan) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-
-    .hero-primary {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      border-radius: 1.1rem; overflow: hidden;
-      border: 1px solid var(--b1); margin-bottom: 2px;
-    }
-    .hero-secondary {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      border-radius: 1.1rem; overflow: hidden;
-      border: 1px solid var(--b1);
-    }
-    .hstat { background: var(--s2); padding: 1.1rem 1.25rem; border-right: 1px solid var(--b1); }
-    .hstat:last-child { border-right: none; }
-    .hstat-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.45rem; }
-    .hstat-val { font-size: 1.75rem; font-weight: 900; letter-spacing: -0.045em; line-height: 1; font-variant-numeric: tabular-nums; }
-    .hstat-unit { font-size: 0.6rem; font-family: "DM Mono", monospace; color: var(--text2); margin-left: 0.15rem; vertical-align: middle; }
-    .hstat.sm .hstat-val { font-size: 1.15rem; font-weight: 700; }
+    .brand-orbit { position: relative; width: 56px; height: 56px; flex-shrink: 0; }
+    .brand-ring { width: 56px; height: 56px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); animation: spin 10s linear infinite; }
+    .brand-sat { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 20px var(--orange), 0 0 40px color-mix(in srgb,var(--orange) 40%,transparent); }
+    .brand-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.6); }
+    .brand-name { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 900; letter-spacing: -0.05em; color: #fff; line-height: 1; }
+    .brand-name span { color: var(--orange); }
+    .brand-tagline { font-family: "DM Mono", monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(255,255,255,0.4); position: relative; }
+    .brand-stats-row { display: flex; gap: 2.5rem; margin-top: 2.5rem; position: relative; }
+    .brand-stat-val { font-size: 2rem; font-weight: 900; letter-spacing: -0.04em; color: #fff; line-height: 1; }
+    .brand-stat-unit { font-family: "DM Mono", monospace; font-size: 0.65rem; color: rgba(255,255,255,0.4); margin-left: 0.2rem; }
+    .brand-stat-lbl { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.35); margin-top: 0.3rem; }
 
     /* ── WEEK STRIP ── */
-    .week-strip {
-      background: var(--s1); border: 1px solid var(--b1); border-radius: 1.25rem;
-      padding: 1.25rem 1.5rem; margin-bottom: 2rem;
-      display: flex; align-items: flex-end; gap: 1rem;
-    }
-    .week-label { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.5rem; writing-mode: vertical-lr; transform: rotate(180deg); flex-shrink: 0; }
-    .week-days { display: grid; grid-template-columns: repeat(7,1fr); gap: 0.5rem; flex: 1; align-items: flex-end; }
-    .week-day { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
-    .week-bar-wrap { height: 60px; display: flex; align-items: flex-end; width: 100%; }
-    .week-bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 3px; transition: height 0.6s cubic-bezier(0.16,1,0.3,1); }
-    .week-day-name { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-    .week-km { font-family: "DM Mono", monospace; font-size: 0.6rem; color: var(--text2); }
-    .week-stats { display: flex; flex-direction: column; gap: 0.5rem; flex-shrink: 0; padding-left: 1rem; border-left: 1px solid var(--b1); }
-    .week-total-val { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.04em; background: linear-gradient(135deg, var(--accent), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .week-total-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+    .week-section { padding: 2rem 2rem 0; }
+    .week-card { background: var(--white); border: 1px solid var(--border); border-radius: 1.5rem; padding: 1.5rem; display: flex; gap: 2rem; align-items: flex-end; }
+    .week-left { flex-shrink: 0; }
+    .week-km-big { font-size: 2.5rem; font-weight: 900; letter-spacing: -0.05em; background: linear-gradient(135deg, var(--orange), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+    .week-km-lbl { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-top: 0.3rem; }
+    .week-meta { font-family: "DM Mono", monospace; font-size: 0.62rem; color: var(--text2); margin-top: 0.75rem; }
+    .week-bars { flex: 1; display: grid; grid-template-columns: repeat(7,1fr); gap: 0.5rem; align-items: flex-end; border-left: 1px solid var(--border); padding-left: 1.5rem; }
+    .wday { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+    .wbar-wrap { height: 80px; display: flex; align-items: flex-end; width: 100%; }
+    .wbar { width: 100%; border-radius: 6px; min-height: 4px; transition: height 0.7s cubic-bezier(0.16,1,0.3,1); }
+    .wday-lbl { font-family: "DM Mono", monospace; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    .wday-km { font-family: "DM Mono", monospace; font-size: 0.55rem; color: var(--text2); min-height: 0.8rem; }
 
-    /* ── SECTION HEADER ── */
+    /* ── LATEST RUN ── */
+    .latest-section { padding: 1.5rem 2rem 0; }
     .sec-hdr { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
     .sec-title { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); white-space: nowrap; }
-    .sec-line { flex: 1; height: 1px; background: var(--b1); }
-    .sec-count { font-family: "DM Mono", monospace; font-size: 0.6rem; color: var(--muted); }
+    .sec-line { flex: 1; height: 1px; background: var(--border); }
 
-    /* ── CARDS ── */
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0.625rem; }
+    .hero-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 1.5rem; overflow: hidden;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.06);
+    }
+    .hero-map-wrap { position: relative; height: 300px; background: #f0ede8; overflow: hidden; }
+    .hero-map-wrap svg { width: 100%; height: 100%; }
+    .hero-map-grad { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, rgba(255,255,255,0.95) 100%); pointer-events: none; }
+    .hero-no-map { height: 100%; display: flex; align-items: center; justify-content: center; font-family: "DM Mono", monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); }
+    .hero-map-badge { position: absolute; top: 1.25rem; left: 1.5rem; display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0.75rem 0.3rem 0.45rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 999px; }
+    .hero-type-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .hero-type-lbl { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); }
+    .hero-date-badge { position: absolute; top: 1.25rem; right: 1.5rem; font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text2); padding: 0.3rem 0.75rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 999px; }
 
+    .hero-body { padding: 0 2rem 2rem; }
+    .hero-name { font-size: clamp(1.8rem, 3.5vw, 2.75rem); font-weight: 900; letter-spacing: -0.045em; line-height: 1.1; margin-bottom: 2rem; color: var(--text); }
+
+    .stat-grid-primary { display: grid; grid-template-columns: repeat(4,1fr); border: 1px solid var(--border); border-radius: 1.1rem; overflow: hidden; margin-bottom: 2px; }
+    .stat-grid-secondary { display: grid; grid-template-columns: repeat(4,1fr); border: 1px solid var(--border); border-radius: 1.1rem; overflow: hidden; }
+    .hstat { background: var(--white); padding: 1.25rem; border-right: 1px solid var(--border); }
+    .hstat:last-child { border-right: none; }
+    .hstat.alt { background: var(--bg); }
+    .hstat-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.5rem; }
+    .hstat-val { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.045em; line-height: 1; font-variant-numeric: tabular-nums; color: var(--text); }
+    .hstat-val.accent { color: var(--orange); }
+    .hstat-unit { font-size: 0.6rem; font-family: "DM Mono", monospace; color: var(--muted); margin-left: 0.15rem; }
+    .hstat.sm .hstat-val { font-size: 1.2rem; font-weight: 700; }
+
+    /* ── PREV RUNS ── */
+    .grid-section { padding: 1.5rem 2rem 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.625rem; }
     .card {
-      position: relative; background: var(--s1); border: 1px solid var(--b1);
-      border-radius: 1.25rem; padding: 1.125rem 1.25rem 1.25rem;
-      cursor: pointer; overflow: hidden;
-      transition: border-color 0.25s, background 0.25s, transform 0.2s, box-shadow 0.25s;
+      position: relative; background: var(--white); border: 1px solid var(--border);
+      border-radius: 1.25rem; padding: 1.125rem 1.25rem 1.25rem; cursor: pointer; overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
     }
-    .card::before {
-      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-      border-radius: 4px 0 0 4px; transition: opacity 0.2s;
-    }
-    .card-run::before   { background: var(--run); }
-    .card-ride::before  { background: var(--ride); }
-    .card-swim::before  { background: var(--swim); }
-    .card-other::before { background: var(--other); }
-    .card:hover { border-color: var(--b2); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px var(--b2); }
-    .card.active { border-color: color-mix(in srgb,var(--accent) 40%,transparent); box-shadow: 0 0 0 1px color-mix(in srgb,var(--accent) 20%,transparent), 0 8px 32px rgba(0,0,0,0.4); }
-
-    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.875rem; padding-left: 0.5rem; }
+    .card::after { content: ""; position: absolute; inset: 0; border-radius: 1.25rem; opacity: 0; transition: opacity 0.2s; }
+    .card:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+    .card.active { border-color: var(--orange); box-shadow: 0 0 0 3px color-mix(in srgb,var(--orange) 12%,transparent); }
+    .card-stripe { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 4px 0 0 4px; }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.875rem; padding-left: 0.625rem; }
     .card-meta { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 0.3rem; }
-    .card-name { font-size: 0.95rem; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
-    .card-badge {
-      flex-shrink: 0; font-size: 1rem; font-weight: 900; letter-spacing: -0.03em;
-      font-variant-numeric: tabular-nums;
-    }
-    .card-badge-unit { font-family: "DM Mono", monospace; font-size: 0.55rem; color: var(--text2); margin-left: 0.1rem; }
-    .card-stats { display: grid; grid-template-columns: repeat(4,1fr); padding-left: 0.5rem; }
-    .cstat-lbl { font-family: "DM Mono", monospace; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.2rem; }
-    .cstat-val { font-size: 0.95rem; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-    .cstat-unit { font-size: 0.5rem; font-family: "DM Mono", monospace; color: var(--text2); }
+    .card-name { font-size: 0.9rem; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+    .card-km { font-size: 1.1rem; font-weight: 900; letter-spacing: -0.03em; color: var(--text); flex-shrink: 0; }
+    .card-km-unit { font-family: "DM Mono", monospace; font-size: 0.55rem; color: var(--muted); }
+    .card-stats { display: grid; grid-template-columns: repeat(4,1fr); padding-left: 0.625rem; }
+    .csl { font-family: "DM Mono", monospace; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.2rem; }
+    .csv { font-size: 0.9rem; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--text); }
+    .csu { font-size: 0.5rem; font-family: "DM Mono", monospace; color: var(--muted); }
 
     /* ── DETAIL ── */
-    .detail { display: none; background: var(--s1); border: 1px solid var(--b1); border-top: none; border-radius: 0 0 1.25rem 1.25rem; overflow: hidden; margin-bottom: 0.625rem; margin-top: -0.4rem; }
+    .detail { display: none; background: var(--white); border: 1px solid var(--border); border-top: none; border-radius: 0 0 1.25rem 1.25rem; overflow: hidden; margin-bottom: 0.625rem; margin-top: -0.5rem; }
     .detail.open { display: block; }
-    .detail-map { height: 180px; background: #050508; overflow: hidden; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--b1); }
+    .detail-map { height: 180px; background: var(--s2,#f0ede8); overflow: hidden; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); }
     .detail-map svg { width: 100%; height: 100%; }
     .detail-body { display: grid; grid-template-columns: 1fr 1fr; }
     .dcol { padding: 1.1rem 1.25rem; }
-    .dcol + .dcol { border-left: 1px solid var(--b1); }
+    .dcol+.dcol { border-left: 1px solid var(--border); }
     .dlbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.65rem; }
     .zrow { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
     .zname { font-family: "DM Mono", monospace; font-size: 0.58rem; color: var(--text2); width: 1.8rem; flex-shrink: 0; }
-    .zbg { flex: 1; background: var(--b1); border-radius: 999px; height: 5px; overflow: hidden; }
+    .zbg { flex: 1; background: var(--s2,#f0ede8); border-radius: 999px; height: 6px; overflow: hidden; }
     .zbar { height: 100%; border-radius: 999px; transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
     .zt { font-family: "DM Mono", monospace; font-size: 0.58rem; color: var(--text2); width: 2.5rem; text-align: right; flex-shrink: 0; }
-    .erow { display: flex; justify-content: space-between; align-items: center; padding: 0.3rem 0; border-top: 1px solid var(--b1); }
+    .erow { display: flex; justify-content: space-between; padding: 0.3rem 0; border-top: 1px solid var(--border); }
     .ename { font-size: 0.78rem; color: var(--text2); }
-    .etime { font-family: "DM Mono", monospace; font-size: 0.75rem; }
-    .splits-wrap { border-top: 1px solid var(--b1); padding: 1.1rem 1.25rem; overflow-x: auto; }
+    .etime { font-family: "DM Mono", monospace; font-size: 0.75rem; color: var(--text); }
+    .splits-wrap { border-top: 1px solid var(--border); padding: 1.1rem 1.25rem; overflow-x: auto; }
     .st { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
     .st th { font-family: "DM Mono", monospace; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); text-align: right; padding: 0 0.6rem 0.5rem; font-weight: 400; }
     .st th:first-child { text-align: left; }
-    .st td { text-align: right; padding: 0.3rem 0.6rem; border-top: 1px solid var(--b1); color: var(--text2); font-variant-numeric: tabular-nums; }
+    .st td { text-align: right; padding: 0.3rem 0.6rem; border-top: 1px solid var(--border); color: var(--text2); font-variant-numeric: tabular-nums; }
     .st td:first-child { text-align: left; color: var(--text); font-family: "DM Mono", monospace; font-size: 0.7rem; }
-    .st tr:hover td { background: var(--s2); }
+    .st tr:hover td { background: var(--bg); }
 
     /* ── SKELETON ── */
-    .sk { background: linear-gradient(90deg, var(--s1) 25%, var(--s2) 50%, var(--s1) 75%); background-size: 200% 100%; animation: sh 1.6s infinite; border-radius: 1.25rem; border: 1px solid var(--b1); }
-    .sk-hero { height: 480px; border-radius: 1.75rem; margin-bottom: 0.75rem; }
+    .sk { background: linear-gradient(90deg, var(--bg) 25%, var(--white) 50%, var(--bg) 75%); background-size: 200% 100%; animation: sh 1.6s infinite; border-radius: 1.25rem; border: 1px solid var(--border); }
+    .sk-hero { height: 520px; border-radius: 1.5rem; }
     .sk-card { height: 110px; }
-    .sk-week { height: 100px; border-radius: 1.25rem; margin-bottom: 2rem; }
+    .sk-week { height: 130px; border-radius: 1.5rem; }
     @keyframes sh { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-    /* ── CHAT PANEL ── */
-    .chat {
-      width: var(--chat-w); flex-shrink: 0;
-      position: fixed; right: 0; top: 0; bottom: 0;
-      background: var(--s1); border-left: 1px solid var(--b1);
-      display: flex; flex-direction: column; z-index: 90;
-    }
+    /* ── CHAT ── */
+    .chat { width: var(--chat-w); flex-shrink: 0; position: fixed; right: 0; top: 0; bottom: 0; background: var(--white); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 90; box-shadow: -4px 0 40px rgba(0,0,0,0.06); }
     @media(max-width:960px){.chat{display:none}}
 
-    .chat-hdr { padding-top: var(--hdr); border-bottom: 1px solid var(--b1); flex-shrink: 0; }
-    .chat-tabs { display: flex; }
-    .tab-btn {
-      flex: 1; padding: 0.8rem 1rem; font-family: "DM Mono", monospace;
-      font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em;
-      color: var(--muted); border-bottom: 2px solid transparent;
-      cursor: pointer; transition: color 0.2s, border-color 0.2s; text-align: center; user-select: none;
-    }
-    .tab-btn.on { color: var(--text); border-color: var(--accent); }
+    .chat-hdr { padding: calc(var(--hdr) + 1.25rem) 1.25rem 1rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .chat-hdr-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 0.25rem; }
+    .chat-hdr-title { font-size: 1rem; font-weight: 800; letter-spacing: -0.025em; }
 
-    .tab { display: none; flex: 1; overflow: hidden; flex-direction: column; }
-    .tab.on { display: flex; }
-
-    .msgs {
-      flex: 1; overflow-y: auto; padding: 1.25rem;
-      display: flex; flex-direction: column; gap: 0.75rem;
-      scroll-behavior: smooth;
-    }
-    .msgs::-webkit-scrollbar { width: 3px; }
-    .msgs::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 2px; }
+    .msgs { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; scroll-behavior: smooth; }
 
     .msg { max-width: 86%; animation: mi 0.3s cubic-bezier(0.16,1,0.3,1) both; }
     .msg-u { align-self: flex-end; }
     .msg-a { align-self: flex-start; }
-    @keyframes mi { from{opacity:0;transform:translateY(8px) scale(0.96)} to{opacity:1;transform:none} }
+    @keyframes mi { from{opacity:0;transform:translateY(8px) scale(0.97)} to{opacity:1;transform:none} }
 
-    .bubble { padding: 0.7rem 0.95rem; border-radius: 1rem; font-size: 0.84rem; line-height: 1.65; }
-    .msg-u .bubble { background: var(--acc-dim); border: 1px solid color-mix(in srgb,var(--accent) 18%,transparent); border-bottom-right-radius: 0.25rem; color: var(--text); }
-    .msg-a .bubble { background: var(--s2); border: 1px solid var(--b1); border-bottom-left-radius: 0.25rem; color: var(--text); }
+    .bubble { padding: 0.7rem 1rem; border-radius: 1rem; font-size: 0.84rem; line-height: 1.7; }
+    .msg-u .bubble { background: var(--text); color: #fff; border-bottom-right-radius: 0.25rem; }
+    .msg-a .bubble { background: var(--bg); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 0.25rem; }
     .msg-think .bubble { color: var(--muted); font-style: italic; font-size: 0.8rem; }
-    .msg-think .bubble::after { content: ""; animation: dots 1.2s steps(4,end) infinite; }
+    .msg-think .bubble::after { content:""; animation: dots 1.2s steps(4,end) infinite; }
     @keyframes dots { 0%,20%{content:""} 40%{content:"."} 60%{content:".."} 80%,100%{content:"..."} }
 
-    .chat-input-wrap { padding: 1rem; border-top: 1px solid var(--b1); flex-shrink: 0; }
+    .chat-foot { padding: 1rem; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--white); }
     .chat-form { display: flex; gap: 0.5rem; align-items: flex-end; }
-    .chat-in {
-      flex: 1; background: var(--s2); border: 1px solid var(--b1); border-radius: 0.875rem;
-      padding: 0.65rem 1rem; color: var(--text); font-family: "DM Sans", sans-serif; font-size: 0.875rem;
-      outline: none; resize: none; min-height: 42px; max-height: 120px;
-      transition: border-color 0.2s; line-height: 1.5;
-    }
-    .chat-in:focus { border-color: var(--b2); }
+    .chat-in { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 0.875rem; padding: 0.65rem 1rem; color: var(--text); font-family: "DM Sans", sans-serif; font-size: 0.875rem; outline: none; resize: none; min-height: 42px; max-height: 120px; transition: border-color 0.2s; line-height: 1.5; }
+    .chat-in:focus { border-color: var(--border2); }
     .chat-in::placeholder { color: var(--muted); }
-    .send-btn {
-      width: 42px; height: 42px; flex-shrink: 0;
-      background: var(--accent); border: none; border-radius: 0.875rem;
-      color: #000; font-size: 1.1rem; font-weight: 900; cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .send-btn:hover { opacity: 0.85; }
+    .send-btn { width: 42px; height: 42px; flex-shrink: 0; background: var(--text); border: none; border-radius: 0.875rem; color: #fff; font-size: 1.1rem; font-weight: 900; cursor: pointer; transition: opacity 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; }
+    .send-btn:hover { opacity: 0.8; }
     .send-btn:active { transform: scale(0.92); }
-    .send-btn:disabled { opacity: 0.25; cursor: not-allowed; }
-
-    /* Recent tab */
-    .recent { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
-    .ritem {
-      padding: 0.875rem 1rem; border-radius: 0.875rem;
-      border: 1px solid var(--b1); background: var(--s2);
-      cursor: pointer; transition: border-color 0.2s, transform 0.15s;
-      display: flex; flex-direction: column; gap: 0.45rem;
-    }
-    .ritem:hover { border-color: var(--b2); transform: translateX(-2px); }
-    .ritem-top { display: flex; justify-content: space-between; align-items: flex-start; }
-    .ritem-name { font-size: 0.85rem; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
-    .ritem-date { font-family: "DM Mono", monospace; font-size: 0.55rem; color: var(--muted); }
-    .ritem-stats { display: flex; gap: 0.875rem; }
-    .rstat { font-family: "DM Mono", monospace; font-size: 0.6rem; color: var(--text2); }
-    .rstat b { color: var(--text); font-weight: 500; }
+    .send-btn:disabled { opacity: 0.2; cursor: not-allowed; }
   </style>
 </head>
 <body>
 
   <!-- HEADER -->
-  <header class="hdr">
+  <header class="hdr" id="hdr">
     <div class="hdr-inner">
       <a class="logo" href="/">
-        <div class="logo-icon">
-          <div class="logo-orbit"></div>
-          <div class="logo-sat"></div>
-          <div class="logo-core"></div>
-        </div>
-        <span class="logo-name">Pace<span>craft</span></span>
+        <div class="logo-icon"><div class="logo-ring"></div><div class="logo-sat"></div><div class="logo-core"></div></div>
+        <span class="logo-name">Pacecraft</span>
       </a>
-
-      <div class="hdr-center" id="hdr-stats">
-        <div class="hdr-stat"><div class="hdr-stat-val" id="hdr-week">—</div><div class="hdr-stat-lbl">This week</div></div>
-        <div class="hdr-divider"></div>
-        <div class="hdr-stat"><div class="hdr-stat-val" id="hdr-ytd">—</div><div class="hdr-stat-lbl">YTD</div></div>
-        <div class="hdr-divider"></div>
-        <div class="hdr-stat"><div class="hdr-stat-val" id="hdr-runs">—</div><div class="hdr-stat-lbl">YTD runs</div></div>
+      <div class="hdr-center">
+        <div><div class="hdr-stat-val" id="hdr-week">—</div><div class="hdr-stat-lbl">This week</div></div>
+        <div class="hdr-sep"></div>
+        <div><div class="hdr-stat-val" id="hdr-ytd">—</div><div class="hdr-stat-lbl">YTD</div></div>
+        <div class="hdr-sep"></div>
+        <div><div class="hdr-stat-val" id="hdr-runs">—</div><div class="hdr-stat-lbl">YTD runs</div></div>
       </div>
-
       <div class="hdr-right">
         <div class="live-pill"><div class="live-dot"></div>Live</div>
-        <div class="hdr-athlete">
-          <div class="hdr-avatar" id="hdr-avatar">W</div>
-          <span class="hdr-athlete-name" id="hdr-name">Loading...</span>
-        </div>
+        <div class="hdr-avatar" id="hdr-av">W</div>
+        <span class="hdr-name" id="hdr-name">Loading</span>
       </div>
     </div>
   </header>
 
   <div class="layout">
     <main class="feed">
-      <!-- Hero -->
-      <div id="hero"><div class="sk sk-hero"></div></div>
 
-      <!-- Week strip -->
-      <div id="week-wrap"><div class="sk sk-week"></div></div>
+      <!-- Brand hero -->
+      <div class="brand-hero">
+        <div class="brand-logo-large">
+          <div class="brand-orbit">
+            <div class="brand-ring"></div>
+            <div class="brand-sat"></div>
+            <div class="brand-core"></div>
+          </div>
+          <div class="brand-name">Pace<span>craft</span></div>
+        </div>
+        <div class="brand-tagline">Training intelligence · Powered by AI</div>
+        <div class="brand-stats-row" id="brand-stats">
+          <div><div class="brand-stat-val" id="bs-week">—<span class="brand-stat-unit">km</span></div><div class="brand-stat-lbl">This week</div></div>
+          <div style="width:1px;background:rgba(255,255,255,0.1)"></div>
+          <div><div class="brand-stat-val" id="bs-ytd">—<span class="brand-stat-unit">km</span></div><div class="brand-stat-lbl">Year to date</div></div>
+          <div style="width:1px;background:rgba(255,255,255,0.1)"></div>
+          <div><div class="brand-stat-val" id="bs-total">—<span class="brand-stat-unit">km</span></div><div class="brand-stat-lbl">All time</div></div>
+        </div>
+      </div>
+
+      <!-- Week -->
+      <div class="week-section">
+        <div id="week-wrap"><div class="sk sk-week"></div></div>
+      </div>
+
+      <!-- Latest -->
+      <div class="latest-section">
+        <div class="sec-hdr"><span class="sec-title">Latest session</span><div class="sec-line"></div></div>
+        <div id="hero"><div class="sk sk-hero"></div></div>
+      </div>
 
       <!-- Previous -->
-      <div class="sec-hdr">
-        <span class="sec-title">Previous sessions</span>
-        <div class="sec-line"></div>
-        <span class="sec-count" id="run-count"></span>
-      </div>
-      <div class="grid" id="grid">
-        <div class="sk sk-card"></div><div class="sk sk-card"></div><div class="sk sk-card"></div>
+      <div class="grid-section">
+        <div class="sec-hdr">
+          <span class="sec-title">Previous sessions</span>
+          <div class="sec-line"></div>
+          <span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted)" id="run-count"></span>
+        </div>
+        <div class="grid" id="grid">
+          <div class="sk sk-card"></div><div class="sk sk-card"></div><div class="sk sk-card"></div>
+        </div>
       </div>
     </main>
 
     <!-- CHAT -->
     <aside class="chat">
-      <div class="chat-hdr" style="padding:calc(var(--hdr) + 1rem) 1.25rem 0.875rem;border-bottom:1px solid var(--b1)">
-        <div style="font-family:'DM Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.16em;color:var(--muted);margin-bottom:0.2rem">AI Coach</div>
-        <div style="font-size:0.95rem;font-weight:700;letter-spacing:-0.02em;background:linear-gradient(135deg,var(--text),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Pacecraft Intelligence</div>
+      <div class="chat-hdr">
+        <div class="chat-hdr-lbl">AI Coach</div>
+        <div class="chat-hdr-title">Pacecraft Intelligence</div>
       </div>
       <div class="msgs" id="msgs"></div>
-      <div class="chat-input-wrap">
+      <div class="chat-foot">
         <form class="chat-form" id="chat-form">
           <textarea class="chat-in" id="chat-in" placeholder="Ask your coach..." rows="1"></textarea>
           <button class="send-btn" id="send-btn" type="submit">↑</button>
@@ -430,162 +331,137 @@
     // ── Utils ──
     const dur = s => { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60; return h?`${h}:${String(m).padStart(2,"0")}:${String(sc).padStart(2,"0")}`:`${m}:${String(sc).padStart(2,"0")}`; };
     const pace = mps => { if(!mps)return"—"; const spk=1000/mps,m=Math.floor(spk/60),s=Math.round(spk%60); return`${m}:${String(s).padStart(2,"0")}`; };
-    const km = d => (d/1000).toFixed(2);
-    const actType = t => { if(!t)return"other"; if(t.includes("Run"))return"run"; if(t.includes("Ride"))return"ride"; if(t==="Swim")return"swim"; return"other"; };
-    const typeColor = t => ({run:"var(--run)",ride:"var(--ride)",swim:"var(--swim)",other:"var(--other)"})[actType(t)]||"var(--other)";
+    const actCol = t => { if(!t)return"#7c3aed"; if(t.includes("Run"))return"#ff5500"; if(t.includes("Ride"))return"#0088cc"; if(t==="Swim")return"#16a34a"; return"#7c3aed"; };
 
     // ── Polyline ──
     function decode(enc){const c=[];let i=0,la=0,ln=0;while(i<enc.length){let b,s=0,r=0;do{b=enc.charCodeAt(i++)-63;r|=(b&0x1f)<<s;s+=5;}while(b>=0x20);la+=(r&1)?~(r>>1):(r>>1);s=0;r=0;do{b=enc.charCodeAt(i++)-63;r|=(b&0x1f)<<s;s+=5;}while(b>=0x20);ln+=(r&1)?~(r>>1):(r>>1);c.push([la/1e5,ln/1e5]);}return c;}
-
-    function mapSVG(enc,W,H,pad=20,strokeW=2){
-      const c=decode(enc); if(c.length<2)return null;
+    function makeSVG(enc,W,H,pad,sw,strokeColor){
+      strokeColor=strokeColor||"#ff5500";
+      const c=decode(enc);if(c.length<2)return null;
       const las=c.map(x=>x[0]),lns=c.map(x=>x[1]);
       const mla=Math.min(...las),xla=Math.max(...las),mln=Math.min(...lns),xln=Math.max(...lns);
       const sx=(xln-mln)||1,sy=(xla-mla)||1,sc=Math.min((W-pad*2)/sx,(H-pad*2)/sy);
       const ox=(W-sc*sx)/2,oy=(H-sc*sy)/2;
       const pts=c.map(([a,n])=>`${ox+(n-mln)*sc},${H-oy-(a-mla)*sc}`).join(" ");
-      const [sx0,sy0]=pts.split(" ")[0].split(",");
-      const [ex0,ey0]=pts.split(" ").at(-1).split(",");
+      const [x0,y0]=pts.split(" ")[0].split(",");
+      const [xe,ye]=pts.split(" ").at(-1).split(",");
+      const id="g"+Math.random().toString(36).slice(2,6);
       return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="${id}"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
         </defs>
-        <polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="${strokeW}" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)" opacity="0.85"/>
-        <circle cx="${sx0}" cy="${sy0}" r="5" fill="var(--accent)" opacity="0.9"/>
-        <circle cx="${sx0}" cy="${sy0}" r="9" fill="var(--accent)" opacity="0.15"/>
-        <circle cx="${ex0}" cy="${ey0}" r="3" fill="var(--text2)" opacity="0.5"/>
+        <polyline points="${pts}" fill="none" stroke="${strokeColor}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" filter="url(#${id})" opacity="0.9"/>
+        <circle cx="${x0}" cy="${y0}" r="6" fill="${strokeColor}"/>
+        <circle cx="${x0}" cy="${y0}" r="12" fill="${strokeColor}" opacity="0.15"/>
+        <circle cx="${xe}" cy="${ye}" r="3.5" fill="#888" opacity="0.5"/>
       </svg>`;
     }
 
-    // ── Header stats ──
-    function applyAthleteStats(athlete) {
-      if(!athlete) return;
-      document.getElementById("hdr-name").textContent = `${athlete.firstname} ${athlete.lastname}`;
-      document.getElementById("hdr-avatar").textContent = (athlete.firstname?.[0]||"?") + (athlete.lastname?.[0]||"");
-      if(athlete.stats) {
-        const s = athlete.stats;
-        document.getElementById("hdr-ytd").textContent = `${((s.ytd_run_totals?.distance||0)/1000).toFixed(0)} km`;
-        document.getElementById("hdr-runs").textContent = s.ytd_run_totals?.count || "—";
+    // ── Header / Brand ──
+    function applyStats(acts, athlete) {
+      const now=new Date(), weekAgo=new Date(now-7*864e5);
+      const weekKm = acts.filter(a=>new Date(a.start_date_local)>=weekAgo).reduce((s,a)=>s+a.distance/1000,0);
+      document.getElementById("hdr-week").textContent = weekKm.toFixed(1)+" km";
+      document.getElementById("bs-week").innerHTML = weekKm.toFixed(1)+`<span class="brand-stat-unit">km</span>`;
+      if(athlete){
+        const n=`${athlete.firstname} ${athlete.lastname}`;
+        document.getElementById("hdr-name").textContent=n;
+        document.getElementById("hdr-av").textContent=(athlete.firstname?.[0]||"")+(athlete.lastname?.[0]||"");
+        if(athlete.stats){
+          const s=athlete.stats;
+          const ytd=((s.ytd_run_totals?.distance||0)/1000).toFixed(0);
+          const all=((s.all_run_totals?.distance||0)/1000).toFixed(0);
+          document.getElementById("hdr-ytd").textContent=ytd+" km";
+          document.getElementById("hdr-runs").textContent=s.ytd_run_totals?.count||"—";
+          document.getElementById("bs-ytd").innerHTML=ytd+`<span class="brand-stat-unit">km</span>`;
+          document.getElementById("bs-total").innerHTML=all+`<span class="brand-stat-unit">km</span>`;
+        }
       }
     }
 
-    function applyWeekKm(activities) {
-      const now = new Date(), weekAgo = new Date(now - 7*864e5);
-      const total = activities.filter(a=>new Date(a.start_date_local)>=weekAgo).reduce((s,a)=>s+a.distance/1000,0);
-      document.getElementById("hdr-week").textContent = `${total.toFixed(1)} km`;
-    }
-
     // ── Week strip ──
-    function renderWeekStrip(activities) {
-      const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-      const today = new Date(); today.setHours(0,0,0,0);
-      const data = Array.from({length:7},(_,i)=>{
-        const d = new Date(today); d.setDate(today.getDate()-6+i);
-        const dayActs = activities.filter(a=>{const ad=new Date(a.start_date_local);ad.setHours(0,0,0,0);return ad.getTime()===d.getTime();});
-        const totalKm = dayActs.reduce((s,a)=>s+a.distance/1000,0);
-        const isToday = i===6;
-        return {label:days[(d.getDay()+6)%7],km:totalKm,isToday,acts:dayActs};
+    function renderWeek(acts){
+      const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],today=new Date();today.setHours(0,0,0,0);
+      const data=Array.from({length:7},(_,i)=>{
+        const d=new Date(today);d.setDate(today.getDate()-6+i);
+        const da=acts.filter(a=>{const ad=new Date(a.start_date_local);ad.setHours(0,0,0,0);return ad.getTime()===d.getTime();});
+        return{lbl:days[(d.getDay()+6)%7],km:da.reduce((s,a)=>s+a.distance/1000,0),today:i===6};
       });
-      const maxKm = Math.max(...data.map(d=>d.km),0.1);
-      const weekTotal = data.reduce((s,d)=>s+d.km,0);
-      const weekRuns = data.reduce((s,d)=>s+d.acts.length,0);
-
-      document.getElementById("week-wrap").innerHTML = `
-        <div class="week-strip">
-          <div style="display:flex;flex-direction:column;gap:0.25rem;flex-shrink:0">
-            <div class="week-total-val">${weekTotal.toFixed(1)}<span style="font-size:0.7rem;font-family:'DM Mono',monospace;color:var(--text2);margin-left:0.2rem">km</span></div>
-            <div class="week-total-lbl">This week</div>
-            <div style="margin-top:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--text2)">${weekRuns} session${weekRuns!==1?"s":""}</div>
+      const maxKm=Math.max(...data.map(d=>d.km),0.1);
+      const weekTotal=data.reduce((s,d)=>s+d.km,0);
+      const weekSessions=data.filter(d=>d.km>0).length;
+      document.getElementById("week-wrap").innerHTML=`
+        <div class="week-card">
+          <div class="week-left">
+            <div class="week-km-big">${weekTotal.toFixed(1)}<span style="font-size:1rem;font-family:'DM Mono',monospace;background:none;-webkit-text-fill-color:var(--muted);margin-left:0.25rem">km</span></div>
+            <div class="week-km-lbl">This week</div>
+            <div class="week-meta">${weekSessions} session${weekSessions!==1?"s":""} · ${dur(data.reduce((s,d)=>s+(d.km>0?d.km*360:0),0))} est.</div>
           </div>
-          <div style="width:1px;background:var(--b1);align-self:stretch;margin:0 0.5rem"></div>
-          <div class="week-days">
-            ${data.map(d=>`
-              <div class="week-day">
-                <div class="week-bar-wrap">
-                  <div class="week-bar" style="height:${d.km?Math.max(d.km/maxKm*100,8):3}%;background:${d.km?(d.isToday?"linear-gradient(to top,var(--accent),var(--cyan))":"color-mix(in srgb,var(--accent) 40%,var(--b2))"):"var(--b1)"}"></div>
-                </div>
-                <div class="week-day-name" style="color:${d.isToday?"var(--accent)":"var(--muted)"}">${d.label}</div>
-                ${d.km?`<div class="week-km">${d.km.toFixed(1)}</div>`:`<div class="week-km" style="opacity:0">0</div>`}
-              </div>`).join("")}
+          <div class="week-bars">
+            ${data.map(d=>`<div class="wday">
+              <div class="wbar-wrap"><div class="wbar" style="height:${d.km?Math.max(d.km/maxKm*100,6):3}%;background:${d.km?(d.today?"linear-gradient(to top,#ff5500,#ff9a6c)":"linear-gradient(to top,#ff550055,#ff9a6c33)"):"var(--border)"}"></div></div>
+              <div class="wday-lbl" style="color:${d.today?"var(--orange)":"var(--muted)"}">${d.lbl}</div>
+              <div class="wday-km">${d.km?d.km.toFixed(1):""}</div>
+            </div>`).join("")}
           </div>
         </div>`;
     }
 
     // ── Hero ──
-    function renderHero(a) {
-      const isRun = a.sport_type?.includes("Run");
-      const date = new Date(a.start_date_local).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
-      const poly = a.map?.summary_polyline;
-      const svgMap = poly ? mapSVG(poly,900,320,32,2.5) : null;
-      const mapArea = svgMap
-        ? `<div class="hero-map-wrap">${svgMap}<div class="hero-map-grad"></div></div>`
-        : `<div class="hero-map-wrap"><div class="hero-map-no">No route data</div><div class="hero-map-grad"></div></div>`;
-      const col = typeColor(a.sport_type);
-      document.getElementById("hero").innerHTML = `
-        <div class="hero">
-          ${mapArea}
-          <div style="position:absolute;top:1.25rem;left:1.5rem;display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0.75rem 0.3rem 0.5rem;background:color-mix(in srgb,var(--s1) 85%,transparent);backdrop-filter:blur(12px);border:1px solid var(--b2);border-radius:999px">
-            <div style="width:7px;height:7px;border-radius:50%;background:${col};box-shadow:0 0 8px ${col}"></div>
-            <span style="font-family:'DM Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.12em">${a.sport_type||"Activity"}</span>
+    function renderHero(a){
+      const isRun=a.sport_type?.includes("Run"),col=actCol(a.sport_type);
+      const date=new Date(a.start_date_local).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+      const poly=a.map?.summary_polyline,svg=poly?makeSVG(poly,900,300,32,3,col):null;
+      const mapH=svg?`<div class="hero-map-wrap">${svg}<div class="hero-map-grad"></div></div>`:`<div class="hero-map-wrap"><div class="hero-no-map">No route data</div><div class="hero-map-grad"></div></div>`;
+      document.getElementById("hero").innerHTML=`
+        <div class="hero-card">
+          ${mapH}
+          <div style="position:absolute;top:1.25rem;left:1.5rem;display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0.75rem 0.3rem 0.45rem;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:999px">
+            <div style="width:7px;height:7px;border-radius:50%;background:${col};box-shadow:0 0 10px ${col}"></div>
+            <span style="font-family:'DM Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text)">${a.sport_type||"Activity"}</span>
           </div>
-          <div style="position:absolute;top:1.25rem;right:1.5rem;font-family:'DM Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text2);padding:0.3rem 0.75rem;background:color-mix(in srgb,var(--s1) 85%,transparent);backdrop-filter:blur(12px);border:1px solid var(--b2);border-radius:999px">${date}</div>
+          <div style="position:absolute;top:1.25rem;right:1.5rem;font-family:'DM Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text2);padding:0.3rem 0.75rem;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:999px">${date}</div>
           <div class="hero-body">
             <div class="hero-name">${a.name}</div>
-            <div class="hero-primary" style="margin-bottom:2px">
-              <div class="hstat">
-                <div class="hstat-lbl">Distance</div>
-                <div class="hstat-val">${km(a.distance)}<span class="hstat-unit">km</span></div>
-              </div>
-              <div class="hstat">
-                <div class="hstat-lbl">${isRun?"Avg pace":"Speed"}</div>
-                <div class="hstat-val">${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="hstat-unit">${isRun?"/km":"km/h"}</span></div>
-              </div>
-              <div class="hstat">
-                <div class="hstat-lbl">Avg HR</div>
-                <div class="hstat-val">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="hstat-unit">${a.average_heartrate?"bpm":""}</span></div>
-              </div>
-              <div class="hstat">
-                <div class="hstat-lbl">Duration</div>
-                <div class="hstat-val" style="font-size:1.4rem">${dur(a.moving_time)}</div>
-              </div>
+            <div class="stat-grid-primary" style="margin-bottom:2px">
+              <div class="hstat"><div class="hstat-lbl">Distance</div><div class="hstat-val accent">${(a.distance/1000).toFixed(2)}<span class="hstat-unit">km</span></div></div>
+              <div class="hstat"><div class="hstat-lbl">${isRun?"Avg pace":"Speed"}</div><div class="hstat-val">${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="hstat-unit">${isRun?"/km":"km/h"}</span></div></div>
+              <div class="hstat"><div class="hstat-lbl">Avg HR</div><div class="hstat-val">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="hstat-unit">${a.average_heartrate?"bpm":""}</span></div></div>
+              <div class="hstat"><div class="hstat-lbl">Duration</div><div class="hstat-val" style="font-size:1.3rem">${dur(a.moving_time)}</div></div>
             </div>
-            <div class="hero-secondary">
-              <div class="hstat sm"><div class="hstat-lbl">Elevation</div><div class="hstat-val">${Math.round(a.total_elevation_gain)}<span class="hstat-unit">m</span></div></div>
-              <div class="hstat sm"><div class="hstat-lbl">Max HR</div><div class="hstat-val">${a.max_heartrate?Math.round(a.max_heartrate):"—"}<span class="hstat-unit">${a.max_heartrate?"bpm":""}</span></div></div>
-              <div class="hstat sm"><div class="hstat-lbl">Cadence</div><div class="hstat-val">${a.average_cadence?Math.round(a.average_cadence*2):"—"}<span class="hstat-unit">${a.average_cadence?"spm":""}</span></div></div>
-              <div class="hstat sm"><div class="hstat-lbl">Calories</div><div class="hstat-val">${a.calories||"—"}<span class="hstat-unit">${a.calories?"kcal":""}</span></div></div>
+            <div class="stat-grid-secondary">
+              <div class="hstat sm alt"><div class="hstat-lbl">Elevation</div><div class="hstat-val">${Math.round(a.total_elevation_gain)}<span class="hstat-unit">m</span></div></div>
+              <div class="hstat sm alt"><div class="hstat-lbl">Max HR</div><div class="hstat-val">${a.max_heartrate?Math.round(a.max_heartrate):"—"}<span class="hstat-unit">${a.max_heartrate?"bpm":""}</span></div></div>
+              <div class="hstat sm alt"><div class="hstat-lbl">Cadence</div><div class="hstat-val">${a.average_cadence?Math.round(a.average_cadence*2):"—"}<span class="hstat-unit">${a.average_cadence?"spm":""}</span></div></div>
+              <div class="hstat sm alt"><div class="hstat-lbl">Calories</div><div class="hstat-val">${a.calories||"—"}<span class="hstat-unit">${a.calories?"kcal":""}</span></div></div>
             </div>
           </div>
         </div>`;
     }
 
     // ── Cards ──
-    function renderCard(a) {
-      const isRun = a.sport_type?.includes("Run"), t = actType(a.sport_type);
-      const date = new Date(a.start_date_local).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+    function renderCard(a){
+      const isRun=a.sport_type?.includes("Run"),col=actCol(a.sport_type);
+      const date=new Date(a.start_date_local).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
       return `
-        <div class="card card-${t}" data-id="${a.id}" onclick="toggleDetail(this)">
+        <div class="card" data-id="${a.id}" onclick="toggleDetail(this)">
+          <div class="card-stripe" style="background:${col}"></div>
           <div class="card-top">
-            <div style="min-width:0">
-              <div class="card-meta">${a.sport_type||"Activity"} · ${date}</div>
-              <div class="card-name">${a.name}</div>
-            </div>
-            <div style="text-align:right;flex-shrink:0">
-              <div class="card-badge">${km(a.distance)}<span class="card-badge-unit">km</span></div>
-            </div>
+            <div style="min-width:0"><div class="card-meta">${a.sport_type||"Activity"} · ${date}</div><div class="card-name">${a.name}</div></div>
+            <div class="card-km">${(a.distance/1000).toFixed(2)}<span class="card-km-unit"> km</span></div>
           </div>
           <div class="card-stats">
-            <div><div class="cstat-lbl">Time</div><div class="cstat-val">${dur(a.moving_time)}</div></div>
-            <div><div class="cstat-lbl">${isRun?"Pace":"Speed"}</div><div class="cstat-val">${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="cstat-unit">${isRun?"/km":"km/h"}</span></div></div>
-            <div><div class="cstat-lbl">HR</div><div class="cstat-val">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="cstat-unit">${a.average_heartrate?"bpm":""}</span></div></div>
-            <div><div class="cstat-lbl">Elev</div><div class="cstat-val">${Math.round(a.total_elevation_gain)}<span class="cstat-unit">m</span></div></div>
+            <div><div class="csl">Time</div><div class="csv">${dur(a.moving_time)}</div></div>
+            <div><div class="csl">${isRun?"Pace":"Speed"}</div><div class="csv">${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="csu">${isRun?"/km":"km/h"}</span></div></div>
+            <div><div class="csl">HR</div><div class="csv">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="csu">${a.average_heartrate?"bpm":""}</span></div></div>
+            <div><div class="csl">Elev</div><div class="csv">${Math.round(a.total_elevation_gain)}<span class="csu">m</span></div></div>
           </div>
         </div>
         <div class="detail" id="d-${a.id}"></div>`;
     }
 
     // ── Detail ──
-    let zonesCache = null;
+    let zonesCache=null;
     async function getZones(){if(zonesCache)return zonesCache;const r=await fetch("/api/zones?user=a");zonesCache=r.ok?await r.json():null;return zonesCache;}
     function calcZT(hr,t,zones){const th=zones?.heart_rate?.zones?.map(z=>z.min)??[];if(!th.length||!hr?.length)return null;const tot=new Array(th.length).fill(0);for(let i=1;i<hr.length;i++){const v=hr[i],dt=t[i]-t[i-1];let z=0;for(let x=th.length-1;x>=0;x--){if(v>=th[x]){z=x;break;}}tot[z]+=dt;}return tot;}
     const ZC=["var(--z1)","var(--z2)","var(--z3)","var(--z4)","var(--z5)"];
@@ -593,15 +469,16 @@
     async function loadDetail(id,el){
       el.innerHTML=`<div style="padding:2rem;text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em">Loading...</div>`;
       const[aR,sR,zones]=await Promise.all([fetch(`/api/activity?id=${id}&user=a`),fetch(`/api/streams?id=${id}&user=a`),getZones()]);
-      const act=aR.ok?await aR.json():null,streams=sR.ok?await sR.json():null;
+      const act=aR.ok?await aR.json():null,str=sR.ok?await sR.json():null;
       const poly=act?.map?.polyline||act?.map?.summary_polyline;
-      const svg=poly?mapSVG(poly,460,180,16,2):null;
+      const col=actCol(act?.sport_type);
+      const svg=poly?makeSVG(poly,460,180,16,2.5,col):null;
       const mapH=svg?`<div class="detail-map">${svg}</div>`:``;
-      const hr=streams?.heartrate?.data,t=streams?.time?.data;
-      const zt=calcZT(hr,t,zones),zTotal=zt?zt.reduce((a,b)=>a+b,0):0;
-      const zonesH=zt?`<div class="dcol"><div class="dlbl">HR Zones</div>${zt.map((v,i)=>`<div class="zrow"><span class="zname">Z${i+1}</span><div class="zbg"><div class="zbar" style="width:${zTotal?(v/zTotal*100).toFixed(1):0}%;background:${ZC[i]}"></div></div><span class="zt">${dur(v)}</span></div>`).join("")}</div>`:`<div class="dcol"><div class="dlbl">HR Zones</div><span style="color:var(--muted);font-size:0.8rem">No HR data</span></div>`;
+      const hr=str?.heartrate?.data,t=str?.time?.data;
+      const zt=calcZT(hr,t,zones),ztot=zt?zt.reduce((a,b)=>a+b,0):0;
+      const zonesH=zt?`<div class="dcol"><div class="dlbl">HR Zones</div>${zt.map((v,i)=>`<div class="zrow"><span class="zname">Z${i+1}</span><div class="zbg"><div class="zbar" style="width:${ztot?(v/ztot*100).toFixed(1):0}%;background:${ZC[i]}"></div></div><span class="zt">${dur(v)}</span></div>`).join("")}</div>`:`<div class="dcol"><div class="dlbl">HR Zones</div><span style="color:var(--muted);font-size:0.8rem">No HR data</span></div>`;
       const efs=act?.best_efforts?.slice(0,6)??[];
-      const efsH=`<div class="dcol"><div class="dlbl">Best efforts</div>${efs.map(e=>`<div class="erow"><span class="ename">${e.name}</span><span class="etime">${dur(e.elapsed_time)}</span></div>`).join("")||`<span style="color:var(--muted);font-size:0.8rem">No data</span>`}</div>`;
+      const efsH=`<div class="dcol"><div class="dlbl">Best efforts</div>${efs.map(e=>`<div class="erow"><span class="ename">${e.name}</span><span class="etime">${dur(e.elapsed_time)}</span></div>`).join("")||`<span style="color:var(--muted);font-size:0.8rem">None</span>`}</div>`;
       const splits=act?.splits_metric??[],isRun=act?.sport_type?.includes("Run");
       const splH=splits.length?`<div class="splits-wrap"><div class="dlbl" style="margin-bottom:0.5rem">Km splits</div><table class="st"><thead><tr><th>km</th><th>${isRun?"Pace":"Speed"}</th><th>HR</th><th>Cad</th><th>Elev</th></tr></thead><tbody>${splits.map((s,i)=>`<tr><td>${i+1}</td><td>${isRun?pace(s.average_speed):(s.average_speed*3.6).toFixed(1)}</td><td>${s.average_heartrate?Math.round(s.average_heartrate):"—"}</td><td>${s.average_cadence?Math.round(s.average_cadence*2):"—"}</td><td>${s.elevation_difference>=0?"+":""}${Math.round(s.elevation_difference)}m</td></tr>`).join("")}</tbody></table></div>`:``;
       el.innerHTML=`${mapH}<div class="detail-body">${zonesH}${efsH}</div>${splH}`;
@@ -615,100 +492,52 @@
     }
 
     // ── Chat ──
-    let chatMsgs=[], chatCtx=null;
+    let chatMsgs=[],chatCtx=null;
     const msgsEl=()=>document.getElementById("msgs");
-
-    function addMsg(role,text){
-      const c=msgsEl(),d=document.createElement("div");
-      d.className=`msg msg-${role}`;
-      d.innerHTML=`<div class="bubble">${text.replace(/\n/g,"<br>")}</div>`;
-      c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
-    }
-    function addThinking(){
-      const c=msgsEl(),d=document.createElement("div");
-      d.className="msg msg-a msg-think";
-      d.innerHTML=`<div class="bubble">Analysing</div>`;
-      c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
-    }
+    function addMsg(role,text){const c=msgsEl(),d=document.createElement("div");d.className=`msg msg-${role}`;d.innerHTML=`<div class="bubble">${text.replace(/\n/g,"<br>")}</div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;return d;}
+    function addThink(){const c=msgsEl(),d=document.createElement("div");d.className="msg msg-a msg-think";d.innerHTML=`<div class="bubble">Analysing</div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;return d;}
 
     async function sendMsg(text){
       const btn=document.getElementById("send-btn"),inp=document.getElementById("chat-in");
       btn.disabled=true;
       if(text){chatMsgs.push({role:"user",parts:[{text}]});addMsg("u",text);}
-      const t=addThinking();
+      const th=addThink();
       try{
         const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:chatMsgs,context:chatCtx})});
-        const d=await r.json();
-        const reply=d.reply??d.error??"Something went wrong.";
-        t.remove();addMsg("a",reply);
-        chatMsgs.push({role:"model",parts:[{text:reply}]});
-      }catch{t.remove();addMsg("a","Something went wrong.");}
+        const d=await r.json(),reply=d.reply??d.error??"Something went wrong.";
+        th.remove();addMsg("a",reply);chatMsgs.push({role:"model",parts:[{text:reply}]});
+      }catch{th.remove();addMsg("a","Something went wrong.");}
       btn.disabled=false;inp.value="";inp.style.height="auto";
     }
 
-    function calcWeeklyLoad(acts){
-      const w={};
-      acts.forEach(a=>{if(!a.start_date_local)return;const d=new Date(a.start_date_local),day=d.getDay(),mon=new Date(d);mon.setDate(d.getDate()-((day+6)%7));const k=mon.toISOString().slice(0,10);if(!w[k])w[k]={week:k,km:0,time:0,count:0};w[k].km+=a.distance/1000;w[k].time+=a.moving_time;w[k].count++;});
-      return Object.values(w).sort((a,b)=>b.week.localeCompare(a.week)).slice(0,4);
-    }
+    function weeklyLoad(acts){const w={};acts.forEach(a=>{if(!a.start_date_local)return;const d=new Date(a.start_date_local),day=d.getDay(),mon=new Date(d);mon.setDate(d.getDate()-((day+6)%7));const k=mon.toISOString().slice(0,10);if(!w[k])w[k]={week:k,km:0,time:0,count:0};w[k].km+=a.distance/1000;w[k].time+=a.moving_time;w[k].count++;});return Object.values(w).sort((a,b)=>b.week.localeCompare(a.week)).slice(0,4);}
 
-    async function initChat(acts, athlete){
-      const recent10=acts.slice(0,10),weeklyLoad=calcWeeklyLoad(acts),lid=acts[0]?.id;
-      let latestActivity=null,latestStreams=null;
-      if(lid){const[aR,sR]=await Promise.all([fetch(`/api/activity?id=${lid}&user=a`),fetch(`/api/streams?id=${lid}&user=a`)]);if(aR.ok)latestActivity=await aR.json();if(sR.ok)latestStreams=await sR.json();}
-      chatCtx={athlete,latestActivity,latestStreams,recentActivities:recent10,weeklyLoad};
+    async function initChat(acts,athlete){
+      const r10=acts.slice(0,10),wl=weeklyLoad(acts),lid=acts[0]?.id;
+      let la=null,ls=null;
+      if(lid){const[aR,sR]=await Promise.all([fetch(`/api/activity?id=${lid}&user=a`),fetch(`/api/streams?id=${lid}&user=a`)]);if(aR.ok)la=await aR.json();if(sR.ok)ls=await sR.json();}
+      chatCtx={athlete,latestActivity:la,latestStreams:ls,recentActivities:r10,weeklyLoad:wl};
       chatMsgs.push({role:"user",parts:[{text:"Analysis of past activity"}]});
       await sendMsg(null);
     }
 
-    // ── Tabs ──
-    function switchTab(name){
-      document.querySelectorAll(".tab-btn").forEach(t=>t.classList.remove("on"));
-      document.querySelectorAll(".tab").forEach(t=>t.classList.remove("on"));
-      document.getElementById(`tb-${name}`).classList.add("on");
-      document.getElementById(`tp-${name}`).classList.add("on");
-    }
-
-    function populateRecent(acts){
-      document.getElementById("recent-list").innerHTML=acts.slice(0,20).map(a=>{
-        const isRun=a.sport_type?.includes("Run"),date=new Date(a.start_date_local).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
-        return `<div class="ritem" onclick="switchTab('coach');scrollToCard('${a.id}')">
-          <div class="ritem-top"><div class="ritem-name">${a.name}</div><div class="ritem-date">${date}</div></div>
-          <div class="ritem-stats">
-            <div class="rstat"><b>${(a.distance/1000).toFixed(1)}</b> km</div>
-            <div class="rstat"><b>${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}</b> ${isRun?"/km":"km/h"}</div>
-            <div class="rstat"><b>${a.average_heartrate?Math.round(a.average_heartrate):"—"}</b> ${a.average_heartrate?"bpm":""}</div>
-          </div>
-        </div>`;
-      }).join("");
-    }
-
-    function scrollToCard(id){const c=document.querySelector(`.card[data-id="${id}"]`);if(c){c.scrollIntoView({behavior:"smooth",block:"center"});c.click();}}
-
-    // ── Scroll header ──
-    window.addEventListener("scroll",()=>document.querySelector(".hdr").style.boxShadow=window.scrollY>10?"0 1px 40px rgba(0,0,0,0.4)":"",{passive:true});
-
-    // ── Form ──
     document.getElementById("chat-form").addEventListener("submit",e=>{e.preventDefault();const v=document.getElementById("chat-in").value.trim();if(v)sendMsg(v);});
     document.getElementById("chat-in").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();document.getElementById("chat-form").dispatchEvent(new Event("submit"));}});
+    window.addEventListener("scroll",()=>document.getElementById("hdr").classList.toggle("raised",window.scrollY>10),{passive:true});
 
     // ── Boot ──
     Promise.all([
       fetch("/api/activities?user=a&per_page=30").then(r=>r.json()),
       fetch("/api/stats?user=a").then(r=>r.ok?r.json():null),
     ]).then(([acts,athlete])=>{
-      if(!Array.isArray(acts)||!acts.length){document.getElementById("hero").innerHTML=`<div style="color:var(--muted);padding:2rem">No activities found.</div>`;return;}
-      applyAthleteStats(athlete);
-      applyWeekKm(acts);
+      if(!Array.isArray(acts)||!acts.length){document.getElementById("hero").innerHTML=`<p style="padding:2rem;color:var(--muted)">No activities found.</p>`;return;}
+      applyStats(acts,athlete);
+      renderWeek(acts);
       renderHero(acts[0]);
-      renderWeekStrip(acts);
       document.getElementById("grid").innerHTML=acts.slice(1).map(renderCard).join("");
       document.getElementById("run-count").textContent=`${acts.length-1} sessions`;
-      populateRecent(acts);
       initChat(acts,athlete);
-    }).catch(err=>{
-      document.getElementById("hero").innerHTML=`<div style="color:#f87171;padding:2rem">Failed to load: ${err.message}</div>`;
-    });
+    }).catch(err=>{document.getElementById("hero").innerHTML=`<p style="padding:2rem;color:red">${err.message}</p>`;});
   </script>
 </body>
 </html>
