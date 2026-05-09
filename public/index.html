@@ -361,13 +361,17 @@
       const recent10 = activities.slice(0, 10);
       const latestId = activities[0]?.id;
 
-      let latestActivity = null;
+      let latestActivity = null, latestStreams = null;
       if (latestId) {
-        const r = await fetch(`/api/activity?id=${latestId}&user=a`);
-        if (r.ok) latestActivity = await r.json();
+        const [actRes, streamsRes] = await Promise.all([
+          fetch(`/api/activity?id=${latestId}&user=a`),
+          fetch(`/api/streams?id=${latestId}&user=a`),
+        ]);
+        if (actRes.ok) latestActivity = await actRes.json();
+        if (streamsRes.ok) latestStreams = await streamsRes.json();
       }
 
-      chatContext = { athlete, latestActivity, recentActivities: recent10, weeklyLoad };
+      chatContext = { athlete, latestActivity, latestStreams, recentActivities: recent10, weeklyLoad };
       const openingPrompt = "Analysis of past activity";
       chatMessages.push({ role: "user", parts: [{ text: openingPrompt }] });
       appendMessage("user", openingPrompt);

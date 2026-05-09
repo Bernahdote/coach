@@ -14,7 +14,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const streams = await stravaFetch(user, `/activities/${id}/streams`, {
-      keys: "heartrate,time",
+      keys: "heartrate,time,cadence,altitude,velocity_smooth,watts,grade_smooth,temp,distance",
       key_by_type: 1,
     });
     return res.status(200).json(streams);
