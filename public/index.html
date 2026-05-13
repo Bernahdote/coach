@@ -75,41 +75,61 @@
     .page { display: none; padding-top: var(--hdr); min-height: 100vh; }
     .page.on { display: block; }
 
-    /* ── CALENDAR PAGE ── */
-    .cal-page { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+    /* ── LATEST ACTIVITY HERO ── */
+    .latest-hero { padding: 2rem 2rem 0; max-width: 1400px; margin: 0 auto; }
+    .latest-label { font-family: "DM Mono", monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 0.75rem; }
+    .latest-card {
+      background: var(--text); border-radius: 1.5rem; overflow: hidden;
+      display: grid; grid-template-columns: 1fr auto; min-height: 200px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+    }
+    .latest-body { padding: 2rem 2.5rem; display: flex; flex-direction: column; justify-content: space-between; }
+    .latest-type { font-family: "DM Mono", monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(255,255,255,0.35); margin-bottom: 0.5rem; }
+    .latest-name { font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 900; letter-spacing: -0.04em; color: #fff; line-height: 1.1; margin-bottom: 1.5rem; }
+    .latest-stats { display: flex; gap: 2.5rem; flex-wrap: wrap; }
+    .lstat-val { font-size: 2rem; font-weight: 900; letter-spacing: -0.045em; color: #fff; line-height: 1; font-variant-numeric: tabular-nums; }
+    .lstat-val.accent { color: var(--orange); }
+    .lstat-unit { font-family: "DM Mono", monospace; font-size: 0.6rem; color: rgba(255,255,255,0.35); margin-left: 0.2rem; }
+    .lstat-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.3); margin-top: 0.35rem; }
+    .latest-map { width: 320px; background: #0e0c14; overflow: hidden; flex-shrink: 0; }
+    .latest-map svg { width: 100%; height: 100%; }
+    @media(max-width:640px){.latest-card{grid-template-columns:1fr}.latest-map{display:none}}
 
-    .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
-    .cal-month-label { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.04em; }
+    /* ── CALENDAR PAGE ── */
+    .cal-page { padding: 1.75rem 2rem 5rem; max-width: 1400px; margin: 0 auto; }
+
+    .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .cal-month-label { font-size: 2rem; font-weight: 900; letter-spacing: -0.045em; }
     .cal-nav-btns { display: flex; gap: 0.5rem; }
-    .cal-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--white); cursor: pointer; font-size: 1.1rem; color: var(--text2); display: flex; align-items: center; justify-content: center; transition: border-color 0.2s, color 0.2s; }
+    .cal-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border); background: var(--white); cursor: pointer; font-size: 1.2rem; color: var(--text2); display: flex; align-items: center; justify-content: center; transition: border-color 0.2s, color 0.2s; }
     .cal-btn:hover { border-color: var(--border2); color: var(--text); }
 
-    .cal-weekdays { display: grid; grid-template-columns: repeat(7,1fr); gap: 0.4rem; margin-bottom: 0.5rem; }
-    .cal-wd { font-family: "DM Mono", monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); text-align: center; padding: 0.5rem 0; }
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7,1fr); gap: 0.5rem; margin-bottom: 0.5rem; }
+    .cal-wd { font-family: "DM Mono", monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); text-align: center; padding: 0.625rem 0; }
 
-    .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 0.4rem; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 0.5rem; }
 
     .cal-day {
-      min-height: 120px; border-radius: 1rem; border: 1px solid var(--border);
-      background: var(--white); padding: 0.875rem; position: relative;
+      min-height: 160px; border-radius: 1.1rem; border: 1px solid var(--border);
+      background: var(--white); padding: 1rem; position: relative;
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
     }
     .cal-day.empty { background: transparent; border-color: transparent; }
     .cal-day.has-act { cursor: pointer; }
-    .cal-day.has-act:hover { border-color: var(--border2); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .cal-day.has-act:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.07); }
     .cal-day.is-today { border-color: var(--orange); background: color-mix(in srgb,var(--orange) 3%,var(--white)); }
     .cal-day.selected { border-color: var(--orange); box-shadow: 0 0 0 3px color-mix(in srgb,var(--orange) 15%,transparent); }
-    .cal-day-num { font-family: "DM Mono", monospace; font-size: 0.75rem; font-weight: 500; color: var(--muted); margin-bottom: 0.625rem; }
-    .cal-day.is-today .cal-day-num { color: var(--orange); font-weight: 700; }
-    .cal-day-acts { display: flex; flex-direction: column; gap: 0.35rem; }
+    .cal-day-num { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.025em; color: var(--text2); margin-bottom: 0.75rem; }
+    .cal-day.is-today .cal-day-num { color: var(--orange); }
+    .cal-day-acts { display: flex; flex-direction: column; gap: 0.4rem; }
     .cal-act-chip {
-      display: flex; align-items: center; gap: 0.35rem;
-      font-size: 0.75rem; font-weight: 600; letter-spacing: -0.01em;
-      padding: 0.3rem 0.5rem; border-radius: 0.5rem;
-      white-space: nowrap; overflow: hidden;
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.8rem; font-weight: 600; letter-spacing: -0.01em;
+      padding: 0.35rem 0.6rem; border-radius: 0.625rem;
+      overflow: hidden;
     }
-    .cal-act-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-    .cal-act-km { font-family: "DM Mono", monospace; font-size: 0.65rem; font-weight: 500; margin-left: auto; flex-shrink: 0; }
+    .cal-act-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .cal-act-km { font-family: "DM Mono", monospace; font-size: 0.7rem; font-weight: 500; margin-left: auto; flex-shrink: 0; }
 
     /* Activity detail drawer */
     .detail-drawer {
@@ -251,6 +271,12 @@
 
   <!-- CALENDAR PAGE -->
   <div class="page on" id="page-cal">
+    <!-- Latest activity hero -->
+    <div class="latest-hero">
+      <div class="latest-label">Latest activity</div>
+      <div id="latest-card"><div class="sk" style="height:200px;border-radius:1.5rem"></div></div>
+    </div>
+
     <div class="cal-page">
       <div id="race-banners"></div>
       <div class="cal-nav">
@@ -346,6 +372,47 @@
       document.getElementById(`page-${name}`).classList.add("on");
       document.getElementById(`tab-${name}`).classList.add("on");
       window.scrollTo(0,0);
+    }
+
+    // ── Latest activity hero ──
+    function renderLatestHero(a) {
+      const isRun = a.sport_type?.includes("Run");
+      const col = actCol(a.sport_type);
+      const date = new Date(a.start_date_local).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+      const poly = a.map?.summary_polyline;
+      const svg = poly ? makeSVG(poly, 320, 200, 20, 2.5, col) : null;
+      document.getElementById("latest-card").innerHTML = `
+        <div class="latest-card">
+          <div class="latest-body">
+            <div>
+              <div class="latest-type">${a.sport_type} · ${date}</div>
+              <div class="latest-name">${a.name}</div>
+            </div>
+            <div class="latest-stats">
+              <div>
+                <div class="lstat-val accent">${(a.distance/1000).toFixed(2)}<span class="lstat-unit">km</span></div>
+                <div class="lstat-lbl">Distance</div>
+              </div>
+              <div>
+                <div class="lstat-val">${isRun ? pace(a.average_speed) : (a.average_speed*3.6).toFixed(1)}<span class="lstat-unit">${isRun ? "/km" : "km/h"}</span></div>
+                <div class="lstat-lbl">${isRun ? "Pace" : "Speed"}</div>
+              </div>
+              <div>
+                <div class="lstat-val">${a.average_heartrate ? Math.round(a.average_heartrate) : "—"}<span class="lstat-unit">${a.average_heartrate ? "bpm" : ""}</span></div>
+                <div class="lstat-lbl">Avg HR</div>
+              </div>
+              <div>
+                <div class="lstat-val">${dur(a.moving_time)}</div>
+                <div class="lstat-lbl">Duration</div>
+              </div>
+              <div>
+                <div class="lstat-val">${Math.round(a.total_elevation_gain)}<span class="lstat-unit">m</span></div>
+                <div class="lstat-lbl">Elevation</div>
+              </div>
+            </div>
+          </div>
+          ${svg ? `<div class="latest-map">${svg}</div>` : ""}
+        </div>`;
     }
 
     // ── Calendar state ──
@@ -605,6 +672,7 @@
       }
 
       // Calendar
+      renderLatestHero(acts[0]);
       indexActivities(acts);
       const now2=new Date();viewYear=now2.getFullYear();viewMonth=now2.getMonth();
       renderCalendar();
