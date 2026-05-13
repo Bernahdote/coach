@@ -347,13 +347,58 @@
       const [xe,ye]=pts.split(" ").at(-1).split(",");
       const id="g"+Math.random().toString(36).slice(2,6);
       return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <filter id="${id}"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        </defs>
+        <defs><filter id="${id}"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
         <polyline points="${pts}" fill="none" stroke="${strokeColor}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" filter="url(#${id})" opacity="0.9"/>
         <circle cx="${x0}" cy="${y0}" r="6" fill="${strokeColor}"/>
         <circle cx="${x0}" cy="${y0}" r="12" fill="${strokeColor}" opacity="0.15"/>
         <circle cx="${xe}" cy="${ye}" r="3.5" fill="#888" opacity="0.5"/>
+      </svg>`;
+    }
+
+    // ── Multi-route map (past month) ──
+    function makeMonthMap(activities, W, H, pad) {
+      pad = pad || 28;
+      const monthAgo = new Date(Date.now() - 30 * 864e5);
+      const recent = activities.filter(a => a.map?.summary_polyline && new Date(a.start_date_local) >= monthAgo);
+      if (!recent.length) return null;
+
+      // Decode all routes
+      const routes = recent.map(a => ({
+        coords: decode(a.map.summary_polyline),
+        color: actCol(a.sport_type),
+        isLatest: a.id === recent[0].id,
+        age: (Date.now() - new Date(a.start_date_local)) / (30 * 864e5), // 0=today, 1=month ago
+      })).filter(r => r.coords.length >= 2);
+
+      if (!routes.length) return null;
+
+      // Global bounding box
+      const allLats = routes.flatMap(r => r.coords.map(c => c[0]));
+      const allLngs = routes.flatMap(r => r.coords.map(c => c[1]));
+      const mla = Math.min(...allLats), xla = Math.max(...allLats);
+      const mln = Math.min(...allLngs), xln = Math.max(...allLngs);
+      const sx = (xln - mln) || 1, sy = (xla - mla) || 1;
+      const sc = Math.min((W - pad*2) / sx, (H - pad*2) / sy);
+      const ox = (W - sc*sx) / 2, oy = (H - sc*sy) / 2;
+
+      const project = ([la, ln]) => `${ox+(ln-mln)*sc},${H-oy-(la-mla)*sc}`;
+
+      // Sort: oldest first so latest renders on top
+      const sorted = [...routes].sort((a, b) => b.age - a.age);
+
+      const lines = sorted.map(r => {
+        const pts = r.coords.map(project).join(" ");
+        const opacity = r.isLatest ? 0.9 : Math.max(0.12, 0.45 * (1 - r.age * 0.7));
+        const sw = r.isLatest ? 2.5 : 1.5;
+        const [x0, y0] = pts.split(" ")[0].split(",");
+        return `<polyline points="${pts}" fill="none" stroke="${r.color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" opacity="${opacity}"/>
+          ${r.isLatest ? `<circle cx="${x0}" cy="${y0}" r="5" fill="${r.color}"/><circle cx="${x0}" cy="${y0}" r="10" fill="${r.color}" opacity="0.15"/>` : ''}`;
+      }).join("");
+
+      const count = routes.length;
+      return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+        <text x="${W-12}" y="${H-10}" text-anchor="end" font-family="DM Mono,monospace" font-size="9" fill="#999" letter-spacing="0.08em">${count} SESSIONS · PAST 30 DAYS</text>
+        ${lines}
       </svg>`;
     }
 
@@ -408,10 +453,10 @@
     }
 
     // ── Hero ──
-    function renderHero(a){
+    function renderHero(a, allActivities){
       const isRun=a.sport_type?.includes("Run"),col=actCol(a.sport_type);
       const date=new Date(a.start_date_local).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
-      const poly=a.map?.summary_polyline,svg=poly?makeSVG(poly,900,300,32,3,col):null;
+      const svg = makeMonthMap(allActivities, 900, 300, 28);
       const mapH=svg?`<div class="hero-map-wrap">${svg}<div class="hero-map-grad"></div></div>`:`<div class="hero-map-wrap"><div class="hero-no-map">No route data</div><div class="hero-map-grad"></div></div>`;
       document.getElementById("hero").innerHTML=`
         <div class="hero-card">
@@ -533,7 +578,7 @@
       if(!Array.isArray(acts)||!acts.length){document.getElementById("hero").innerHTML=`<p style="padding:2rem;color:var(--muted)">No activities found.</p>`;return;}
       applyStats(acts,athlete);
       renderWeek(acts);
-      renderHero(acts[0]);
+      renderHero(acts[0], acts);
       document.getElementById("grid").innerHTML=acts.slice(1).map(renderCard).join("");
       document.getElementById("run-count").textContent=`${acts.length-1} sessions`;
       initChat(acts,athlete);
