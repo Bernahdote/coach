@@ -55,6 +55,11 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .logo-name { font-size: 0.95rem; font-weight: 800; letter-spacing: -0.03em; }
 
+    /* User switcher */
+    .user-switch { display: flex; align-items: center; background: var(--s2); border: 1px solid var(--border); border-radius: 999px; padding: 0.2rem; gap: 0.1rem; flex-shrink: 0; }
+    .user-btn { padding: 0.3rem 0.875rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: none; background: none; color: var(--text2); transition: background 0.15s, color 0.15s; letter-spacing: -0.01em; }
+    .user-btn.on { background: var(--white); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
     /* Nav tabs */
     .nav { display: flex; align-items: center; gap: 0.25rem; margin-left: 1.5rem; }
     .nav-tab { padding: 0.4rem 1rem; border-radius: 999px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--text2); transition: background 0.15s, color 0.15s; }
@@ -258,6 +263,10 @@
         <button class="nav-tab" id="tab-chat" onclick="switchPage('chat')">Coach</button>
       </nav>
       <div class="hdr-space"></div>
+      <div class="user-switch">
+        <button class="user-btn on" id="ubtn-a" onclick="switchUser('a')">Willem</button>
+        <button class="user-btn" id="ubtn-b" onclick="switchUser('b')">Robert</button>
+      </div>
       <div class="hdr-stats">
         <div><div class="hdr-stat-val" id="hdr-week">—</div><div class="hdr-stat-lbl">This week</div></div>
         <div class="hdr-sep"></div>
@@ -340,6 +349,16 @@
   </div>
 
   <script>
+    // ── Active user ──
+    let activeUser = "a";
+    function switchUser(u) {
+      activeUser = u;
+      document.getElementById("ubtn-a").classList.toggle("on", u === "a");
+      document.getElementById("ubtn-b").classList.toggle("on", u === "b");
+      zonesCache = null;
+      loadAll();
+    }
+
     // ── Utils ──
     const dur = s=>{const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return h?`${h}:${String(m).padStart(2,"0")}:${String(sc).padStart(2,"0")}`:`${m}:${String(sc).padStart(2,"0")}`;};
     const pace = mps=>{if(!mps)return"—";const spk=1000/mps,m=Math.floor(spk/60),s=Math.round(spk%60);return`${m}:${String(s).padStart(2,"0")}`;};
@@ -498,7 +517,7 @@
     }
 
     let zonesCache = null;
-    async function getZones(){if(zonesCache)return zonesCache;const r=await fetch("/api/zones?user=a");zonesCache=r.ok?await r.json():null;return zonesCache;}
+    async function getZones(){if(zonesCache)return zonesCache;const r=await fetch(`/api/zones?user=${activeUser}`);zonesCache=r.ok?await r.json():null;return zonesCache;}
     function calcZT(hr,t,zones){const th=zones?.heart_rate?.zones?.map(z=>z.min)??[];if(!th.length||!hr?.length)return null;const tot=new Array(th.length).fill(0);for(let i=1;i<hr.length;i++){const v=hr[i],dt=t[i]-t[i-1];let z=0;for(let x=th.length-1;x>=0;x--){if(v>=th[x]){z=x;break;}}tot[z]+=dt;}return tot;}
     const ZC=["var(--z1)","var(--z2)","var(--z3)","var(--z4)","var(--z5)"];
 
@@ -508,8 +527,8 @@
       el.innerHTML = `<div style="padding:2rem;text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em">Loading...</div>`;
 
       const [aR,sR,zones] = await Promise.all([
-        fetch(`/api/activity?id=${a.id}&user=a`),
-        fetch(`/api/streams?id=${a.id}&user=a`),
+        fetch(`/api/activity?id=${a.id}&user=${activeUser}`),
+        fetch(`/api/streams?id=${a.id}&user=${activeUser}`),
         getZones(),
       ]);
       const act = aR.ok ? await aR.json() : a;
@@ -646,60 +665,60 @@
     document.getElementById("chat-form").addEventListener("submit",e=>{e.preventDefault();const v=document.getElementById("chat-in").value.trim();if(v)sendMsg(v);});
     document.getElementById("chat-in").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();document.getElementById("chat-form").dispatchEvent(new Event("submit"));}});
 
-    Promise.all([
-      fetch("/api/activities?user=a&per_page=60").then(r=>r.json()),
-      fetch("/api/stats?user=a").then(r=>r.ok?r.json():null),
-    ]).then(([acts,athlete])=>{
-      if(!Array.isArray(acts))return;
-      allActs=acts;
+    function loadAll() {
+      document.getElementById("latest-card").innerHTML = `<div class="sk" style="height:200px;border-radius:1.5rem"></div>`;
+      document.getElementById("cal-grid").innerHTML = `<div class="loading">Loading...</div>`;
 
-      // Sync Strava profile fields
-      if(athlete){
-        const s=loadSettings();s.profile=s.profile||{};
-        if(athlete.weight)s.profile.weight=athlete.weight;
-        if(athlete.sex)s.profile.gender=athlete.sex==="M"?"male":"female";
-        localStorage.setItem(STORAGE_KEY,JSON.stringify(s));
-        document.getElementById("hdr-av").textContent=(athlete.firstname?.[0]||"")+(athlete.lastname?.[0]||"");
-      }
-
-      // Header stats
-      const now=new Date(),weekAgo=new Date(now-7*864e5);
-      const wkKm=acts.filter(a=>new Date(a.start_date_local)>=weekAgo).reduce((s,a)=>s+a.distance/1000,0);
-      document.getElementById("hdr-week").textContent=wkKm.toFixed(1)+" km";
-      if(athlete?.stats){
-        const ytd=((athlete.stats.ytd_run_totals?.distance||0)/1000).toFixed(0);
-        document.getElementById("hdr-ytd").textContent=ytd+" km";
-      }
-
-      // Calendar
-      renderLatestHero(acts[0]);
-      indexActivities(acts);
-      const now2=new Date();viewYear=now2.getFullYear();viewMonth=now2.getMonth();
-      renderCalendar();
-      renderRaceBanners();
-
-      // Chat context
-      const s=loadSettings();
-      const r10=acts.slice(0,10);
-      const wl={};acts.forEach(a=>{if(!a.start_date_local)return;const d=new Date(a.start_date_local),day=d.getDay(),mon=new Date(d);mon.setDate(d.getDate()-((day+6)%7));const k=mon.toISOString().slice(0,10);if(!wl[k])wl[k]={week:k,km:0,time:0,count:0};wl[k].km+=a.distance/1000;wl[k].time+=a.moving_time;wl[k].count++;});
-      const weeklyLoad=Object.values(wl).sort((a,b)=>b.week.localeCompare(a.week)).slice(0,4);
-
-      // Load latest activity detail for chat context
-      const lid=acts[0]?.id;
       Promise.all([
-        lid?fetch(`/api/activity?id=${lid}&user=a`).then(r=>r.ok?r.json():null):Promise.resolve(null),
-        lid?fetch(`/api/streams?id=${lid}&user=a`).then(r=>r.ok?r.json():null):Promise.resolve(null),
-      ]).then(([la,ls])=>{
-        chatCtx={athlete,latestActivity:la,latestStreams:ls,recentActivities:r10,weeklyLoad,profile:s.profile,goals:s.goals};
-        const hist=loadChatHistory();
-        if(hist.length){
-          chatMsgs=hist;hist.forEach(m=>addMsg(m.role==="user"?"u":"a",m.parts[0].text));
-        } else {
-          chatMsgs.push({role:"user",parts:[{text:"Analysis of past activity"}]});
-          sendMsg(null);
+        fetch(`/api/activities?user=${activeUser}&per_page=60`).then(r=>r.json()),
+        fetch(`/api/stats?user=${activeUser}`).then(r=>r.ok?r.json():null),
+      ]).then(([acts,athlete])=>{
+        if(!Array.isArray(acts))return;
+        allActs=acts;
+
+        if(athlete){
+          const s=loadSettings();s.profile=s.profile||{};
+          if(athlete.weight)s.profile.weight=athlete.weight;
+          if(athlete.sex)s.profile.gender=athlete.sex==="M"?"male":"female";
+          localStorage.setItem(STORAGE_KEY,JSON.stringify(s));
+          document.getElementById("hdr-av").textContent=(athlete.firstname?.[0]||"")+(athlete.lastname?.[0]||"");
         }
+
+        const now=new Date(),weekAgo=new Date(now-7*864e5);
+        const wkKm=acts.filter(a=>new Date(a.start_date_local)>=weekAgo).reduce((s,a)=>s+a.distance/1000,0);
+        document.getElementById("hdr-week").textContent=wkKm.toFixed(1)+" km";
+        if(athlete?.stats){
+          document.getElementById("hdr-ytd").textContent=((athlete.stats.ytd_run_totals?.distance||0)/1000).toFixed(0)+" km";
+        }
+
+        if(acts[0]) renderLatestHero(acts[0]);
+        indexActivities(acts);
+        selectedDay=null;
+        const now2=new Date();viewYear=now2.getFullYear();viewMonth=now2.getMonth();
+        renderCalendar();
+        renderRaceBanners();
+
+        const s=loadSettings(),r10=acts.slice(0,10);
+        const wl={};acts.forEach(a=>{if(!a.start_date_local)return;const d=new Date(a.start_date_local),day=d.getDay(),mon=new Date(d);mon.setDate(d.getDate()-((day+6)%7));const k=mon.toISOString().slice(0,10);if(!wl[k])wl[k]={week:k,km:0,time:0,count:0};wl[k].km+=a.distance/1000;wl[k].time+=a.moving_time;wl[k].count++;});
+        const weeklyLoad=Object.values(wl).sort((a,b)=>b.week.localeCompare(a.week)).slice(0,4);
+
+        const lid=acts[0]?.id;
+        Promise.all([
+          lid?fetch(`/api/activity?id=${lid}&user=${activeUser}`).then(r=>r.ok?r.json():null):Promise.resolve(null),
+          lid?fetch(`/api/streams?id=${lid}&user=${activeUser}`).then(r=>r.ok?r.json():null):Promise.resolve(null),
+        ]).then(([la,ls])=>{
+          chatCtx={athlete,latestActivity:la,latestStreams:ls,recentActivities:r10,weeklyLoad,profile:s.profile,goals:s.goals};
+          // Only init chat on first load (user a), don't wipe conversation on switch
+          if(activeUser==="a" && !chatMsgs.length){
+            const hist=loadChatHistory();
+            if(hist.length){chatMsgs=hist;hist.forEach(m=>addMsg(m.role==="user"?"u":"a",m.parts[0].text));}
+            else{chatMsgs.push({role:"user",parts:[{text:"Analysis of past activity"}]});sendMsg(null);}
+          }
+        });
       });
-    });
+    }
+
+    loadAll();
   </script>
 </body>
 </html>
