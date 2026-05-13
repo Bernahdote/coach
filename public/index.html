@@ -365,9 +365,12 @@
 
     <!-- CHAT -->
     <aside class="chat">
-      <div class="chat-hdr">
-        <div class="chat-hdr-lbl">AI Coach</div>
-        <div class="chat-hdr-title">Pacecraft Intelligence</div>
+      <div class="chat-hdr" style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div>
+          <div class="chat-hdr-lbl">AI Coach</div>
+          <div class="chat-hdr-title">Pacecraft Intelligence</div>
+        </div>
+        <button onclick="clearChatHistory()" title="New conversation" style="background:none;border:1px solid var(--border);border-radius:0.5rem;padding:0.3rem 0.6rem;font-family:'DM Mono',monospace;font-size:0.55rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);cursor:pointer;transition:color 0.2s,border-color 0.2s;margin-top:0.1rem" onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border2)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">New chat</button>
       </div>
       <div class="msgs" id="msgs"></div>
       <div class="chat-foot">
@@ -377,6 +380,35 @@
         </form>
       </div>
     </aside>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal">
+      <div class="modal-hdr">
+        <div class="modal-title">Profile &amp; Goals</div>
+        <button class="modal-close" onclick="closeSettings()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <div class="modal-section-title">Athlete profile</div>
+          <p style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);margin-bottom:1rem">Gender and weight are synced automatically from Strava.</p>
+          <div class="form-grid">
+            <div class="form-field"><label class="form-label">Height (cm)</label><input class="form-input" id="p-height" type="number" placeholder="175" min="100" max="250"/></div>
+            <div class="form-field"><label class="form-label">Age</label><input class="form-input" id="p-age" type="number" placeholder="30" min="10" max="100"/></div>
+            <div class="form-field"><label class="form-label">Max HR (bpm)</label><input class="form-input" id="p-maxhr" type="number" placeholder="190" min="100" max="230"/></div>
+            <div class="form-field"><label class="form-label">Resting HR (bpm)</label><input class="form-input" id="p-resthr" type="number" placeholder="50" min="30" max="100"/></div>
+            <div class="form-field full"><label class="form-label">Notes for the coach</label><textarea class="form-textarea" id="p-notes" placeholder="E.g. recovering from knee injury, prefer morning runs, training 5x/week..."></textarea></div>
+          </div>
+        </div>
+        <div>
+          <div class="modal-section-title">Race goals</div>
+          <div class="goal-list" id="goal-list"></div>
+          <button class="add-goal-btn" onclick="addGoalForm()">+ Add race goal</button>
+        </div>
+        <button class="modal-save" onclick="saveSettings()">Save</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -456,6 +488,14 @@
 
     // ── Header / Brand ──
     function applyStats(acts, athlete) {
+      // Sync Strava fields into localStorage profile
+      if (athlete) {
+        const s = loadSettings();
+        s.profile = s.profile || {};
+        if (athlete.weight) s.profile.weight = athlete.weight;
+        if (athlete.sex)    s.profile.gender = athlete.sex === "M" ? "male" : "female";
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+      }
       const now=new Date(), weekAgo=new Date(now-7*864e5);
       const weekKm = acts.filter(a=>new Date(a.start_date_local)>=weekAgo).reduce((s,a)=>s+a.distance/1000,0);
       document.getElementById("hdr-week").textContent = weekKm.toFixed(1)+" km";
@@ -589,9 +629,33 @@
     }
 
     // ── Chat ──
+    const CHAT_KEY = "pacecraft_chat";
     let chatMsgs=[],chatCtx=null;
     const msgsEl=()=>document.getElementById("msgs");
-    function addMsg(role,text){const c=msgsEl(),d=document.createElement("div");d.className=`msg msg-${role}`;d.innerHTML=`<div class="bubble">${text.replace(/\n/g,"<br>")}</div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;return d;}
+
+    function saveChatHistory() {
+      // Keep last 40 messages to avoid bloating localStorage
+      const toSave = chatMsgs.slice(-40);
+      localStorage.setItem(CHAT_KEY, JSON.stringify(toSave));
+    }
+
+    function loadChatHistory() {
+      try { return JSON.parse(localStorage.getItem(CHAT_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function clearChatHistory() {
+      localStorage.removeItem(CHAT_KEY);
+      chatMsgs = [];
+      document.getElementById("msgs").innerHTML = "";
+    }
+
+    function addMsg(role,text){
+      const c=msgsEl(),d=document.createElement("div");
+      d.className=`msg msg-${role}`;
+      d.innerHTML=`<div class="bubble">${text.replace(/\n/g,"<br>")}</div>`;
+      c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
+    }
     function addThink(){const c=msgsEl(),d=document.createElement("div");d.className="msg msg-a msg-think";d.innerHTML=`<div class="bubble">Analysing</div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;return d;}
 
     async function sendMsg(text){
@@ -602,7 +666,7 @@
       try{
         const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:chatMsgs,context:chatCtx})});
         const d=await r.json(),reply=d.reply??d.error??"Something went wrong.";
-        th.remove();addMsg("a",reply);chatMsgs.push({role:"model",parts:[{text:reply}]});
+        th.remove();addMsg("a",reply);chatMsgs.push({role:"model",parts:[{text:reply}]});saveChatHistory();
       }catch{th.remove();addMsg("a","Something went wrong.");}
       btn.disabled=false;inp.value="";inp.style.height="auto";
     }
@@ -615,8 +679,20 @@
       if(lid){const[aR,sR]=await Promise.all([fetch(`/api/activity?id=${lid}&user=a`),fetch(`/api/streams?id=${lid}&user=a`)]);if(aR.ok)la=await aR.json();if(sR.ok)ls=await sR.json();}
       const settings = loadSettings();
       chatCtx={athlete,latestActivity:la,latestStreams:ls,recentActivities:r10,weeklyLoad:wl,profile:settings.profile,goals:settings.goals};
-      chatMsgs.push({role:"user",parts:[{text:"Analysis of past activity"}]});
-      await sendMsg(null);
+
+      const savedHistory = loadChatHistory();
+      if (savedHistory.length) {
+        // Restore previous conversation
+        chatMsgs = savedHistory;
+        savedHistory.forEach(m => {
+          const role = m.role === "user" ? "u" : "a";
+          addMsg(role, m.parts[0].text);
+        });
+      } else {
+        // Fresh start — trigger opening analysis
+        chatMsgs.push({role:"user",parts:[{text:"Analysis of past activity"}]});
+        await sendMsg(null);
+      }
     }
 
     document.getElementById("chat-form").addEventListener("submit",e=>{e.preventDefault();const v=document.getElementById("chat-in").value.trim();if(v)sendMsg(v);});
@@ -631,11 +707,12 @@
       catch { return {profile:{}, goals:[]}; }
     }
     function saveSettings() {
+      const s = loadSettings();
       const p = {
-        weight: document.getElementById("p-weight").value,
+        weight: s.profile?.weight, // from Strava, not editable
+        gender: s.profile?.gender, // from Strava, not editable
         height: document.getElementById("p-height").value,
         age:    document.getElementById("p-age").value,
-        gender: document.getElementById("p-gender").value,
         maxHR:  document.getElementById("p-maxhr").value,
         restHR: document.getElementById("p-resthr").value,
         notes:  document.getElementById("p-notes").value,
@@ -657,10 +734,8 @@
     function openSettings() {
       const s = loadSettings();
       const p = s.profile || {};
-      document.getElementById("p-weight").value = p.weight || "";
       document.getElementById("p-height").value = p.height || "";
       document.getElementById("p-age").value    = p.age    || "";
-      document.getElementById("p-gender").value = p.gender || "";
       document.getElementById("p-maxhr").value  = p.maxHR  || "";
       document.getElementById("p-resthr").value = p.restHR || "";
       document.getElementById("p-notes").value  = p.notes  || "";
