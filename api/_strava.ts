@@ -1,16 +1,18 @@
 const TOKEN_URL = "https://www.strava.com/oauth/token";
 const API_BASE = "https://www.strava.com/api/v3";
 
-export function getRefreshToken(user: "a" | "b"): string {
-  const token =
-    user === "a"
-      ? process.env.STRAVA_REFRESH_TOKEN_A
-      : process.env.STRAVA_REFRESH_TOKEN_B;
+export function getRefreshToken(user: "a" | "b" | "c"): string {
+  const map: Record<string, string | undefined> = {
+    a: process.env.STRAVA_REFRESH_TOKEN_A,
+    b: process.env.STRAVA_REFRESH_TOKEN_B,
+    c: process.env.STRAVA_REFRESH_TOKEN_C,
+  };
+  const token = map[user];
   if (!token) throw new Error(`STRAVA_REFRESH_TOKEN_${user.toUpperCase()} is not set`);
   return token;
 }
 
-export async function getAccessToken(user: "a" | "b"): Promise<string> {
+export async function getAccessToken(user: "a" | "b" | "c"): Promise<string> {
   const res = await fetch(TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

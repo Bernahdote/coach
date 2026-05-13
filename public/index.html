@@ -266,6 +266,7 @@
       <div class="user-switch">
         <button class="user-btn on" id="ubtn-a" onclick="switchUser('a')">Willem</button>
         <button class="user-btn" id="ubtn-b" onclick="switchUser('b')">Robert</button>
+        <button class="user-btn" id="ubtn-c" onclick="switchUser('c')">Pufe</button>
       </div>
       <div class="hdr-stats">
         <div><div class="hdr-stat-val" id="hdr-week">—</div><div class="hdr-stat-lbl">This week</div></div>
@@ -355,6 +356,7 @@
       activeUser = u;
       document.getElementById("ubtn-a").classList.toggle("on", u === "a");
       document.getElementById("ubtn-b").classList.toggle("on", u === "b");
+      document.getElementById("ubtn-c").classList.toggle("on", u === "c");
       zonesCache = null;
       // Clear chat UI — each user has their own conversation
       chatMsgs = [];

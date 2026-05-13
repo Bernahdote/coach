@@ -9,7 +9,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const user = req.query.user;
   const id = req.query.id;
 
-  if (user !== "a" && user !== "b") return res.status(400).json({ error: "user must be 'a' or 'b'" });
+  if (user !== "a" && user !== "b" && user !== "c") return res.status(400).json({ error: "user must be 'a' or 'b'" });
   if (!id) return res.status(400).json({ error: "id is required" });
 
   try {

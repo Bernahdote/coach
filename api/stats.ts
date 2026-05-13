@@ -7,7 +7,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === "OPTIONS") return res.status(200).end();
 
   const user = req.query.user;
-  if (user !== "a" && user !== "b") return res.status(400).json({ error: "user must be 'a' or 'b'" });
+  if (user !== "a" && user !== "b" && user !== "c") return res.status(400).json({ error: "user must be 'a' or 'b'" });
 
   try {
     const athlete = await stravaFetch(user, "/athlete") as any;
