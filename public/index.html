@@ -6,18 +6,17 @@
   <title>Pacecraft</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,900;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script>
     const pwd = sessionStorage.getItem("auth");
     if (pwd !== "pacecraft") {
       const v = prompt("Password:");
-      if (v !== "pacecraft") { document.write("<body style='background:#fff;color:#000;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0'>Access denied.</body>"); throw 0; }
+      if (v !== "pacecraft") { document.write("<body style='background:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh'>Access denied.</body>"); throw 0; }
       sessionStorage.setItem("auth", v);
     }
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --bg:      #f7f5f0;
       --white:   #ffffff;
@@ -28,219 +27,123 @@
       --text2:   #6b6560;
       --muted:   #a8a29c;
       --orange:  #ff5500;
-      --orange2: #ff7733;
       --cyan:    #0088cc;
       --purple:  #7c3aed;
       --green:   #16a34a;
-      --chat-w:  460px;
-      --hdr:     64px;
+      --hdr:     60px;
       --z1:#0088cc;--z2:#16a34a;--z3:#eab308;--z4:#ff5500;--z5:#dc2626;
     }
-
     html { scroll-behavior: smooth; }
     body { background: var(--bg); color: var(--text); font-family: "DM Sans", system-ui, sans-serif; min-height: 100vh; overflow-x: hidden; }
-
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
     /* ── HEADER ── */
     .hdr {
       position: fixed; inset: 0 0 auto; z-index: 100; height: var(--hdr);
-      background: rgba(247,245,240,0.92);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      background: rgba(247,245,240,0.95); backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center;
-      transition: box-shadow 0.3s;
     }
-    .hdr.raised { box-shadow: 0 2px 24px rgba(0,0,0,0.08); }
-    .hdr-inner { width: 100%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 1.75rem; gap: 1rem; }
-
-    .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); }
-    .logo-icon { position: relative; width: 32px; height: 32px; flex-shrink: 0; }
-    .logo-ring { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border2); animation: spin 8s linear infinite; }
-    .logo-sat { position: absolute; top: -3px; left: 50%; transform: translateX(-50%); width: 8px; height: 8px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 12px var(--orange); }
-    .logo-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 5px; height: 5px; border-radius: 50%; background: var(--text2); }
+    .hdr.raised { box-shadow: 0 2px 20px rgba(0,0,0,0.07); }
+    .hdr-inner { width: 100%; display: flex; align-items: center; padding: 0 1.5rem; gap: 1rem; }
+    .logo { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; color: var(--text); flex-shrink: 0; }
+    .logo-icon { position: relative; width: 28px; height: 28px; }
+    .logo-ring { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border2); animation: spin 8s linear infinite; }
+    .logo-sat { position: absolute; top: -3px; left: 50%; transform: translateX(-50%); width: 7px; height: 7px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 10px var(--orange); }
+    .logo-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--text2); }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .logo-name { font-size: 1rem; font-weight: 800; letter-spacing: -0.03em; }
+    .logo-name { font-size: 0.95rem; font-weight: 800; letter-spacing: -0.03em; }
 
-    .hdr-center { display: flex; align-items: center; gap: 1.75rem; }
-    .hdr-stat-val { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.02em; }
-    .hdr-stat-lbl { font-family: "DM Mono", monospace; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
-    .hdr-sep { width: 1px; height: 28px; background: var(--border); }
+    /* Nav tabs */
+    .nav { display: flex; align-items: center; gap: 0.25rem; margin-left: 1.5rem; }
+    .nav-tab { padding: 0.4rem 1rem; border-radius: 999px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; background: none; color: var(--text2); transition: background 0.15s, color 0.15s; }
+    .nav-tab:hover { background: var(--s2); color: var(--text); }
+    .nav-tab.on { background: var(--text); color: #fff; }
 
-    .hdr-right { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; }
-    .hdr-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, var(--orange), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; color: #fff; }
-    .hdr-name { font-size: 0.85rem; font-weight: 500; color: var(--text2); }
-    .live-pill { display: flex; align-items: center; gap: 0.35rem; font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 0.25rem 0.65rem; border-radius: 999px; border: 1px solid var(--border); }
-    .live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    .settings-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: var(--text2); transition: border-color 0.2s, color 0.2s; }
+    /* Header right */
+    .hdr-space { flex: 1; }
+    .hdr-stats { display: flex; align-items: center; gap: 1.5rem; }
+    .hdr-stat-val { font-size: 0.9rem; font-weight: 700; letter-spacing: -0.02em; }
+    .hdr-stat-lbl { font-family: "DM Mono", monospace; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+    .hdr-sep { width: 1px; height: 24px; background: var(--border); }
+    .hdr-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, var(--orange), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 0.62rem; font-weight: 800; color: #fff; cursor: default; flex-shrink: 0; }
+    .settings-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border); background: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: var(--text2); transition: border-color 0.2s, color 0.2s; flex-shrink: 0; }
     .settings-btn:hover { border-color: var(--border2); color: var(--text); }
 
-    /* ── MODAL ── */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 200; display: none; align-items: center; justify-content: center; padding: 1rem; }
-    .modal-overlay.open { display: flex; }
-    .modal { background: var(--white); border-radius: 1.5rem; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,0.2); }
-    .modal-hdr { display: flex; align-items: center; justify-content: space-between; padding: 1.5rem 1.75rem 1.25rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--white); z-index: 1; border-radius: 1.5rem 1.5rem 0 0; }
-    .modal-title { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.025em; }
-    .modal-close { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: none; cursor: pointer; font-size: 1rem; color: var(--text2); display: flex; align-items: center; justify-content: center; }
-    .modal-close:hover { background: var(--bg); }
-    .modal-body { padding: 1.5rem 1.75rem; display: flex; flex-direction: column; gap: 2rem; }
-    .modal-section-title { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--muted); margin-bottom: 1rem; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .form-field { display: flex; flex-direction: column; gap: 0.4rem; }
-    .form-field.full { grid-column: 1 / -1; }
-    .form-label { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text2); }
-    .form-input, .form-select, .form-textarea { background: var(--bg); border: 1px solid var(--border); border-radius: 0.625rem; padding: 0.6rem 0.875rem; font-family: "DM Sans", sans-serif; font-size: 0.875rem; color: var(--text); outline: none; transition: border-color 0.2s; width: 100%; }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--orange); }
-    .form-textarea { resize: vertical; min-height: 70px; }
-    .form-select { cursor: pointer; }
-    .modal-save { width: 100%; padding: 0.75rem; background: var(--text); color: #fff; border: none; border-radius: 0.875rem; font-family: "DM Sans", sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s; letter-spacing: -0.01em; }
-    .modal-save:hover { opacity: 0.85; }
+    /* ── PAGES ── */
+    .page { display: none; padding-top: var(--hdr); min-height: 100vh; }
+    .page.on { display: block; }
 
-    /* Goals list */
-    .goal-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 0.75rem; }
-    .goal-item { background: var(--bg); border: 1px solid var(--border); border-radius: 1rem; padding: 1rem 1.125rem; position: relative; }
-    .goal-item-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.875rem; }
-    .goal-item-name { font-weight: 700; font-size: 0.95rem; letter-spacing: -0.02em; }
-    .goal-remove { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 0.8rem; padding: 0.25rem 0.5rem; border-radius: 0.5rem; }
-    .goal-remove:hover { color: #dc2626; background: color-mix(in srgb,#dc2626 8%,transparent); }
-    .add-goal-btn { width: 100%; padding: 0.65rem; background: none; border: 1.5px dashed var(--border2); border-radius: 0.875rem; color: var(--text2); font-family: "DM Sans", sans-serif; font-size: 0.875rem; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
-    .add-goal-btn:hover { border-color: var(--orange); color: var(--orange); }
+    /* ── CALENDAR PAGE ── */
+    .cal-page { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
 
-    /* Race countdown banner */
-    .race-banner { background: var(--text); border-radius: 1.25rem; padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1.5rem; overflow: hidden; position: relative; }
-    .race-banner::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 100% at 100% 50%, color-mix(in srgb,var(--orange) 20%,transparent), transparent); pointer-events: none; }
-    .race-days { flex-shrink: 0; text-align: center; }
-    .race-days-num { font-size: 2.5rem; font-weight: 900; letter-spacing: -0.05em; color: var(--orange); line-height: 1; }
-    .race-days-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.4); }
-    .race-divider { width: 1px; height: 48px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
-    .race-info { flex: 1; }
-    .race-name { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.03em; color: #fff; margin-bottom: 0.25rem; }
-    .race-meta { font-family: "DM Mono", monospace; font-size: 0.6rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.1em; }
-    .race-progress-wrap { flex: 1; max-width: 200px; }
-    .race-progress-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); margin-bottom: 0.5rem; display: flex; justify-content: space-between; }
-    .race-progress-bg { background: rgba(255,255,255,0.1); border-radius: 999px; height: 6px; overflow: hidden; }
-    .race-progress-bar { height: 100%; border-radius: 999px; background: linear-gradient(to right, var(--orange), #ff9a6c); transition: width 1s cubic-bezier(0.16,1,0.3,1); }
+    .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+    .cal-month-label { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.035em; }
+    .cal-nav-btns { display: flex; gap: 0.5rem; }
+    .cal-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--white); cursor: pointer; font-size: 1rem; color: var(--text2); display: flex; align-items: center; justify-content: center; transition: border-color 0.2s, color 0.2s; }
+    .cal-btn:hover { border-color: var(--border2); color: var(--text); }
 
-    /* ── LAYOUT ── */
-    .layout { display: flex; padding-top: var(--hdr); min-height: 100vh; }
-    .feed { flex: 1; min-width: 0; padding: 0 0 6rem; }
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7,1fr); gap: 0.25rem; margin-bottom: 0.5rem; }
+    .cal-wd { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); text-align: center; padding: 0.5rem 0; }
 
-    /* ── BRAND HERO ── */
-    .brand-hero {
-      background: var(--text);
-      padding: 4rem 2.5rem 3rem;
-      position: relative; overflow: hidden;
-    }
-    .brand-hero::before {
-      content: ""; position: absolute; inset: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 60% 80% at 80% 50%, color-mix(in srgb,var(--orange) 20%,transparent), transparent),
-        radial-gradient(ellipse 40% 60% at 10% 80%, color-mix(in srgb,var(--purple) 15%,transparent), transparent);
-    }
-    .brand-logo-large {
-      display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.5rem; position: relative;
-    }
-    .brand-orbit { position: relative; width: 56px; height: 56px; flex-shrink: 0; }
-    .brand-ring { width: 56px; height: 56px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); animation: spin 10s linear infinite; }
-    .brand-sat { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 20px var(--orange), 0 0 40px color-mix(in srgb,var(--orange) 40%,transparent); }
-    .brand-core { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.6); }
-    .brand-name { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 900; letter-spacing: -0.05em; color: #fff; line-height: 1; }
-    .brand-name span { color: var(--orange); }
-    .brand-tagline { font-family: "DM Mono", monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(255,255,255,0.4); position: relative; }
-    .brand-stats-row { display: flex; gap: 2.5rem; margin-top: 2.5rem; position: relative; }
-    .brand-stat-val { font-size: 2rem; font-weight: 900; letter-spacing: -0.04em; color: #fff; line-height: 1; }
-    .brand-stat-unit { font-family: "DM Mono", monospace; font-size: 0.65rem; color: rgba(255,255,255,0.4); margin-left: 0.2rem; }
-    .brand-stat-lbl { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.35); margin-top: 0.3rem; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 0.375rem; }
 
-    /* ── WEEK STRIP ── */
-    .week-section { padding: 2rem 2rem 0; }
-    .week-card { background: var(--white); border: 1px solid var(--border); border-radius: 1.5rem; padding: 1.5rem; display: flex; gap: 2rem; align-items: flex-end; }
-    .week-left { flex-shrink: 0; }
-    .week-km-big { font-size: 2.5rem; font-weight: 900; letter-spacing: -0.05em; background: linear-gradient(135deg, var(--orange), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
-    .week-km-lbl { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-top: 0.3rem; }
-    .week-meta { font-family: "DM Mono", monospace; font-size: 0.62rem; color: var(--text2); margin-top: 0.75rem; }
-    .week-bars { flex: 1; display: grid; grid-template-columns: repeat(7,1fr); gap: 0.5rem; align-items: flex-end; border-left: 1px solid var(--border); padding-left: 1.5rem; }
-    .wday { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
-    .wbar-wrap { height: 80px; display: flex; align-items: flex-end; width: 100%; }
-    .wbar { width: 100%; border-radius: 6px; min-height: 4px; transition: height 0.7s cubic-bezier(0.16,1,0.3,1); }
-    .wday-lbl { font-family: "DM Mono", monospace; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-    .wday-km { font-family: "DM Mono", monospace; font-size: 0.55rem; color: var(--text2); min-height: 0.8rem; }
-
-    /* ── LATEST RUN ── */
-    .latest-section { padding: 1.5rem 2rem 0; }
-    .sec-hdr { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-    .sec-title { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); white-space: nowrap; }
-    .sec-line { flex: 1; height: 1px; background: var(--border); }
-
-    .hero-card {
-      background: var(--white); border: 1px solid var(--border); border-radius: 1.5rem; overflow: hidden;
-      box-shadow: 0 4px 40px rgba(0,0,0,0.06);
-    }
-    .hero-map-wrap { position: relative; height: 300px; background: #f0ede8; overflow: hidden; }
-    .hero-map-wrap svg { width: 100%; height: 100%; }
-    .hero-map-grad { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, rgba(255,255,255,0.95) 100%); pointer-events: none; }
-    .hero-no-map { height: 100%; display: flex; align-items: center; justify-content: center; font-family: "DM Mono", monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); }
-    .hero-map-badge { position: absolute; top: 1.25rem; left: 1.5rem; display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0.75rem 0.3rem 0.45rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 999px; }
-    .hero-type-dot { width: 7px; height: 7px; border-radius: 50%; }
-    .hero-type-lbl { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); }
-    .hero-date-badge { position: absolute; top: 1.25rem; right: 1.5rem; font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text2); padding: 0.3rem 0.75rem; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 999px; }
-
-    .hero-body { padding: 0 2rem 2rem; }
-    .hero-name { font-size: clamp(1.8rem, 3.5vw, 2.75rem); font-weight: 900; letter-spacing: -0.045em; line-height: 1.1; margin-bottom: 2rem; color: var(--text); }
-
-    .stat-grid-primary { display: grid; grid-template-columns: repeat(4,1fr); border: 1px solid var(--border); border-radius: 1.1rem; overflow: hidden; margin-bottom: 2px; }
-    .stat-grid-secondary { display: grid; grid-template-columns: repeat(4,1fr); border: 1px solid var(--border); border-radius: 1.1rem; overflow: hidden; }
-    .hstat { background: var(--white); padding: 1.25rem; border-right: 1px solid var(--border); }
-    .hstat:last-child { border-right: none; }
-    .hstat.alt { background: var(--bg); }
-    .hstat-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.5rem; }
-    .hstat-val { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.045em; line-height: 1; font-variant-numeric: tabular-nums; color: var(--text); }
-    .hstat-val.accent { color: var(--orange); }
-    .hstat-unit { font-size: 0.6rem; font-family: "DM Mono", monospace; color: var(--muted); margin-left: 0.15rem; }
-    .hstat.sm .hstat-val { font-size: 1.2rem; font-weight: 700; }
-
-    /* ── PREV RUNS ── */
-    .grid-section { padding: 1.5rem 2rem 0; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.625rem; }
-    .card {
-      position: relative; background: var(--white); border: 1px solid var(--border);
-      border-radius: 1.25rem; padding: 1.125rem 1.25rem 1.25rem; cursor: pointer; overflow: hidden;
+    .cal-day {
+      min-height: 88px; border-radius: 0.875rem; border: 1px solid var(--border);
+      background: var(--white); padding: 0.625rem; position: relative;
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
     }
-    .card::after { content: ""; position: absolute; inset: 0; border-radius: 1.25rem; opacity: 0; transition: opacity 0.2s; }
-    .card:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
-    .card.active { border-color: var(--orange); box-shadow: 0 0 0 3px color-mix(in srgb,var(--orange) 12%,transparent); }
-    .card-stripe { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 4px 0 0 4px; }
-    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.875rem; padding-left: 0.625rem; }
-    .card-meta { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 0.3rem; }
-    .card-name { font-size: 0.9rem; font-weight: 600; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
-    .card-km { font-size: 1.1rem; font-weight: 900; letter-spacing: -0.03em; color: var(--text); flex-shrink: 0; }
-    .card-km-unit { font-family: "DM Mono", monospace; font-size: 0.55rem; color: var(--muted); }
-    .card-stats { display: grid; grid-template-columns: repeat(4,1fr); padding-left: 0.625rem; }
-    .csl { font-family: "DM Mono", monospace; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.2rem; }
-    .csv { font-size: 0.9rem; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--text); }
-    .csu { font-size: 0.5rem; font-family: "DM Mono", monospace; color: var(--muted); }
+    .cal-day.empty { background: transparent; border-color: transparent; }
+    .cal-day.has-act { cursor: pointer; }
+    .cal-day.has-act:hover { border-color: var(--border2); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .cal-day.is-today { border-color: var(--orange); }
+    .cal-day.selected { border-color: var(--orange); box-shadow: 0 0 0 3px color-mix(in srgb,var(--orange) 15%,transparent); }
+    .cal-day-num { font-family: "DM Mono", monospace; font-size: 0.65rem; font-weight: 500; color: var(--muted); margin-bottom: 0.5rem; }
+    .cal-day.is-today .cal-day-num { color: var(--orange); font-weight: 700; }
+    .cal-day-acts { display: flex; flex-direction: column; gap: 0.25rem; }
+    .cal-act-chip {
+      display: flex; align-items: center; gap: 0.3rem;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: -0.01em;
+      padding: 0.2rem 0.4rem; border-radius: 0.375rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cal-act-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .cal-act-km { font-family: "DM Mono", monospace; font-size: 0.6rem; font-weight: 500; margin-left: auto; flex-shrink: 0; }
 
-    /* ── DETAIL ── */
-    .detail { display: none; background: var(--white); border: 1px solid var(--border); border-top: none; border-radius: 0 0 1.25rem 1.25rem; overflow: hidden; margin-bottom: 0.625rem; margin-top: -0.5rem; }
-    .detail.open { display: block; }
-    .detail-map { height: 180px; background: var(--s2,#f0ede8); overflow: hidden; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); }
-    .detail-map svg { width: 100%; height: 100%; }
-    .detail-body { display: grid; grid-template-columns: 1fr 1fr; }
+    /* Activity detail drawer */
+    .detail-drawer {
+      display: none; background: var(--white); border: 1px solid var(--border);
+      border-radius: 1.25rem; padding: 0; overflow: hidden;
+      margin-top: 0.5rem; margin-bottom: 0.5rem;
+      grid-column: 1 / -1;
+    }
+    .detail-drawer.open { display: block; }
+    .drawer-map { height: 220px; background: var(--s2); overflow: hidden; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); }
+    .drawer-map svg { width: 100%; height: 100%; }
+    .drawer-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+    .drawer-title { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.03em; }
+    .drawer-meta { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 0.3rem; }
+    .drawer-close { background: none; border: 1px solid var(--border); border-radius: 50%; width: 28px; height: 28px; cursor: pointer; color: var(--text2); font-size: 0.8rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .drawer-stats { display: grid; grid-template-columns: repeat(4,1fr); border-bottom: 1px solid var(--border); }
+    .dstat { padding: 1rem 1.25rem; border-right: 1px solid var(--border); }
+    .dstat:last-child { border-right: none; }
+    .dstat-lbl { font-family: "DM Mono", monospace; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 0.35rem; }
+    .dstat-val { font-size: 1.3rem; font-weight: 900; letter-spacing: -0.035em; font-variant-numeric: tabular-nums; }
+    .dstat-unit { font-family: "DM Mono", monospace; font-size: 0.55rem; color: var(--muted); margin-left: 0.1rem; }
+    .drawer-body { display: grid; grid-template-columns: 1fr 1fr; }
     .dcol { padding: 1.1rem 1.25rem; }
-    .dcol+.dcol { border-left: 1px solid var(--border); }
+    .dcol + .dcol { border-left: 1px solid var(--border); }
     .dlbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 0.65rem; }
     .zrow { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
     .zname { font-family: "DM Mono", monospace; font-size: 0.58rem; color: var(--text2); width: 1.8rem; flex-shrink: 0; }
-    .zbg { flex: 1; background: var(--s2,#f0ede8); border-radius: 999px; height: 6px; overflow: hidden; }
+    .zbg { flex: 1; background: var(--s2); border-radius: 999px; height: 6px; overflow: hidden; }
     .zbar { height: 100%; border-radius: 999px; transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
     .zt { font-family: "DM Mono", monospace; font-size: 0.58rem; color: var(--text2); width: 2.5rem; text-align: right; flex-shrink: 0; }
     .erow { display: flex; justify-content: space-between; padding: 0.3rem 0; border-top: 1px solid var(--border); }
     .ename { font-size: 0.78rem; color: var(--text2); }
     .etime { font-family: "DM Mono", monospace; font-size: 0.75rem; color: var(--text); }
-    .splits-wrap { border-top: 1px solid var(--border); padding: 1.1rem 1.25rem; overflow-x: auto; }
+    .splits-section { border-top: 1px solid var(--border); padding: 1.1rem 1.25rem; overflow-x: auto; }
     .st { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
     .st th { font-family: "DM Mono", monospace; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); text-align: right; padding: 0 0.6rem 0.5rem; font-weight: 400; }
     .st th:first-child { text-align: left; }
@@ -248,138 +151,137 @@
     .st td:first-child { text-align: left; color: var(--text); font-family: "DM Mono", monospace; font-size: 0.7rem; }
     .st tr:hover td { background: var(--bg); }
 
-    /* ── SKELETON ── */
-    .sk { background: linear-gradient(90deg, var(--bg) 25%, var(--white) 50%, var(--bg) 75%); background-size: 200% 100%; animation: sh 1.6s infinite; border-radius: 1.25rem; border: 1px solid var(--border); }
-    .sk-hero { height: 520px; border-radius: 1.5rem; }
-    .sk-card { height: 110px; }
-    .sk-week { height: 130px; border-radius: 1.5rem; }
-    @keyframes sh { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    /* Race banners */
+    .race-banner { background: var(--text); border-radius: 1.1rem; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1.25rem; overflow: hidden; position: relative; margin-bottom: 0.5rem; }
+    .race-banner::before { content:""; position:absolute;inset:0;background:radial-gradient(ellipse 50% 100% at 100% 50%,color-mix(in srgb,var(--orange) 18%,transparent),transparent);pointer-events:none; }
+    .race-days-num { font-size: 2rem; font-weight: 900; letter-spacing: -0.05em; color: var(--orange); line-height: 1; }
+    .race-days-lbl { font-family: "DM Mono", monospace; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); }
+    .race-div { width: 1px; height: 40px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
+    .race-name { font-size: 1rem; font-weight: 800; letter-spacing: -0.025em; color: #fff; }
+    .race-meta { font-family: "DM Mono", monospace; font-size: 0.58rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.2rem; }
+    .race-prog-bg { flex: 1; background: rgba(255,255,255,0.1); border-radius: 999px; height: 5px; overflow: hidden; max-width: 140px; }
+    .race-prog-bar { height: 100%; border-radius: 999px; background: linear-gradient(to right, var(--orange), #ff9a6c); }
 
-    /* ── CHAT ── */
-    .chat { width: var(--chat-w); flex-shrink: 0; position: fixed; right: 0; top: 0; bottom: 0; background: var(--white); border-left: 1px solid var(--border); display: flex; flex-direction: column; z-index: 90; box-shadow: -4px 0 40px rgba(0,0,0,0.06); }
-    @media(max-width:960px){.chat{display:none}}
-
-    .chat-hdr { padding: calc(var(--hdr) + 1.25rem) 1.25rem 1rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-    .chat-hdr-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 0.25rem; }
-    .chat-hdr-title { font-size: 1rem; font-weight: 800; letter-spacing: -0.025em; }
-
-    .msgs { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; scroll-behavior: smooth; }
-
-    .msg { max-width: 86%; animation: mi 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+    /* ── CHAT PAGE ── */
+    .chat-page {
+      max-width: 720px; margin: 0 auto;
+      display: flex; flex-direction: column;
+      height: calc(100vh - var(--hdr));
+      padding: 0;
+    }
+    .chat-msgs { flex: 1; overflow-y: auto; padding: 2rem 1.5rem 1rem; display: flex; flex-direction: column; gap: 0.875rem; }
+    .msg { max-width: 82%; animation: mi 0.3s cubic-bezier(0.16,1,0.3,1) both; }
     .msg-u { align-self: flex-end; }
     .msg-a { align-self: flex-start; }
     @keyframes mi { from{opacity:0;transform:translateY(8px) scale(0.97)} to{opacity:1;transform:none} }
-
-    .bubble { padding: 0.7rem 1rem; border-radius: 1rem; font-size: 0.84rem; line-height: 1.7; }
+    .bubble { padding: 0.75rem 1.05rem; border-radius: 1.1rem; font-size: 0.875rem; line-height: 1.7; }
     .msg-u .bubble { background: var(--text); color: #fff; border-bottom-right-radius: 0.25rem; }
-    .msg-a .bubble { background: var(--bg); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 0.25rem; }
+    .msg-a .bubble { background: var(--white); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 0.25rem; }
     .msg-think .bubble { color: var(--muted); font-style: italic; font-size: 0.8rem; }
     .msg-think .bubble::after { content:""; animation: dots 1.2s steps(4,end) infinite; }
     @keyframes dots { 0%,20%{content:""} 40%{content:"."} 60%{content:".."} 80%,100%{content:"..."} }
-
-    .chat-foot { padding: 1rem; border-top: 1px solid var(--border); flex-shrink: 0; background: var(--white); }
-    .chat-form { display: flex; gap: 0.5rem; align-items: flex-end; }
-    .chat-in { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 0.875rem; padding: 0.65rem 1rem; color: var(--text); font-family: "DM Sans", sans-serif; font-size: 0.875rem; outline: none; resize: none; min-height: 42px; max-height: 120px; transition: border-color 0.2s; line-height: 1.5; }
-    .chat-in:focus { border-color: var(--border2); }
+    .chat-foot { padding: 1rem 1.5rem 1.5rem; background: var(--bg); border-top: 1px solid var(--border); flex-shrink: 0; }
+    .chat-form { display: flex; gap: 0.5rem; align-items: flex-end; background: var(--white); border: 1px solid var(--border); border-radius: 1rem; padding: 0.5rem 0.5rem 0.5rem 1rem; transition: border-color 0.2s; }
+    .chat-form:focus-within { border-color: var(--border2); }
+    .chat-in { flex: 1; background: none; border: none; padding: 0.35rem 0; color: var(--text); font-family: "DM Sans", sans-serif; font-size: 0.9rem; outline: none; resize: none; min-height: 28px; max-height: 120px; line-height: 1.5; }
     .chat-in::placeholder { color: var(--muted); }
-    .send-btn { width: 42px; height: 42px; flex-shrink: 0; background: var(--text); border: none; border-radius: 0.875rem; color: #fff; font-size: 1.1rem; font-weight: 900; cursor: pointer; transition: opacity 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; }
+    .send-btn { width: 36px; height: 36px; flex-shrink: 0; background: var(--text); border: none; border-radius: 0.625rem; color: #fff; font-size: 1rem; font-weight: 900; cursor: pointer; transition: opacity 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; }
     .send-btn:hover { opacity: 0.8; }
     .send-btn:active { transform: scale(0.92); }
     .send-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+    .chat-hint { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); text-align: center; margin-top: 0.6rem; }
+    .new-chat-btn { background: none; border: 1px solid var(--border); border-radius: 999px; padding: 0.25rem 0.75rem; font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); cursor: pointer; transition: color 0.2s, border-color 0.2s; }
+    .new-chat-btn:hover { color: var(--text); border-color: var(--border2); }
+
+    /* ── MODAL ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); backdrop-filter: blur(4px); z-index: 200; display: none; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--white); border-radius: 1.5rem; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,0.18); }
+    .modal-hdr { display: flex; align-items: center; justify-content: space-between; padding: 1.5rem 1.75rem 1.25rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--white); z-index: 1; border-radius: 1.5rem 1.5rem 0 0; }
+    .modal-title { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em; }
+    .modal-close { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border); background: none; cursor: pointer; font-size: 0.85rem; color: var(--text2); display: flex; align-items: center; justify-content: center; }
+    .modal-body { padding: 1.5rem 1.75rem; display: flex; flex-direction: column; gap: 1.75rem; }
+    .modal-section-title { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--muted); margin-bottom: 0.875rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.625rem; }
+    .form-field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .form-field.full { grid-column: 1/-1; }
+    .form-label { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text2); }
+    .form-input, .form-select, .form-textarea { background: var(--bg); border: 1px solid var(--border); border-radius: 0.625rem; padding: 0.6rem 0.875rem; font-family: "DM Sans", sans-serif; font-size: 0.875rem; color: var(--text); outline: none; transition: border-color 0.2s; width: 100%; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--orange); }
+    .form-textarea { resize: vertical; min-height: 70px; }
+    .modal-save { width: 100%; padding: 0.75rem; background: var(--text); color: #fff; border: none; border-radius: 0.875rem; font-family: "DM Sans", sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+    .modal-save:hover { opacity: 0.85; }
+    .goal-list { display: flex; flex-direction: column; gap: 0.625rem; margin-bottom: 0.625rem; }
+    .goal-item { background: var(--bg); border: 1px solid var(--border); border-radius: 0.875rem; padding: 1rem; }
+    .goal-item-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; gap: 0.5rem; }
+    .goal-remove { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 0.8rem; padding: 0.2rem 0.4rem; border-radius: 0.375rem; }
+    .goal-remove:hover { color: #dc2626; background: color-mix(in srgb,#dc2626 8%,transparent); }
+    .add-goal-btn { width: 100%; padding: 0.6rem; background: none; border: 1.5px dashed var(--border2); border-radius: 0.75rem; color: var(--text2); font-family: "DM Sans", sans-serif; font-size: 0.875rem; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+    .add-goal-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* ── SKELETON ── */
+    .sk { background: linear-gradient(90deg, var(--white) 25%, var(--s2) 50%, var(--white) 75%); background-size: 200% 100%; animation: sh 1.6s infinite; border-radius: 0.875rem; border: 1px solid var(--border); }
+    @keyframes sh { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .loading { text-align: center; padding: 4rem 2rem; font-family: "DM Mono", monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
   <header class="hdr" id="hdr">
     <div class="hdr-inner">
       <a class="logo" href="/">
         <div class="logo-icon"><div class="logo-ring"></div><div class="logo-sat"></div><div class="logo-core"></div></div>
         <span class="logo-name">Pacecraft</span>
       </a>
-      <div class="hdr-center">
+      <nav class="nav">
+        <button class="nav-tab on" id="tab-cal" onclick="switchPage('cal')">Calendar</button>
+        <button class="nav-tab" id="tab-chat" onclick="switchPage('chat')">Coach</button>
+      </nav>
+      <div class="hdr-space"></div>
+      <div class="hdr-stats">
         <div><div class="hdr-stat-val" id="hdr-week">—</div><div class="hdr-stat-lbl">This week</div></div>
         <div class="hdr-sep"></div>
         <div><div class="hdr-stat-val" id="hdr-ytd">—</div><div class="hdr-stat-lbl">YTD</div></div>
-        <div class="hdr-sep"></div>
-        <div><div class="hdr-stat-val" id="hdr-runs">—</div><div class="hdr-stat-lbl">YTD runs</div></div>
       </div>
-      <div class="hdr-right">
-        <div class="live-pill"><div class="live-dot"></div>Live</div>
-        <div class="hdr-avatar" id="hdr-av">W</div>
-        <span class="hdr-name" id="hdr-name">Loading</span>
-        <button class="settings-btn" onclick="openSettings()" title="Profile & Goals">⚙</button>
-      </div>
+      <div class="hdr-sep" style="margin-left:0.5rem"></div>
+      <div class="hdr-avatar" id="hdr-av">W</div>
+      <button class="settings-btn" onclick="openSettings()" title="Profile & Goals">⚙</button>
     </div>
   </header>
 
-  <div class="layout">
-    <main class="feed">
-
-      <!-- Brand hero -->
-      <div class="brand-hero">
-        <div class="brand-logo-large">
-          <div class="brand-orbit">
-            <div class="brand-ring"></div>
-            <div class="brand-sat"></div>
-            <div class="brand-core"></div>
-          </div>
-          <div class="brand-name">Pace<span>craft</span></div>
-        </div>
-        <div class="brand-tagline">Training intelligence · Powered by AI</div>
-        <div class="brand-stats-row" id="brand-stats">
-          <div><div class="brand-stat-val" id="bs-week">—<span class="brand-stat-unit">km</span></div><div class="brand-stat-lbl">This week</div></div>
-          <div style="width:1px;background:rgba(255,255,255,0.1)"></div>
-          <div><div class="brand-stat-val" id="bs-ytd">—<span class="brand-stat-unit">km</span></div><div class="brand-stat-lbl">Year to date</div></div>
-          <div style="width:1px;background:rgba(255,255,255,0.1)"></div>
-          <div><div class="brand-stat-val" id="bs-total">—<span class="brand-stat-unit">km</span></div><div class="brand-stat-lbl">All time</div></div>
+  <!-- CALENDAR PAGE -->
+  <div class="page on" id="page-cal">
+    <div class="cal-page">
+      <div id="race-banners"></div>
+      <div class="cal-nav">
+        <div class="cal-month-label" id="cal-month-label">—</div>
+        <div class="cal-nav-btns">
+          <button class="cal-btn" onclick="changeMonth(-1)">‹</button>
+          <button class="cal-btn" onclick="changeMonth(1)">›</button>
         </div>
       </div>
-
-      <!-- Week -->
-      <div class="week-section">
-        <div id="week-wrap"><div class="sk sk-week"></div></div>
+      <div class="cal-weekdays">
+        <div class="cal-wd">Mon</div><div class="cal-wd">Tue</div><div class="cal-wd">Wed</div>
+        <div class="cal-wd">Thu</div><div class="cal-wd">Fri</div><div class="cal-wd">Sat</div><div class="cal-wd">Sun</div>
       </div>
+      <div class="cal-grid" id="cal-grid"><div class="loading">Loading activities...</div></div>
+    </div>
+  </div>
 
-      <!-- Race goals countdown -->
-      <div id="race-banners" style="padding: 1rem 2rem 0; display:flex; flex-direction:column; gap:0.625rem;"></div>
-
-      <!-- Latest -->
-      <div class="latest-section">
-        <div class="sec-hdr"><span class="sec-title">Latest session</span><div class="sec-line"></div></div>
-        <div id="hero"><div class="sk sk-hero"></div></div>
-      </div>
-
-      <!-- Previous -->
-      <div class="grid-section">
-        <div class="sec-hdr">
-          <span class="sec-title">Previous sessions</span>
-          <div class="sec-line"></div>
-          <span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted)" id="run-count"></span>
-        </div>
-        <div class="grid" id="grid">
-          <div class="sk sk-card"></div><div class="sk sk-card"></div><div class="sk sk-card"></div>
-        </div>
-      </div>
-    </main>
-
-    <!-- CHAT -->
-    <aside class="chat">
-      <div class="chat-hdr" style="display:flex;align-items:flex-start;justify-content:space-between">
-        <div>
-          <div class="chat-hdr-lbl">AI Coach</div>
-          <div class="chat-hdr-title">Pacecraft Intelligence</div>
-        </div>
-        <button onclick="clearChatHistory()" title="New conversation" style="background:none;border:1px solid var(--border);border-radius:0.5rem;padding:0.3rem 0.6rem;font-family:'DM Mono',monospace;font-size:0.55rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);cursor:pointer;transition:color 0.2s,border-color 0.2s;margin-top:0.1rem" onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--border2)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">New chat</button>
-      </div>
-      <div class="msgs" id="msgs"></div>
+  <!-- CHAT PAGE -->
+  <div class="page" id="page-chat">
+    <div class="chat-page">
+      <div class="chat-msgs" id="chat-msgs"></div>
       <div class="chat-foot">
         <form class="chat-form" id="chat-form">
-          <textarea class="chat-in" id="chat-in" placeholder="Ask your coach..." rows="1"></textarea>
+          <textarea class="chat-in" id="chat-in" placeholder="Ask your coach anything..." rows="1"></textarea>
           <button class="send-btn" id="send-btn" type="submit">↑</button>
         </form>
+        <div class="chat-hint">
+          <button class="new-chat-btn" onclick="clearChat()">New conversation</button>
+        </div>
       </div>
-    </aside>
+    </div>
   </div>
 
   <!-- Settings Modal -->
@@ -392,13 +294,13 @@
       <div class="modal-body">
         <div>
           <div class="modal-section-title">Athlete profile</div>
-          <p style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted);margin-bottom:1rem">Gender and weight are synced automatically from Strava.</p>
+          <p style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted);margin-bottom:0.875rem">Gender and weight sync automatically from Strava.</p>
           <div class="form-grid">
-            <div class="form-field"><label class="form-label">Height (cm)</label><input class="form-input" id="p-height" type="number" placeholder="175" min="100" max="250"/></div>
-            <div class="form-field"><label class="form-label">Age</label><input class="form-input" id="p-age" type="number" placeholder="30" min="10" max="100"/></div>
-            <div class="form-field"><label class="form-label">Max HR (bpm)</label><input class="form-input" id="p-maxhr" type="number" placeholder="190" min="100" max="230"/></div>
-            <div class="form-field"><label class="form-label">Resting HR (bpm)</label><input class="form-input" id="p-resthr" type="number" placeholder="50" min="30" max="100"/></div>
-            <div class="form-field full"><label class="form-label">Notes for the coach</label><textarea class="form-textarea" id="p-notes" placeholder="E.g. recovering from knee injury, prefer morning runs, training 5x/week..."></textarea></div>
+            <div class="form-field"><label class="form-label">Height (cm)</label><input class="form-input" id="p-height" type="number" placeholder="175"/></div>
+            <div class="form-field"><label class="form-label">Age</label><input class="form-input" id="p-age" type="number" placeholder="30"/></div>
+            <div class="form-field"><label class="form-label">Max HR (bpm)</label><input class="form-input" id="p-maxhr" type="number" placeholder="190"/></div>
+            <div class="form-field"><label class="form-label">Resting HR (bpm)</label><input class="form-input" id="p-resthr" type="number" placeholder="50"/></div>
+            <div class="form-field full"><label class="form-label">Notes for the coach</label><textarea class="form-textarea" id="p-notes" placeholder="E.g. recovering from knee injury, training 5x/week, prefer morning runs..."></textarea></div>
           </div>
         </div>
         <div>
@@ -413,14 +315,14 @@
 
   <script>
     // ── Utils ──
-    const dur = s => { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60; return h?`${h}:${String(m).padStart(2,"0")}:${String(sc).padStart(2,"0")}`:`${m}:${String(sc).padStart(2,"0")}`; };
-    const pace = mps => { if(!mps)return"—"; const spk=1000/mps,m=Math.floor(spk/60),s=Math.round(spk%60); return`${m}:${String(s).padStart(2,"0")}`; };
-    const actCol = t => { if(!t)return"#7c3aed"; if(t.includes("Run"))return"#ff5500"; if(t.includes("Ride"))return"#0088cc"; if(t==="Swim")return"#16a34a"; return"#7c3aed"; };
+    const dur = s=>{const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return h?`${h}:${String(m).padStart(2,"0")}:${String(sc).padStart(2,"0")}`:`${m}:${String(sc).padStart(2,"0")}`;};
+    const pace = mps=>{if(!mps)return"—";const spk=1000/mps,m=Math.floor(spk/60),s=Math.round(spk%60);return`${m}:${String(s).padStart(2,"0")}`;};
+    const actCol = t=>{if(!t)return"#7c3aed";if(t.includes("Run"))return"#ff5500";if(t.includes("Ride"))return"#0088cc";if(t==="Swim")return"#16a34a";return"#7c3aed";};
+    const actBg  = t=>{if(!t)return"#f3f0ff";if(t.includes("Run"))return"#fff3ee";if(t.includes("Ride"))return"#eff8ff";if(t==="Swim")return"#effff8";return"#f3f0ff";};
 
     // ── Polyline ──
     function decode(enc){const c=[];let i=0,la=0,ln=0;while(i<enc.length){let b,s=0,r=0;do{b=enc.charCodeAt(i++)-63;r|=(b&0x1f)<<s;s+=5;}while(b>=0x20);la+=(r&1)?~(r>>1):(r>>1);s=0;r=0;do{b=enc.charCodeAt(i++)-63;r|=(b&0x1f)<<s;s+=5;}while(b>=0x20);ln+=(r&1)?~(r>>1):(r>>1);c.push([la/1e5,ln/1e5]);}return c;}
-    function makeSVG(enc,W,H,pad,sw,strokeColor){
-      strokeColor=strokeColor||"#ff5500";
+    function makeSVG(enc,W,H,pad,sw,col){
       const c=decode(enc);if(c.length<2)return null;
       const las=c.map(x=>x[0]),lns=c.map(x=>x[1]);
       const mla=Math.min(...las),xla=Math.max(...las),mln=Math.min(...lns),xln=Math.max(...lns);
@@ -428,227 +330,166 @@
       const ox=(W-sc*sx)/2,oy=(H-sc*sy)/2;
       const pts=c.map(([a,n])=>`${ox+(n-mln)*sc},${H-oy-(a-mla)*sc}`).join(" ");
       const [x0,y0]=pts.split(" ")[0].split(",");
-      const [xe,ye]=pts.split(" ").at(-1).split(",");
       const id="g"+Math.random().toString(36).slice(2,6);
       return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-        <defs><filter id="${id}"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-        <polyline points="${pts}" fill="none" stroke="${strokeColor}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" filter="url(#${id})" opacity="0.9"/>
-        <circle cx="${x0}" cy="${y0}" r="6" fill="${strokeColor}"/>
-        <circle cx="${x0}" cy="${y0}" r="12" fill="${strokeColor}" opacity="0.15"/>
-        <circle cx="${xe}" cy="${ye}" r="3.5" fill="#888" opacity="0.5"/>
+        <defs><filter id="${id}"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+        <polyline points="${pts}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" filter="url(#${id})" opacity="0.85"/>
+        <circle cx="${x0}" cy="${y0}" r="5" fill="${col}"/>
+        <circle cx="${x0}" cy="${y0}" r="10" fill="${col}" opacity="0.15"/>
       </svg>`;
     }
 
-    // ── Multi-route map (past month) ──
-    function makeMonthMap(activities, W, H, pad) {
-      pad = pad || 28;
-      const monthAgo = new Date(Date.now() - 30 * 864e5);
-      const recent = activities.filter(a => a.map?.summary_polyline && new Date(a.start_date_local) >= monthAgo);
-      if (!recent.length) return null;
-
-      // Decode all routes
-      const routes = recent.map(a => ({
-        coords: decode(a.map.summary_polyline),
-        color: actCol(a.sport_type),
-        isLatest: a.id === recent[0].id,
-        age: (Date.now() - new Date(a.start_date_local)) / (30 * 864e5), // 0=today, 1=month ago
-      })).filter(r => r.coords.length >= 2);
-
-      if (!routes.length) return null;
-
-      // Global bounding box
-      const allLats = routes.flatMap(r => r.coords.map(c => c[0]));
-      const allLngs = routes.flatMap(r => r.coords.map(c => c[1]));
-      const mla = Math.min(...allLats), xla = Math.max(...allLats);
-      const mln = Math.min(...allLngs), xln = Math.max(...allLngs);
-      const sx = (xln - mln) || 1, sy = (xla - mla) || 1;
-      const sc = Math.min((W - pad*2) / sx, (H - pad*2) / sy);
-      const ox = (W - sc*sx) / 2, oy = (H - sc*sy) / 2;
-
-      const project = ([la, ln]) => `${ox+(ln-mln)*sc},${H-oy-(la-mla)*sc}`;
-
-      // Sort: oldest first so latest renders on top
-      const sorted = [...routes].sort((a, b) => b.age - a.age);
-
-      const lines = sorted.map(r => {
-        const pts = r.coords.map(project).join(" ");
-        const opacity = r.isLatest ? 0.9 : Math.max(0.12, 0.45 * (1 - r.age * 0.7));
-        const sw = r.isLatest ? 2.5 : 1.5;
-        const [x0, y0] = pts.split(" ")[0].split(",");
-        return `<polyline points="${pts}" fill="none" stroke="${r.color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" opacity="${opacity}"/>
-          ${r.isLatest ? `<circle cx="${x0}" cy="${y0}" r="5" fill="${r.color}"/><circle cx="${x0}" cy="${y0}" r="10" fill="${r.color}" opacity="0.15"/>` : ''}`;
-      }).join("");
-
-      const count = routes.length;
-      return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-        <text x="${W-12}" y="${H-10}" text-anchor="end" font-family="DM Mono,monospace" font-size="9" fill="#999" letter-spacing="0.08em">${count} SESSIONS · PAST 30 DAYS</text>
-        ${lines}
-      </svg>`;
+    // ── Page switcher ──
+    function switchPage(name) {
+      document.querySelectorAll(".page").forEach(p=>p.classList.remove("on"));
+      document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("on"));
+      document.getElementById(`page-${name}`).classList.add("on");
+      document.getElementById(`tab-${name}`).classList.add("on");
+      window.scrollTo(0,0);
     }
 
-    // ── Header / Brand ──
-    function applyStats(acts, athlete) {
-      // Sync Strava fields into localStorage profile
-      if (athlete) {
-        const s = loadSettings();
-        s.profile = s.profile || {};
-        if (athlete.weight) s.profile.weight = athlete.weight;
-        if (athlete.sex)    s.profile.gender = athlete.sex === "M" ? "male" : "female";
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
-      }
-      const now=new Date(), weekAgo=new Date(now-7*864e5);
-      const weekKm = acts.filter(a=>new Date(a.start_date_local)>=weekAgo).reduce((s,a)=>s+a.distance/1000,0);
-      document.getElementById("hdr-week").textContent = weekKm.toFixed(1)+" km";
-      document.getElementById("bs-week").innerHTML = weekKm.toFixed(1)+`<span class="brand-stat-unit">km</span>`;
-      if(athlete){
-        const n=`${athlete.firstname} ${athlete.lastname}`;
-        document.getElementById("hdr-name").textContent=n;
-        document.getElementById("hdr-av").textContent=(athlete.firstname?.[0]||"")+(athlete.lastname?.[0]||"");
-        if(athlete.stats){
-          const s=athlete.stats;
-          const ytd=((s.ytd_run_totals?.distance||0)/1000).toFixed(0);
-          const all=((s.all_run_totals?.distance||0)/1000).toFixed(0);
-          document.getElementById("hdr-ytd").textContent=ytd+" km";
-          document.getElementById("hdr-runs").textContent=s.ytd_run_totals?.count||"—";
-          document.getElementById("bs-ytd").innerHTML=ytd+`<span class="brand-stat-unit">km</span>`;
-          document.getElementById("bs-total").innerHTML=all+`<span class="brand-stat-unit">km</span>`;
-        }
-      }
-    }
+    // ── Calendar state ──
+    let allActs = [], actsByDate = {}, viewYear, viewMonth, selectedDay = null;
 
-    // ── Week strip ──
-    function renderWeek(acts){
-      const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],today=new Date();today.setHours(0,0,0,0);
-      const data=Array.from({length:7},(_,i)=>{
-        const d=new Date(today);d.setDate(today.getDate()-6+i);
-        const da=acts.filter(a=>{const ad=new Date(a.start_date_local);ad.setHours(0,0,0,0);return ad.getTime()===d.getTime();});
-        return{lbl:days[(d.getDay()+6)%7],km:da.reduce((s,a)=>s+a.distance/1000,0),today:i===6};
+    function indexActivities(acts) {
+      actsByDate = {};
+      acts.forEach(a => {
+        const d = a.start_date_local?.slice(0,10);
+        if (!d) return;
+        if (!actsByDate[d]) actsByDate[d] = [];
+        actsByDate[d].push(a);
       });
-      const maxKm=Math.max(...data.map(d=>d.km),0.1);
-      const weekTotal=data.reduce((s,d)=>s+d.km,0);
-      const weekSessions=data.filter(d=>d.km>0).length;
-      document.getElementById("week-wrap").innerHTML=`
-        <div class="week-card">
-          <div class="week-left">
-            <div class="week-km-big">${weekTotal.toFixed(1)}<span style="font-size:1rem;font-family:'DM Mono',monospace;background:none;-webkit-text-fill-color:var(--muted);margin-left:0.25rem">km</span></div>
-            <div class="week-km-lbl">This week</div>
-            <div class="week-meta">${weekSessions} session${weekSessions!==1?"s":""} · ${dur(data.reduce((s,d)=>s+(d.km>0?d.km*360:0),0))} est.</div>
-          </div>
-          <div class="week-bars">
-            ${data.map(d=>`<div class="wday">
-              <div class="wbar-wrap"><div class="wbar" style="height:${d.km?Math.max(d.km/maxKm*100,6):3}%;background:${d.km?(d.today?"linear-gradient(to top,#ff5500,#ff9a6c)":"linear-gradient(to top,#ff550055,#ff9a6c33)"):"var(--border)"}"></div></div>
-              <div class="wday-lbl" style="color:${d.today?"var(--orange)":"var(--muted)"}">${d.lbl}</div>
-              <div class="wday-km">${d.km?d.km.toFixed(1):""}</div>
-            </div>`).join("")}
-          </div>
+    }
+
+    function changeMonth(dir) {
+      viewMonth += dir;
+      if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+      if (viewMonth < 0)  { viewMonth = 11; viewYear--; }
+      selectedDay = null;
+      renderCalendar();
+    }
+
+    function renderCalendar() {
+      const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      document.getElementById("cal-month-label").textContent = `${months[viewMonth]} ${viewYear}`;
+
+      const today = new Date(); today.setHours(0,0,0,0);
+      const firstDay = new Date(viewYear, viewMonth, 1);
+      const lastDay  = new Date(viewYear, viewMonth+1, 0);
+      // Mon=0 offset
+      let startOffset = (firstDay.getDay() + 6) % 7;
+
+      const grid = document.getElementById("cal-grid");
+      let html = "";
+
+      // Empty cells before first day
+      for (let i = 0; i < startOffset; i++) html += `<div class="cal-day empty"></div>`;
+
+      for (let d = 1; d <= lastDay.getDate(); d++) {
+        const dateStr = `${viewYear}-${String(viewMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+        const acts = actsByDate[dateStr] || [];
+        const isToday = new Date(viewYear,viewMonth,d).getTime() === today.getTime();
+        const isSel = selectedDay === dateStr;
+        const cls = ["cal-day", acts.length?"has-act":"", isToday?"is-today":"", isSel?"selected":""].filter(Boolean).join(" ");
+        const chipsHTML = acts.slice(0,2).map(a=>`
+          <div class="cal-act-chip" style="background:${actBg(a.sport_type)};color:${actCol(a.sport_type)}">
+            <div class="cal-act-dot" style="background:${actCol(a.sport_type)}"></div>
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60px">${a.name}</span>
+            <span class="cal-act-km">${(a.distance/1000).toFixed(1)}</span>
+          </div>`).join("");
+        const extra = acts.length > 2 ? `<div style="font-family:'DM Mono',monospace;font-size:0.5rem;color:var(--muted);margin-top:0.2rem">+${acts.length-2} more</div>` : "";
+        const onclick = acts.length ? `onclick="toggleDay('${dateStr}')"` : "";
+        html += `<div class="${cls}" ${onclick}>
+          <div class="cal-day-num">${d}</div>
+          <div class="cal-day-acts">${chipsHTML}${extra}</div>
         </div>`;
+
+        // Insert detail drawer after the row containing the selected day
+        if (isSel) {
+          // Insert as full-width row at end of current row
+          html += `<div class="detail-drawer open" id="detail-drawer" style="grid-column:1/-1"></div>`;
+        }
+
+        // If this is the last day and no selected drawer yet, close the grid properly
+      }
+
+      // If selected day was not in this month, clear drawer
+      grid.innerHTML = html;
+
+      if (selectedDay && actsByDate[selectedDay]) {
+        loadDrawer(actsByDate[selectedDay][0]);
+      }
     }
 
-    // ── Hero ──
-    function renderHero(a, allActivities){
-      const isRun=a.sport_type?.includes("Run"),col=actCol(a.sport_type);
-      const date=new Date(a.start_date_local).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
-      const svg = makeMonthMap(allActivities, 900, 300, 28);
-      const mapH=svg?`<div class="hero-map-wrap">${svg}<div class="hero-map-grad"></div></div>`:`<div class="hero-map-wrap"><div class="hero-no-map">No route data</div><div class="hero-map-grad"></div></div>`;
-      document.getElementById("hero").innerHTML=`
-        <div class="hero-card">
-          ${mapH}
-          <div style="position:absolute;top:1.25rem;left:1.5rem;display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0.75rem 0.3rem 0.45rem;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:999px">
-            <div style="width:7px;height:7px;border-radius:50%;background:${col};box-shadow:0 0 10px ${col}"></div>
-            <span style="font-family:'DM Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text)">${a.sport_type||"Activity"}</span>
-          </div>
-          <div style="position:absolute;top:1.25rem;right:1.5rem;font-family:'DM Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text2);padding:0.3rem 0.75rem;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:999px">${date}</div>
-          <div class="hero-body">
-            <div class="hero-name">${a.name}</div>
-            <div class="stat-grid-primary" style="margin-bottom:2px">
-              <div class="hstat"><div class="hstat-lbl">Distance</div><div class="hstat-val accent">${(a.distance/1000).toFixed(2)}<span class="hstat-unit">km</span></div></div>
-              <div class="hstat"><div class="hstat-lbl">${isRun?"Avg pace":"Speed"}</div><div class="hstat-val">${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="hstat-unit">${isRun?"/km":"km/h"}</span></div></div>
-              <div class="hstat"><div class="hstat-lbl">Avg HR</div><div class="hstat-val">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="hstat-unit">${a.average_heartrate?"bpm":""}</span></div></div>
-              <div class="hstat"><div class="hstat-lbl">Duration</div><div class="hstat-val" style="font-size:1.3rem">${dur(a.moving_time)}</div></div>
-            </div>
-            <div class="stat-grid-secondary">
-              <div class="hstat sm alt"><div class="hstat-lbl">Elevation</div><div class="hstat-val">${Math.round(a.total_elevation_gain)}<span class="hstat-unit">m</span></div></div>
-              <div class="hstat sm alt"><div class="hstat-lbl">Max HR</div><div class="hstat-val">${a.max_heartrate?Math.round(a.max_heartrate):"—"}<span class="hstat-unit">${a.max_heartrate?"bpm":""}</span></div></div>
-              <div class="hstat sm alt"><div class="hstat-lbl">Cadence</div><div class="hstat-val">${a.average_cadence?Math.round(a.average_cadence*2):"—"}<span class="hstat-unit">${a.average_cadence?"spm":""}</span></div></div>
-              <div class="hstat sm alt"><div class="hstat-lbl">Calories</div><div class="hstat-val">${a.calories||"—"}<span class="hstat-unit">${a.calories?"kcal":""}</span></div></div>
-            </div>
-          </div>
-        </div>`;
+    function toggleDay(dateStr) {
+      if (selectedDay === dateStr) {
+        selectedDay = null;
+      } else {
+        selectedDay = dateStr;
+      }
+      renderCalendar();
     }
 
-    // ── Cards ──
-    function renderCard(a){
-      const isRun=a.sport_type?.includes("Run"),col=actCol(a.sport_type);
-      const date=new Date(a.start_date_local).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
-      return `
-        <div class="card" data-id="${a.id}" onclick="toggleDetail(this)">
-          <div class="card-stripe" style="background:${col}"></div>
-          <div class="card-top">
-            <div style="min-width:0"><div class="card-meta">${a.sport_type||"Activity"} · ${date}</div><div class="card-name">${a.name}</div></div>
-            <div class="card-km">${(a.distance/1000).toFixed(2)}<span class="card-km-unit"> km</span></div>
-          </div>
-          <div class="card-stats">
-            <div><div class="csl">Time</div><div class="csv">${dur(a.moving_time)}</div></div>
-            <div><div class="csl">${isRun?"Pace":"Speed"}</div><div class="csv">${isRun?pace(a.average_speed):(a.average_speed*3.6).toFixed(1)}<span class="csu">${isRun?"/km":"km/h"}</span></div></div>
-            <div><div class="csl">HR</div><div class="csv">${a.average_heartrate?Math.round(a.average_heartrate):"—"}<span class="csu">${a.average_heartrate?"bpm":""}</span></div></div>
-            <div><div class="csl">Elev</div><div class="csv">${Math.round(a.total_elevation_gain)}<span class="csu">m</span></div></div>
-          </div>
-        </div>
-        <div class="detail" id="d-${a.id}"></div>`;
-    }
-
-    // ── Detail ──
-    let zonesCache=null;
+    let zonesCache = null;
     async function getZones(){if(zonesCache)return zonesCache;const r=await fetch("/api/zones?user=a");zonesCache=r.ok?await r.json():null;return zonesCache;}
     function calcZT(hr,t,zones){const th=zones?.heart_rate?.zones?.map(z=>z.min)??[];if(!th.length||!hr?.length)return null;const tot=new Array(th.length).fill(0);for(let i=1;i<hr.length;i++){const v=hr[i],dt=t[i]-t[i-1];let z=0;for(let x=th.length-1;x>=0;x--){if(v>=th[x]){z=x;break;}}tot[z]+=dt;}return tot;}
     const ZC=["var(--z1)","var(--z2)","var(--z3)","var(--z4)","var(--z5)"];
 
-    async function loadDetail(id,el){
-      el.innerHTML=`<div style="padding:2rem;text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em">Loading...</div>`;
-      const[aR,sR,zones]=await Promise.all([fetch(`/api/activity?id=${id}&user=a`),fetch(`/api/streams?id=${id}&user=a`),getZones()]);
-      const act=aR.ok?await aR.json():null,str=sR.ok?await sR.json():null;
-      const poly=act?.map?.polyline||act?.map?.summary_polyline;
-      const col=actCol(act?.sport_type);
-      const svg=poly?makeSVG(poly,460,180,16,2.5,col):null;
-      const mapH=svg?`<div class="detail-map">${svg}</div>`:``;
-      const hr=str?.heartrate?.data,t=str?.time?.data;
+    async function loadDrawer(a) {
+      const el = document.getElementById("detail-drawer");
+      if (!el) return;
+      el.innerHTML = `<div style="padding:2rem;text-align:center;color:var(--muted);font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em">Loading...</div>`;
+
+      const [aR,sR,zones] = await Promise.all([
+        fetch(`/api/activity?id=${a.id}&user=a`),
+        fetch(`/api/streams?id=${a.id}&user=a`),
+        getZones(),
+      ]);
+      const act = aR.ok ? await aR.json() : a;
+      const streams = sR.ok ? await sR.json() : null;
+      const col = actCol(act.sport_type);
+      const poly = act?.map?.polyline || act?.map?.summary_polyline;
+      const svg = poly ? makeSVG(poly,900,220,24,2.5,col) : null;
+      const mapH = svg ? `<div class="drawer-map">${svg}</div>` : "";
+      const isRun = act.sport_type?.includes("Run");
+      const hr=streams?.heartrate?.data,t=streams?.time?.data;
       const zt=calcZT(hr,t,zones),ztot=zt?zt.reduce((a,b)=>a+b,0):0;
       const zonesH=zt?`<div class="dcol"><div class="dlbl">HR Zones</div>${zt.map((v,i)=>`<div class="zrow"><span class="zname">Z${i+1}</span><div class="zbg"><div class="zbar" style="width:${ztot?(v/ztot*100).toFixed(1):0}%;background:${ZC[i]}"></div></div><span class="zt">${dur(v)}</span></div>`).join("")}</div>`:`<div class="dcol"><div class="dlbl">HR Zones</div><span style="color:var(--muted);font-size:0.8rem">No HR data</span></div>`;
       const efs=act?.best_efforts?.slice(0,6)??[];
-      const efsH=`<div class="dcol"><div class="dlbl">Best efforts</div>${efs.map(e=>`<div class="erow"><span class="ename">${e.name}</span><span class="etime">${dur(e.elapsed_time)}</span></div>`).join("")||`<span style="color:var(--muted);font-size:0.8rem">None</span>`}</div>`;
-      const splits=act?.splits_metric??[],isRun=act?.sport_type?.includes("Run");
-      const splH=splits.length?`<div class="splits-wrap"><div class="dlbl" style="margin-bottom:0.5rem">Km splits</div><table class="st"><thead><tr><th>km</th><th>${isRun?"Pace":"Speed"}</th><th>HR</th><th>Cad</th><th>Elev</th></tr></thead><tbody>${splits.map((s,i)=>`<tr><td>${i+1}</td><td>${isRun?pace(s.average_speed):(s.average_speed*3.6).toFixed(1)}</td><td>${s.average_heartrate?Math.round(s.average_heartrate):"—"}</td><td>${s.average_cadence?Math.round(s.average_cadence*2):"—"}</td><td>${s.elevation_difference>=0?"+":""}${Math.round(s.elevation_difference)}m</td></tr>`).join("")}</tbody></table></div>`:``;
-      el.innerHTML=`${mapH}<div class="detail-body">${zonesH}${efsH}</div>${splH}`;
-    }
+      const efsH=`<div class="dcol"><div class="dlbl">Best efforts</div>${efs.map(e=>`<div class="erow"><span class="ename">${e.name}</span><span class="etime">${dur(e.elapsed_time)}</span></div>`).join("")||`<span style="color:var(--muted);font-size:0.8rem">—</span>`}</div>`;
+      const splits=act?.splits_metric??[];
+      const splH=splits.length?`<div class="splits-section"><div class="dlbl" style="margin-bottom:0.5rem">Km splits</div><table class="st"><thead><tr><th>km</th><th>${isRun?"Pace":"Speed"}</th><th>HR</th><th>Cad</th><th>Elev</th></tr></thead><tbody>${splits.map((s,i)=>`<tr><td>${i+1}</td><td>${isRun?pace(s.average_speed):(s.average_speed*3.6).toFixed(1)}</td><td>${s.average_heartrate?Math.round(s.average_heartrate):"—"}</td><td>${s.average_cadence?Math.round(s.average_cadence*2):"—"}</td><td>${s.elevation_difference>=0?"+":""}${Math.round(s.elevation_difference)}m</td></tr>`).join("")}</tbody></table></div>`:"";
+      const date = new Date(act.start_date_local).toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
 
-    function toggleDetail(card){
-      const id=card.dataset.id,el=document.getElementById(`d-${id}`),open=el.classList.contains("open");
-      document.querySelectorAll(".detail.open").forEach(d=>d.classList.remove("open"));
-      document.querySelectorAll(".card.active").forEach(c=>c.classList.remove("active"));
-      if(!open){el.classList.add("open");card.classList.add("active");if(!el.dataset.loaded){el.dataset.loaded="1";loadDetail(id,el);}}
+      el.innerHTML = `
+        ${mapH}
+        <div class="drawer-header">
+          <div>
+            <div class="drawer-title">${act.name}</div>
+            <div class="drawer-meta">${act.sport_type} · ${date}</div>
+          </div>
+          <button class="drawer-close" onclick="toggleDay('${selectedDay}')">✕</button>
+        </div>
+        <div class="drawer-stats">
+          <div class="dstat"><div class="dstat-lbl">Distance</div><div class="dstat-val" style="color:${col}">${(act.distance/1000).toFixed(2)}<span class="dstat-unit">km</span></div></div>
+          <div class="dstat"><div class="dstat-lbl">${isRun?"Pace":"Speed"}</div><div class="dstat-val">${isRun?pace(act.average_speed):(act.average_speed*3.6).toFixed(1)}<span class="dstat-unit">${isRun?"/km":"km/h"}</span></div></div>
+          <div class="dstat"><div class="dstat-lbl">Avg HR</div><div class="dstat-val">${act.average_heartrate?Math.round(act.average_heartrate):"—"}<span class="dstat-unit">${act.average_heartrate?"bpm":""}</span></div></div>
+          <div class="dstat"><div class="dstat-lbl">Duration</div><div class="dstat-val" style="font-size:1.1rem">${dur(act.moving_time)}</div></div>
+        </div>
+        <div class="drawer-body">${zonesH}${efsH}</div>
+        ${splH}`;
+
+      // scroll drawer into view
+      setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"nearest"}),100);
     }
 
     // ── Chat ──
     const CHAT_KEY = "pacecraft_chat";
-    let chatMsgs=[],chatCtx=null;
-    const msgsEl=()=>document.getElementById("msgs");
+    let chatMsgs = [], chatCtx = null;
+    const msgsEl = () => document.getElementById("chat-msgs");
 
-    function saveChatHistory() {
-      // Keep last 40 messages to avoid bloating localStorage
-      const toSave = chatMsgs.slice(-40);
-      localStorage.setItem(CHAT_KEY, JSON.stringify(toSave));
-    }
-
-    function loadChatHistory() {
-      try { return JSON.parse(localStorage.getItem(CHAT_KEY)) || []; }
-      catch { return []; }
-    }
-
-    function clearChatHistory() {
-      localStorage.removeItem(CHAT_KEY);
-      chatMsgs = [];
-      document.getElementById("msgs").innerHTML = "";
-    }
+    function saveChat() { localStorage.setItem(CHAT_KEY, JSON.stringify(chatMsgs.slice(-40))); }
+    function loadChatHistory() { try { return JSON.parse(localStorage.getItem(CHAT_KEY))||[]; } catch { return []; } }
 
     function addMsg(role,text){
       const c=msgsEl(),d=document.createElement("div");
@@ -666,158 +507,131 @@
       try{
         const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:chatMsgs,context:chatCtx})});
         const d=await r.json(),reply=d.reply??d.error??"Something went wrong.";
-        th.remove();addMsg("a",reply);chatMsgs.push({role:"model",parts:[{text:reply}]});saveChatHistory();
+        th.remove();addMsg("a",reply);chatMsgs.push({role:"model",parts:[{text:reply}]});saveChat();
       }catch{th.remove();addMsg("a","Something went wrong.");}
       btn.disabled=false;inp.value="";inp.style.height="auto";
     }
 
-    function weeklyLoad(acts){const w={};acts.forEach(a=>{if(!a.start_date_local)return;const d=new Date(a.start_date_local),day=d.getDay(),mon=new Date(d);mon.setDate(d.getDate()-((day+6)%7));const k=mon.toISOString().slice(0,10);if(!w[k])w[k]={week:k,km:0,time:0,count:0};w[k].km+=a.distance/1000;w[k].time+=a.moving_time;w[k].count++;});return Object.values(w).sort((a,b)=>b.week.localeCompare(a.week)).slice(0,4);}
-
-    async function initChat(acts,athlete){
-      const r10=acts.slice(0,10),wl=weeklyLoad(acts),lid=acts[0]?.id;
-      let la=null,ls=null;
-      if(lid){const[aR,sR]=await Promise.all([fetch(`/api/activity?id=${lid}&user=a`),fetch(`/api/streams?id=${lid}&user=a`)]);if(aR.ok)la=await aR.json();if(sR.ok)ls=await sR.json();}
-      const settings = loadSettings();
-      chatCtx={athlete,latestActivity:la,latestStreams:ls,recentActivities:r10,weeklyLoad:wl,profile:settings.profile,goals:settings.goals};
-
-      const savedHistory = loadChatHistory();
-      if (savedHistory.length) {
-        // Restore previous conversation
-        chatMsgs = savedHistory;
-        savedHistory.forEach(m => {
-          const role = m.role === "user" ? "u" : "a";
-          addMsg(role, m.parts[0].text);
-        });
-      } else {
-        // Fresh start — trigger opening analysis
-        chatMsgs.push({role:"user",parts:[{text:"Analysis of past activity"}]});
-        await sendMsg(null);
-      }
+    function clearChat(){
+      localStorage.removeItem(CHAT_KEY);chatMsgs=[];msgsEl().innerHTML="";
+      chatMsgs.push({role:"user",parts:[{text:"Analysis of past activity"}]});
+      sendMsg(null);
     }
 
-    document.getElementById("chat-form").addEventListener("submit",e=>{e.preventDefault();const v=document.getElementById("chat-in").value.trim();if(v)sendMsg(v);});
-    document.getElementById("chat-in").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();document.getElementById("chat-form").dispatchEvent(new Event("submit"));}});
-    window.addEventListener("scroll",()=>document.getElementById("hdr").classList.toggle("raised",window.scrollY>10),{passive:true});
-
-    // ── Settings / Profile / Goals ──
+    // ── Settings ──
     const STORAGE_KEY = "pacecraft_settings";
+    function loadSettings(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{profile:{},goals:[]};}catch{return{profile:{},goals:[]};}}
 
-    function loadSettings() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {profile:{}, goals:[]}; }
-      catch { return {profile:{}, goals:[]}; }
+    function saveSettings(){
+      const s=loadSettings();
+      const p={...s.profile,height:document.getElementById("p-height").value,age:document.getElementById("p-age").value,maxHR:document.getElementById("p-maxhr").value,restHR:document.getElementById("p-resthr").value,notes:document.getElementById("p-notes").value};
+      const goals=Array.from(document.querySelectorAll(".goal-form")).map(f=>({id:f.dataset.id,name:f.querySelector(".g-name").value,date:f.querySelector(".g-date").value,dist:f.querySelector(".g-dist").value,target:f.querySelector(".g-target").value,type:f.querySelector(".g-type").value,notes:f.querySelector(".g-notes").value})).filter(g=>g.name&&g.date);
+      localStorage.setItem(STORAGE_KEY,JSON.stringify({profile:p,goals}));
+      closeSettings();renderRaceBanners();
     }
-    function saveSettings() {
-      const s = loadSettings();
-      const p = {
-        weight: s.profile?.weight, // from Strava, not editable
-        gender: s.profile?.gender, // from Strava, not editable
-        height: document.getElementById("p-height").value,
-        age:    document.getElementById("p-age").value,
-        maxHR:  document.getElementById("p-maxhr").value,
-        restHR: document.getElementById("p-resthr").value,
-        notes:  document.getElementById("p-notes").value,
-      };
-      const goals = Array.from(document.querySelectorAll(".goal-form")).map(f => ({
-        id:      f.dataset.id,
-        name:    f.querySelector(".g-name").value,
-        date:    f.querySelector(".g-date").value,
-        dist:    f.querySelector(".g-dist").value,
-        target:  f.querySelector(".g-target").value,
-        type:    f.querySelector(".g-type").value,
-        notes:   f.querySelector(".g-notes").value,
-      })).filter(g => g.name && g.date);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({profile:p, goals}));
-      closeSettings();
-      renderRaceBanners();
-    }
-
-    function openSettings() {
-      const s = loadSettings();
-      const p = s.profile || {};
-      document.getElementById("p-height").value = p.height || "";
-      document.getElementById("p-age").value    = p.age    || "";
-      document.getElementById("p-maxhr").value  = p.maxHR  || "";
-      document.getElementById("p-resthr").value = p.restHR || "";
-      document.getElementById("p-notes").value  = p.notes  || "";
-      const list = document.getElementById("goal-list");
-      list.innerHTML = "";
-      (s.goals || []).forEach(g => renderGoalForm(g));
+    function openSettings(){
+      const s=loadSettings(),p=s.profile||{};
+      document.getElementById("p-height").value=p.height||"";
+      document.getElementById("p-age").value=p.age||"";
+      document.getElementById("p-maxhr").value=p.maxHR||"";
+      document.getElementById("p-resthr").value=p.restHR||"";
+      document.getElementById("p-notes").value=p.notes||"";
+      const list=document.getElementById("goal-list");list.innerHTML="";
+      (s.goals||[]).forEach(g=>renderGoalForm(g));
       document.getElementById("modal-overlay").classList.add("open");
     }
-    function closeSettings() { document.getElementById("modal-overlay").classList.remove("open"); }
-    function handleOverlayClick(e) { if(e.target === document.getElementById("modal-overlay")) closeSettings(); }
-
-    function addGoalForm() { renderGoalForm({id: Date.now().toString()}); }
-
-    function renderGoalForm(g) {
-      const div = document.createElement("div");
-      div.className = "goal-item goal-form";
-      div.dataset.id = g.id || Date.now().toString();
-      div.innerHTML = `
-        <div class="goal-item-hdr">
-          <input class="form-input g-name" placeholder="Race name (e.g. Stockholm Marathon)" value="${g.name||""}" style="font-weight:700;font-size:0.95rem"/>
-          <button class="goal-remove" onclick="this.closest('.goal-form').remove()">Remove</button>
-        </div>
+    function closeSettings(){document.getElementById("modal-overlay").classList.remove("open");}
+    function handleOverlayClick(e){if(e.target===document.getElementById("modal-overlay"))closeSettings();}
+    function addGoalForm(){renderGoalForm({id:Date.now().toString()});}
+    function renderGoalForm(g){
+      const div=document.createElement("div");div.className="goal-item goal-form";div.dataset.id=g.id||Date.now().toString();
+      div.innerHTML=`<div class="goal-item-hdr"><input class="form-input g-name" placeholder="Race name" value="${g.name||""}" style="font-weight:700"/><button class="goal-remove" onclick="this.closest('.goal-form').remove()">Remove</button></div>
         <div class="form-grid">
           <div class="form-field"><label class="form-label">Race date</label><input class="form-input g-date" type="date" value="${g.date||""}"/></div>
           <div class="form-field"><label class="form-label">Distance (km)</label><input class="form-input g-dist" type="number" placeholder="42.2" value="${g.dist||""}"/></div>
           <div class="form-field"><label class="form-label">Target time or pace</label><input class="form-input g-target" placeholder="3:30:00 or 4:58/km" value="${g.target||""}"/></div>
-          <div class="form-field"><label class="form-label">Race type</label>
-            <select class="form-select g-type">
-              <option value="road" ${g.type==="road"?"selected":""}>Road</option>
-              <option value="trail" ${g.type==="trail"?"selected":""}>Trail</option>
-              <option value="mountain" ${g.type==="mountain"?"selected":""}>Mountain</option>
-              <option value="track" ${g.type==="track"?"selected":""}>Track</option>
-            </select>
-          </div>
-          <div class="form-field full"><label class="form-label">Notes (terrain, elevation, strategy)</label><textarea class="form-textarea g-notes" placeholder="E.g. hilly course, 1200m gain, cobblestone start...">${g.notes||""}</textarea></div>
+          <div class="form-field"><label class="form-label">Type</label><select class="form-select g-type"><option value="road" ${g.type==="road"?"selected":""}>Road</option><option value="trail" ${g.type==="trail"?"selected":""}>Trail</option><option value="mountain" ${g.type==="mountain"?"selected":""}>Mountain</option><option value="track" ${g.type==="track"?"selected":""}>Track</option></select></div>
+          <div class="form-field full"><label class="form-label">Notes</label><textarea class="form-textarea g-notes" placeholder="Terrain, elevation, strategy...">${g.notes||""}</textarea></div>
         </div>`;
       document.getElementById("goal-list").appendChild(div);
     }
 
-    // ── Race countdown banners ──
-    function renderRaceBanners() {
-      const s = loadSettings();
-      const goals = (s.goals || []).filter(g => g.date && new Date(g.date) > new Date());
-      const container = document.getElementById("race-banners");
-      if (!goals.length) { container.innerHTML = ""; return; }
-      goals.sort((a,b) => new Date(a.date) - new Date(b.date));
-      container.innerHTML = goals.map(g => {
-        const days = Math.ceil((new Date(g.date) - new Date()) / 864e5);
-        const totalDays = 180; // assume 6-month prep window for progress bar
-        const progress = Math.max(0, Math.min(100, 100 - (days / totalDays * 100)));
-        const typeLabels = {road:"Road race",trail:"Trail race",mountain:"Mountain race",track:"Track race"};
-        return `<div class="race-banner">
-          <div class="race-days"><div class="race-days-num">${days}</div><div class="race-days-lbl">days</div></div>
-          <div class="race-divider"></div>
-          <div class="race-info">
-            <div class="race-name">${g.name}</div>
-            <div class="race-meta">${typeLabels[g.type]||"Race"} · ${g.dist?g.dist+"km ·":""} ${new Date(g.date).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}</div>
-            ${g.target?`<div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:rgba(255,255,255,0.5);margin-top:0.25rem">Target: ${g.target}</div>`:""}
-          </div>
-          <div class="race-progress-wrap">
-            <div class="race-progress-lbl"><span>Prep</span><span>${Math.round(progress)}%</span></div>
-            <div class="race-progress-bg"><div class="race-progress-bar" style="width:${progress}%"></div></div>
-            ${g.notes?`<div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:rgba(255,255,255,0.3);margin-top:0.4rem;line-height:1.4">${g.notes}</div>`:""}
-          </div>
+    function renderRaceBanners(){
+      const s=loadSettings(),goals=(s.goals||[]).filter(g=>g.date&&new Date(g.date)>new Date());
+      const el=document.getElementById("race-banners");
+      if(!goals.length){el.innerHTML="";return;}
+      goals.sort((a,b)=>new Date(a.date)-new Date(b.date));
+      el.style.marginBottom="1.25rem";
+      el.innerHTML=goals.map(g=>{
+        const days=Math.ceil((new Date(g.date)-new Date())/864e5);
+        const prog=Math.max(0,Math.min(100,100-(days/180*100)));
+        return`<div class="race-banner">
+          <div><div class="race-days-num">${days}</div><div class="race-days-lbl">days</div></div>
+          <div class="race-div"></div>
+          <div style="flex:1"><div class="race-name">${g.name}</div><div class="race-meta">${g.dist?g.dist+"km · ":""}${new Date(g.date).toLocaleDateString("en-GB",{day:"numeric",month:"long"})}${g.target?" · "+g.target:""}</div></div>
+          <div class="race-prog-bg"><div class="race-prog-bar" style="width:${prog}%"></div></div>
         </div>`;
       }).join("");
     }
 
     // ── Boot ──
+    window.addEventListener("scroll",()=>document.getElementById("hdr").classList.toggle("raised",window.scrollY>10),{passive:true});
+    document.getElementById("chat-form").addEventListener("submit",e=>{e.preventDefault();const v=document.getElementById("chat-in").value.trim();if(v)sendMsg(v);});
+    document.getElementById("chat-in").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();document.getElementById("chat-form").dispatchEvent(new Event("submit"));}});
+
     Promise.all([
-      fetch("/api/activities?user=a&per_page=30").then(r=>r.json()),
+      fetch("/api/activities?user=a&per_page=60").then(r=>r.json()),
       fetch("/api/stats?user=a").then(r=>r.ok?r.json():null),
     ]).then(([acts,athlete])=>{
-      if(!Array.isArray(acts)||!acts.length){document.getElementById("hero").innerHTML=`<p style="padding:2rem;color:var(--muted)">No activities found.</p>`;return;}
-      applyStats(acts,athlete);
-      renderWeek(acts);
+      if(!Array.isArray(acts))return;
+      allActs=acts;
+
+      // Sync Strava profile fields
+      if(athlete){
+        const s=loadSettings();s.profile=s.profile||{};
+        if(athlete.weight)s.profile.weight=athlete.weight;
+        if(athlete.sex)s.profile.gender=athlete.sex==="M"?"male":"female";
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(s));
+        document.getElementById("hdr-av").textContent=(athlete.firstname?.[0]||"")+(athlete.lastname?.[0]||"");
+      }
+
+      // Header stats
+      const now=new Date(),weekAgo=new Date(now-7*864e5);
+      const wkKm=acts.filter(a=>new Date(a.start_date_local)>=weekAgo).reduce((s,a)=>s+a.distance/1000,0);
+      document.getElementById("hdr-week").textContent=wkKm.toFixed(1)+" km";
+      if(athlete?.stats){
+        const ytd=((athlete.stats.ytd_run_totals?.distance||0)/1000).toFixed(0);
+        document.getElementById("hdr-ytd").textContent=ytd+" km";
+      }
+
+      // Calendar
+      indexActivities(acts);
+      const now2=new Date();viewYear=now2.getFullYear();viewMonth=now2.getMonth();
+      renderCalendar();
       renderRaceBanners();
-      renderHero(acts[0], acts);
-      document.getElementById("grid").innerHTML=acts.slice(1).map(renderCard).join("");
-      document.getElementById("run-count").textContent=`${acts.length-1} sessions`;
-      initChat(acts,athlete);
-    }).catch(err=>{document.getElementById("hero").innerHTML=`<p style="padding:2rem;color:red">${err.message}</p>`;});
+
+      // Chat context
+      const s=loadSettings();
+      const r10=acts.slice(0,10);
+      const wl={};acts.forEach(a=>{if(!a.start_date_local)return;const d=new Date(a.start_date_local),day=d.getDay(),mon=new Date(d);mon.setDate(d.getDate()-((day+6)%7));const k=mon.toISOString().slice(0,10);if(!wl[k])wl[k]={week:k,km:0,time:0,count:0};wl[k].km+=a.distance/1000;wl[k].time+=a.moving_time;wl[k].count++;});
+      const weeklyLoad=Object.values(wl).sort((a,b)=>b.week.localeCompare(a.week)).slice(0,4);
+
+      // Load latest activity detail for chat context
+      const lid=acts[0]?.id;
+      Promise.all([
+        lid?fetch(`/api/activity?id=${lid}&user=a`).then(r=>r.ok?r.json():null):Promise.resolve(null),
+        lid?fetch(`/api/streams?id=${lid}&user=a`).then(r=>r.ok?r.json():null):Promise.resolve(null),
+      ]).then(([la,ls])=>{
+        chatCtx={athlete,latestActivity:la,latestStreams:ls,recentActivities:r10,weeklyLoad,profile:s.profile,goals:s.goals};
+        const hist=loadChatHistory();
+        if(hist.length){
+          chatMsgs=hist;hist.forEach(m=>addMsg(m.role==="user"?"u":"a",m.parts[0].text));
+        } else {
+          chatMsgs.push({role:"user",parts:[{text:"Analysis of past activity"}]});
+          sendMsg(null);
+        }
+      });
+    });
   </script>
 </body>
 </html>
