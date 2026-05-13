@@ -356,6 +356,9 @@
       document.getElementById("ubtn-a").classList.toggle("on", u === "a");
       document.getElementById("ubtn-b").classList.toggle("on", u === "b");
       zonesCache = null;
+      // Clear chat UI — each user has their own conversation
+      chatMsgs = [];
+      msgsEl().innerHTML = "";
       loadAll();
     }
 
@@ -570,12 +573,12 @@
     }
 
     // ── Chat ──
-    const CHAT_KEY = "pacecraft_chat";
     let chatMsgs = [], chatCtx = null;
     const msgsEl = () => document.getElementById("chat-msgs");
 
-    function saveChat() { localStorage.setItem(CHAT_KEY, JSON.stringify(chatMsgs.slice(-40))); }
-    function loadChatHistory() { try { return JSON.parse(localStorage.getItem(CHAT_KEY))||[]; } catch { return []; } }
+    const chatKey = () => `pacecraft_chat_${activeUser}`;
+    function saveChat() { localStorage.setItem(chatKey(), JSON.stringify(chatMsgs.slice(-40))); }
+    function loadChatHistory() { try { return JSON.parse(localStorage.getItem(chatKey()))||[]; } catch { return []; } }
 
     function addMsg(role,text){
       const c=msgsEl(),d=document.createElement("div");
@@ -708,8 +711,8 @@
           lid?fetch(`/api/streams?id=${lid}&user=${activeUser}`).then(r=>r.ok?r.json():null):Promise.resolve(null),
         ]).then(([la,ls])=>{
           chatCtx={athlete,latestActivity:la,latestStreams:ls,recentActivities:r10,weeklyLoad,profile:s.profile,goals:s.goals};
-          // Only init chat on first load (user a), don't wipe conversation on switch
-          if(activeUser==="a" && !chatMsgs.length){
+          // Restore this user's chat history or start fresh
+          if(!chatMsgs.length){
             const hist=loadChatHistory();
             if(hist.length){chatMsgs=hist;hist.forEach(m=>addMsg(m.role==="user"?"u":"a",m.parts[0].text));}
             else{chatMsgs.push({role:"user",parts:[{text:"Analysis of past activity"}]});sendMsg(null);}
