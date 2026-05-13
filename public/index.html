@@ -74,6 +74,54 @@
     .live-pill { display: flex; align-items: center; gap: 0.35rem; font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 0.25rem 0.65rem; border-radius: 999px; border: 1px solid var(--border); }
     .live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .settings-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: var(--text2); transition: border-color 0.2s, color 0.2s; }
+    .settings-btn:hover { border-color: var(--border2); color: var(--text); }
+
+    /* ── MODAL ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 200; display: none; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--white); border-radius: 1.5rem; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,0.2); }
+    .modal-hdr { display: flex; align-items: center; justify-content: space-between; padding: 1.5rem 1.75rem 1.25rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--white); z-index: 1; border-radius: 1.5rem 1.5rem 0 0; }
+    .modal-title { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.025em; }
+    .modal-close { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: none; cursor: pointer; font-size: 1rem; color: var(--text2); display: flex; align-items: center; justify-content: center; }
+    .modal-close:hover { background: var(--bg); }
+    .modal-body { padding: 1.5rem 1.75rem; display: flex; flex-direction: column; gap: 2rem; }
+    .modal-section-title { font-family: "DM Mono", monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--muted); margin-bottom: 1rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .form-field { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-label { font-family: "DM Mono", monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text2); }
+    .form-input, .form-select, .form-textarea { background: var(--bg); border: 1px solid var(--border); border-radius: 0.625rem; padding: 0.6rem 0.875rem; font-family: "DM Sans", sans-serif; font-size: 0.875rem; color: var(--text); outline: none; transition: border-color 0.2s; width: 100%; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--orange); }
+    .form-textarea { resize: vertical; min-height: 70px; }
+    .form-select { cursor: pointer; }
+    .modal-save { width: 100%; padding: 0.75rem; background: var(--text); color: #fff; border: none; border-radius: 0.875rem; font-family: "DM Sans", sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: opacity 0.2s; letter-spacing: -0.01em; }
+    .modal-save:hover { opacity: 0.85; }
+
+    /* Goals list */
+    .goal-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .goal-item { background: var(--bg); border: 1px solid var(--border); border-radius: 1rem; padding: 1rem 1.125rem; position: relative; }
+    .goal-item-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.875rem; }
+    .goal-item-name { font-weight: 700; font-size: 0.95rem; letter-spacing: -0.02em; }
+    .goal-remove { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 0.8rem; padding: 0.25rem 0.5rem; border-radius: 0.5rem; }
+    .goal-remove:hover { color: #dc2626; background: color-mix(in srgb,#dc2626 8%,transparent); }
+    .add-goal-btn { width: 100%; padding: 0.65rem; background: none; border: 1.5px dashed var(--border2); border-radius: 0.875rem; color: var(--text2); font-family: "DM Sans", sans-serif; font-size: 0.875rem; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+    .add-goal-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* Race countdown banner */
+    .race-banner { background: var(--text); border-radius: 1.25rem; padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1.5rem; overflow: hidden; position: relative; }
+    .race-banner::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 100% at 100% 50%, color-mix(in srgb,var(--orange) 20%,transparent), transparent); pointer-events: none; }
+    .race-days { flex-shrink: 0; text-align: center; }
+    .race-days-num { font-size: 2.5rem; font-weight: 900; letter-spacing: -0.05em; color: var(--orange); line-height: 1; }
+    .race-days-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.4); }
+    .race-divider { width: 1px; height: 48px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
+    .race-info { flex: 1; }
+    .race-name { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.03em; color: #fff; margin-bottom: 0.25rem; }
+    .race-meta { font-family: "DM Mono", monospace; font-size: 0.6rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.1em; }
+    .race-progress-wrap { flex: 1; max-width: 200px; }
+    .race-progress-lbl { font-family: "DM Mono", monospace; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); margin-bottom: 0.5rem; display: flex; justify-content: space-between; }
+    .race-progress-bg { background: rgba(255,255,255,0.1); border-radius: 999px; height: 6px; overflow: hidden; }
+    .race-progress-bar { height: 100%; border-radius: 999px; background: linear-gradient(to right, var(--orange), #ff9a6c); transition: width 1s cubic-bezier(0.16,1,0.3,1); }
 
     /* ── LAYOUT ── */
     .layout { display: flex; padding-top: var(--hdr); min-height: 100vh; }
@@ -260,6 +308,7 @@
         <div class="live-pill"><div class="live-dot"></div>Live</div>
         <div class="hdr-avatar" id="hdr-av">W</div>
         <span class="hdr-name" id="hdr-name">Loading</span>
+        <button class="settings-btn" onclick="openSettings()" title="Profile & Goals">⚙</button>
       </div>
     </div>
   </header>
@@ -291,6 +340,9 @@
       <div class="week-section">
         <div id="week-wrap"><div class="sk sk-week"></div></div>
       </div>
+
+      <!-- Race goals countdown -->
+      <div id="race-banners" style="padding: 1rem 2rem 0; display:flex; flex-direction:column; gap:0.625rem;"></div>
 
       <!-- Latest -->
       <div class="latest-section">
@@ -561,7 +613,8 @@
       const r10=acts.slice(0,10),wl=weeklyLoad(acts),lid=acts[0]?.id;
       let la=null,ls=null;
       if(lid){const[aR,sR]=await Promise.all([fetch(`/api/activity?id=${lid}&user=a`),fetch(`/api/streams?id=${lid}&user=a`)]);if(aR.ok)la=await aR.json();if(sR.ok)ls=await sR.json();}
-      chatCtx={athlete,latestActivity:la,latestStreams:ls,recentActivities:r10,weeklyLoad:wl};
+      const settings = loadSettings();
+      chatCtx={athlete,latestActivity:la,latestStreams:ls,recentActivities:r10,weeklyLoad:wl,profile:settings.profile,goals:settings.goals};
       chatMsgs.push({role:"user",parts:[{text:"Analysis of past activity"}]});
       await sendMsg(null);
     }
@@ -569,6 +622,112 @@
     document.getElementById("chat-form").addEventListener("submit",e=>{e.preventDefault();const v=document.getElementById("chat-in").value.trim();if(v)sendMsg(v);});
     document.getElementById("chat-in").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();document.getElementById("chat-form").dispatchEvent(new Event("submit"));}});
     window.addEventListener("scroll",()=>document.getElementById("hdr").classList.toggle("raised",window.scrollY>10),{passive:true});
+
+    // ── Settings / Profile / Goals ──
+    const STORAGE_KEY = "pacecraft_settings";
+
+    function loadSettings() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {profile:{}, goals:[]}; }
+      catch { return {profile:{}, goals:[]}; }
+    }
+    function saveSettings() {
+      const p = {
+        weight: document.getElementById("p-weight").value,
+        height: document.getElementById("p-height").value,
+        age:    document.getElementById("p-age").value,
+        gender: document.getElementById("p-gender").value,
+        maxHR:  document.getElementById("p-maxhr").value,
+        restHR: document.getElementById("p-resthr").value,
+        notes:  document.getElementById("p-notes").value,
+      };
+      const goals = Array.from(document.querySelectorAll(".goal-form")).map(f => ({
+        id:      f.dataset.id,
+        name:    f.querySelector(".g-name").value,
+        date:    f.querySelector(".g-date").value,
+        dist:    f.querySelector(".g-dist").value,
+        target:  f.querySelector(".g-target").value,
+        type:    f.querySelector(".g-type").value,
+        notes:   f.querySelector(".g-notes").value,
+      })).filter(g => g.name && g.date);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({profile:p, goals}));
+      closeSettings();
+      renderRaceBanners();
+    }
+
+    function openSettings() {
+      const s = loadSettings();
+      const p = s.profile || {};
+      document.getElementById("p-weight").value = p.weight || "";
+      document.getElementById("p-height").value = p.height || "";
+      document.getElementById("p-age").value    = p.age    || "";
+      document.getElementById("p-gender").value = p.gender || "";
+      document.getElementById("p-maxhr").value  = p.maxHR  || "";
+      document.getElementById("p-resthr").value = p.restHR || "";
+      document.getElementById("p-notes").value  = p.notes  || "";
+      const list = document.getElementById("goal-list");
+      list.innerHTML = "";
+      (s.goals || []).forEach(g => renderGoalForm(g));
+      document.getElementById("modal-overlay").classList.add("open");
+    }
+    function closeSettings() { document.getElementById("modal-overlay").classList.remove("open"); }
+    function handleOverlayClick(e) { if(e.target === document.getElementById("modal-overlay")) closeSettings(); }
+
+    function addGoalForm() { renderGoalForm({id: Date.now().toString()}); }
+
+    function renderGoalForm(g) {
+      const div = document.createElement("div");
+      div.className = "goal-item goal-form";
+      div.dataset.id = g.id || Date.now().toString();
+      div.innerHTML = `
+        <div class="goal-item-hdr">
+          <input class="form-input g-name" placeholder="Race name (e.g. Stockholm Marathon)" value="${g.name||""}" style="font-weight:700;font-size:0.95rem"/>
+          <button class="goal-remove" onclick="this.closest('.goal-form').remove()">Remove</button>
+        </div>
+        <div class="form-grid">
+          <div class="form-field"><label class="form-label">Race date</label><input class="form-input g-date" type="date" value="${g.date||""}"/></div>
+          <div class="form-field"><label class="form-label">Distance (km)</label><input class="form-input g-dist" type="number" placeholder="42.2" value="${g.dist||""}"/></div>
+          <div class="form-field"><label class="form-label">Target time or pace</label><input class="form-input g-target" placeholder="3:30:00 or 4:58/km" value="${g.target||""}"/></div>
+          <div class="form-field"><label class="form-label">Race type</label>
+            <select class="form-select g-type">
+              <option value="road" ${g.type==="road"?"selected":""}>Road</option>
+              <option value="trail" ${g.type==="trail"?"selected":""}>Trail</option>
+              <option value="mountain" ${g.type==="mountain"?"selected":""}>Mountain</option>
+              <option value="track" ${g.type==="track"?"selected":""}>Track</option>
+            </select>
+          </div>
+          <div class="form-field full"><label class="form-label">Notes (terrain, elevation, strategy)</label><textarea class="form-textarea g-notes" placeholder="E.g. hilly course, 1200m gain, cobblestone start...">${g.notes||""}</textarea></div>
+        </div>`;
+      document.getElementById("goal-list").appendChild(div);
+    }
+
+    // ── Race countdown banners ──
+    function renderRaceBanners() {
+      const s = loadSettings();
+      const goals = (s.goals || []).filter(g => g.date && new Date(g.date) > new Date());
+      const container = document.getElementById("race-banners");
+      if (!goals.length) { container.innerHTML = ""; return; }
+      goals.sort((a,b) => new Date(a.date) - new Date(b.date));
+      container.innerHTML = goals.map(g => {
+        const days = Math.ceil((new Date(g.date) - new Date()) / 864e5);
+        const totalDays = 180; // assume 6-month prep window for progress bar
+        const progress = Math.max(0, Math.min(100, 100 - (days / totalDays * 100)));
+        const typeLabels = {road:"Road race",trail:"Trail race",mountain:"Mountain race",track:"Track race"};
+        return `<div class="race-banner">
+          <div class="race-days"><div class="race-days-num">${days}</div><div class="race-days-lbl">days</div></div>
+          <div class="race-divider"></div>
+          <div class="race-info">
+            <div class="race-name">${g.name}</div>
+            <div class="race-meta">${typeLabels[g.type]||"Race"} · ${g.dist?g.dist+"km ·":""} ${new Date(g.date).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}</div>
+            ${g.target?`<div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:rgba(255,255,255,0.5);margin-top:0.25rem">Target: ${g.target}</div>`:""}
+          </div>
+          <div class="race-progress-wrap">
+            <div class="race-progress-lbl"><span>Prep</span><span>${Math.round(progress)}%</span></div>
+            <div class="race-progress-bg"><div class="race-progress-bar" style="width:${progress}%"></div></div>
+            ${g.notes?`<div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:rgba(255,255,255,0.3);margin-top:0.4rem;line-height:1.4">${g.notes}</div>`:""}
+          </div>
+        </div>`;
+      }).join("");
+    }
 
     // ── Boot ──
     Promise.all([
@@ -578,6 +737,7 @@
       if(!Array.isArray(acts)||!acts.length){document.getElementById("hero").innerHTML=`<p style="padding:2rem;color:var(--muted)">No activities found.</p>`;return;}
       applyStats(acts,athlete);
       renderWeek(acts);
+      renderRaceBanners();
       renderHero(acts[0], acts);
       document.getElementById("grid").innerHTML=acts.slice(1).map(renderCard).join("");
       document.getElementById("run-count").textContent=`${acts.length-1} sessions`;

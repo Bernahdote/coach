@@ -43,7 +43,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 function buildSystemPrompt(ctx: any): string {
   if (!ctx) return "You are an expert endurance coach. Be direct, specific, and actionable.";
 
-  const { athlete, latestActivity, recentActivities, weeklyLoad } = ctx;
+  const { athlete, latestActivity, recentActivities, weeklyLoad, profile, goals } = ctx;
 
   const lines: string[] = [
     `You are an expert personal endurance coach. Be direct, specific, and actionable — speak like a coach, not a chatbot. No bullet lists unless asked. Always end your opening analysis with a concrete recommended next workout (type, duration, intensity, and why).`,
@@ -76,6 +76,33 @@ function buildSystemPrompt(ctx: any): string {
     "=== END COACHING METHODOLOGY ===",
     "",
   ];
+
+  if (profile && Object.keys(profile).some(k => profile[k])) {
+    lines.push("ATHLETE PROFILE:");
+    if (profile.gender) lines.push(`  Gender: ${profile.gender}`);
+    if (profile.age)    lines.push(`  Age: ${profile.age}`);
+    if (profile.weight) lines.push(`  Weight: ${profile.weight}kg`);
+    if (profile.height) lines.push(`  Height: ${profile.height}cm`);
+    if (profile.maxHR)  lines.push(`  Max HR: ${profile.maxHR}bpm`);
+    if (profile.restHR) lines.push(`  Resting HR: ${profile.restHR}bpm`);
+    if (profile.notes)  lines.push(`  Coach notes: ${profile.notes}`);
+    lines.push("");
+  }
+
+  if (goals?.length) {
+    lines.push("RACE GOALS:");
+    goals.forEach((g: any) => {
+      const daysToRace = Math.ceil((new Date(g.date).getTime() - Date.now()) / 864e5);
+      lines.push(`  ${g.name} — ${g.date} (${daysToRace} days away)`);
+      if (g.dist)   lines.push(`    Distance: ${g.dist}km`);
+      if (g.target) lines.push(`    Target: ${g.target}`);
+      if (g.type)   lines.push(`    Type: ${g.type}`);
+      if (g.notes)  lines.push(`    Notes: ${g.notes}`);
+    });
+    lines.push("");
+    lines.push("AUTO-CHECK for each response: Is weekly volume on track for the goal race? Is the long run progressing appropriately? Is there enough time to peak and taper? Flag any concerns proactively.");
+    lines.push("");
+  }
 
   if (athlete) {
     lines.push(`ATHLETE: ${athlete.firstname} ${athlete.lastname}, ${athlete.city}, ${athlete.country}`);
